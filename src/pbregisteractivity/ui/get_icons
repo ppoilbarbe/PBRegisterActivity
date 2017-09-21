@@ -1,0 +1,43 @@
+#!/usr/bin/perl
+
+use FindBin;
+use warnings;
+use strict;
+
+my $CopyScript = "/homelocal/su_php/icones/recup_icones_finales";
+my $IconDir = $FindBin::RealBin . "/icons";
+
+my @IconList    = qw(
+        arrow_right
+        action_add
+        action_cancel
+        action_edit
+        action_exit
+        action_ok
+        action_refresh
+        action_remove
+        action_save
+        tool_histogram
+        tool_piechart
+        );
+
+die "Programme '$CopyScript' absent ou innaccessible\n" unless -x $CopyScript;
+
+$_  .= ".png" foreach @IconList;
+
+if (! -d $IconDir)
+{
+    mkdir $IconDir  or die "Erreur de création de $IconDir: $!\n";
+}
+
+my $Cmd;
+
+#$Cmd = "$CopyScript --size=24,32,48,64 $IconDir @IconList";
+$Cmd = "$CopyScript --size=32 $IconDir @IconList";
+print $Cmd, "\n";
+system($Cmd) == 0 or die "Erreur de récupération des icônes\n";
+
+# Icône de l'application
+$Cmd = "$CopyScript --size=128 $IconDir obj_hal9000.png";
+print $Cmd, "\n";
+system($Cmd) == 0 or die "Erreur de récupération des icônes\n";

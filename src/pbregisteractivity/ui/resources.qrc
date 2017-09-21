@@ -1,0 +1,16 @@
+<RCC>
+  <qresource prefix="images">
+    <file>icons/32x32/tool_histogram.png</file>
+    <file>icons/32x32/tool_piechart.png</file>
+    <file>icons/128x128/obj_hal9000.png</file>
+    <file>icons/32x32/action_add.png</file>
+    <file>icons/32x32/action_cancel.png</file>
+    <file>icons/32x32/action_edit.png</file>
+    <file>icons/32x32/action_exit.png</file>
+    <file>icons/32x32/action_ok.png</file>
+    <file>icons/32x32/action_refresh.png</file>
+    <file>icons/32x32/action_remove.png</file>
+    <file>icons/32x32/action_save.png</file>
+    <file>icons/32x32/arrow_right.png</file>
+  </qresource>
+</RCC>
