@@ -21,7 +21,7 @@ from .about import About
 from .ui.ui_mainwindow import Ui_MainWindow
 from .utils import to_string
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -65,7 +65,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.fill_activity_list()
 
-    def program_version(self):
+    @staticmethod
+    def program_version():
         return "{0} - {1}".format(parameters.application_name, __version__)
 
     def change_title(self, special_text=None):
@@ -97,7 +98,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actionRegister.setEnabled(has_name and date_is_ok)
         self.tbForceAdd.setEnabled(has_name and date_is_ok)
 
-    def set_list_actions_enabled(self, selected_count = 0):
+    def set_list_actions_enabled(self, selected_count=0):
         self.actionRemove.setEnabled(selected_count != 0)
         self.actionEdit.setEnabled(selected_count == 1)
         self.actionSwapActivity.setEnabled(selected_count == 1)
@@ -156,7 +157,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def start_date(self):
         return self.dteStart.dateTime()
 
-    def end_date(self):
+    @staticmethod
+    def end_date():
         return QDateTime.currentDateTime()
 
     def current_activity_name(self):
@@ -237,10 +239,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         selected_count = len(selected)
         if selected_count != 1:
             self.txtDescription.clear()
+            # noinspection PyUnresolvedReferences
             self.statusBar.clearMessage()
         else:
             text = selected[0].value().as_html()
             self.txtDescription.setHtml(text)
+            # noinspection PyUnresolvedReferences
             self.statusBar.showMessage(selected[0].statusTip())
         self.set_list_actions_enabled(selected_count=selected_count)
         self.check_window()

@@ -9,7 +9,7 @@ Enregistre l'activité
 # Tested with PYTHON 3.5. Not compatible with Python 2.x
 
 import html
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from .parameters import parameters
 
@@ -25,10 +25,11 @@ class Activity(object):
 
     def __init__(self, name, start, end, comment):
         self._name = "not set"
-        self._start = datetime.now()
-        self._end = datetime.now()
+        self._start = None
+        self._end = None
         self._comment = ""
         self._parent = None
+        self._modified = False
 
         self.name = name
         self.start = start
@@ -47,6 +48,21 @@ class Activity(object):
                    fields[1].strip(),
                    fields[2].strip(),
                    fields[3].strip())
+
+    @classmethod
+    def from_activity(cls, activity, start=None, end=None):
+        if start is None:
+            start = activity.start
+        if end is None:
+            end = activity.end
+        if start < activity.start:
+            start = activity.start
+        if end > activity.end:
+            end = activity.end
+        return cls(activity.name,
+                   start,
+                   end,
+                   activity.comment)
 
     def as_string(self):
         result = "{name}|{start}|{end}|{comment}".format(
@@ -88,7 +104,7 @@ class Activity(object):
             start=self.start,
             end=self.end,
             duration=self.duration,
-            hduration=self.hour_duration,
+            hduration=self.seconds_duration / 3600.0,
         )
         return result
 
@@ -128,11 +144,14 @@ class Activity(object):
 
     @property
     def duration(self):
-        return self.end - self.start
+        d = self.end - self.start
+        if d.total_seconds() < 0.0:
+            return timedelta()
+        return d
 
     @property
-    def hour_duration(self):
-        return self.duration.total_seconds() / 3600.0
+    def seconds_duration(self):
+        return self.duration.total_seconds()
 
     @property
     def comment(self):
@@ -157,7 +176,7 @@ class Activity(object):
             if isinstance(value, datetime):
                 d = value
             else:
-                d =  datetime.strptime(value, self.DATE_FORMAT)
+                d = datetime.strptime(value, self.DATE_FORMAT)
             return d.replace(microsecond=0)
         except ValueError as e:
             raise ActivityError("{} '{}' invalide (pas au format ISO): {}",
@@ -204,6 +223,62 @@ class _Activities(object):
         return sorted([x for x in self._activities],
                       key=lambda x: x.start.isoformat() + " " + x.name,
                       reverse=recent_first)
+
+    def pack_by_name(self, start: datetime=None, end: datetime=None) -> dict:
+        """
+        Retourne la liste de toutes les activités dans la période de temps
+        demandée. Si une activité est à cheval sur une des bornes demandées,
+        l'activité est découpée à la limite de la borne.
+
+        Le résultat est un dictionnaire dont les clefs sont les noms d'activités
+        et les valeurs la liste des activités de ce nom sélectionnées dans
+        l'intervalle
+
+        :param start: Date de début de sélection. Si None pas de limite inférieure.
+        :param end: Date de fin de sélection. Si None pas de limite supérieure.
+        :return: Clef: nom de l'acivité. Valeur, liste d'activités.
+        """
+        result = {}
+        for activity in self._activities:
+            x = Activity.from_activity(activity, start=start, end=end)
+            if x.seconds_duration > 0.0:
+                name = x.name
+                if name not in result:
+                    result[name] = []
+                result[name].append(x)
+        return result
+
+    def pack_durations(self, start: datetime=None, end: datetime=None) -> dict:
+        """
+        Retourne les activités présentes dans dans la période de temps
+        demandée. Si une activité est à cheval sur une des bornes demandées,
+        l'activité est découpée à la limite de la borne.
+
+        Le résultat est un dictionnaire dont les clefs sont les noms d'activités
+        et les valeurs un dictionnaire contenant:
+            - duration: la somme des durées de l'activité sur l'intervalle de temps
+            - comments: la liste des commenaitaires non vides des activités
+              sélectionnées (les doublons sont éliminés).
+
+        :param start: Date de début de sélection. Si None pas de limite inférieure.
+        :param end: Date de fin de sélection. Si None pas de limite supérieure.
+        :return: Dictionnaire (voir description)
+        """
+        result = {}
+        for activity in self._activities:
+            print("AYAYAYAY2", activity)
+            x = Activity.from_activity(activity, start=start, end=end)
+            if x.seconds_duration > 0.0:
+                print("AYAYAYAY2",x)
+                name = x.name
+                if name not in result:
+                    result[name] = dict(
+                        duration=0.0,
+                        comments=[])
+                result[name]['duration'] += x.seconds_duration
+                if x.comment != "" and x.comment not in result[name]['comments']:
+                    result[name]['comments'].append(x.comment)
+        return result
 
     def modified(self):
         return self._modified or any([x.modified for x in self._activities])

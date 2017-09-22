@@ -19,6 +19,7 @@ my @IconList    = qw(
         action_save
         tool_histogram
         tool_piechart
+        mimetext_csv
         );
 
 die "Programme '$CopyScript' absent ou innaccessible\n" unless -x $CopyScript;

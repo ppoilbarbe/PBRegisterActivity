@@ -18,17 +18,53 @@
     <layout class="QHBoxLayout" name="layoutActions">
      <item>
       <widget class="QToolButton" name="btnTimeSeries">
+       <property name="toolTip">
+        <string>Visualisation temporelle</string>
+       </property>
        <property name="icon">
         <iconset resource="resources.qrc">
          <normaloff>:/images/icons/32x32/tool_histogram.png</normaloff>:/images/icons/32x32/tool_histogram.png</iconset>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="autoExclusive">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QToolButton" name="btnPieChart">
+       <property name="toolTip">
+        <string>Visualisation durées</string>
+       </property>
        <property name="icon">
         <iconset resource="resources.qrc">
          <normaloff>:/images/icons/32x32/tool_piechart.png</normaloff>:/images/icons/32x32/tool_piechart.png</iconset>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="autoExclusive">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnTextOutput">
+       <property name="toolTip">
+        <string>Visualisation durées sous forme de texte
+et exportation CSV</string>
+       </property>
+       <property name="icon">
+        <iconset resource="resources.qrc">
+         <normaloff>:/images/icons/32x32/mimetext_csv.png</normaloff>:/images/icons/32x32/mimetext_csv.png</iconset>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="autoExclusive">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -46,7 +82,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QLabel" name="lblEnd">
+      <widget class="QLabel" name="lblStart">
        <property name="text">
         <string>Début:</string>
        </property>
@@ -54,6 +90,9 @@
      </item>
      <item>
       <widget class="QDateEdit" name="deStart">
+       <property name="toolTip">
+        <string>Date de début de la période à considérer</string>
+       </property>
        <property name="displayFormat">
         <string>yyyy/MM/dd</string>
        </property>
@@ -63,7 +102,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="lblEnd_2">
+      <widget class="QLabel" name="lblEnd">
        <property name="text">
         <string>Fin:</string>
        </property>
@@ -71,6 +110,9 @@
      </item>
      <item>
       <widget class="QDateEdit" name="deEnd">
+       <property name="toolTip">
+        <string>Date de fin de la période à considérer</string>
+       </property>
        <property name="displayFormat">
         <string>yyyy/MM/dd</string>
        </property>
@@ -82,7 +124,72 @@
     </layout>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="layoutPlot"/>
+    <layout class="QVBoxLayout" name="layoutDraw">
+     <item>
+      <widget class="QFrame" name="frmTextOutput">
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <layout class="QVBoxLayout" name="layoutTextOutput">
+        <item>
+         <widget class="QLabel" name="lblHtml">
+          <property name="text">
+           <string>En html:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTextEdit" name="edtHtml">
+          <property name="toolTip">
+           <string>Représentation textuelle</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="lblCsv">
+          <property name="text">
+           <string>Au format CSV:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPlainTextEdit" name="edtCsv">
+          <property name="toolTip">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="frmPlot">
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <layout class="QVBoxLayout" name="layoutPlot"/>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
@@ -96,6 +203,15 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>deStart</tabstop>
+  <tabstop>deEnd</tabstop>
+  <tabstop>edtHtml</tabstop>
+  <tabstop>edtCsv</tabstop>
+  <tabstop>btnTimeSeries</tabstop>
+  <tabstop>btnPieChart</tabstop>
+  <tabstop>btnTextOutput</tabstop>
+ </tabstops>
  <resources>
   <include location="resources.qrc"/>
  </resources>

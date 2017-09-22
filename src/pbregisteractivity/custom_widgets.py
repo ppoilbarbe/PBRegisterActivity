@@ -32,7 +32,7 @@ class QActivityListWidgetItem(QListWidgetItem):
             duration=duration)
         self.setToolTip(txt)
         txt = "{name} - Début: {start}; Fin: {end}; Durée: {duration}".format(
-            name = value.name,
+            name=value.name,
             start=start,
             end=end,
             duration=duration)

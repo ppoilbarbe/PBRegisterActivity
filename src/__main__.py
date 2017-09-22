@@ -41,6 +41,7 @@ class SingleInstance:
         if os.path.isfile(self.lockfile):
             os.unlink(self.lockfile)
 
+
 def translate_stock_widgets(app: QApplication) -> None:
     """
     Set standard Qt internal strings translated
@@ -51,6 +52,7 @@ def translate_stock_widgets(app: QApplication) -> None:
     translator = QTranslator()
     translator.load(qt_name, QLibraryInfo.location(QLibraryInfo.TranslationsPath))
     app.installTranslator(translator)
+
 
 def main():
     try:

@@ -17,7 +17,6 @@ from .ui.ui_specifyrange import Ui_SpecifyRange
 
 # noinspection PyAbstractClass
 class SpecifyRange(QDialog, Ui_SpecifyRange):
-
     def __init__(self, activity, title, modify=False):
         super().__init__()
         self._activity = activity
@@ -59,7 +58,7 @@ class SpecifyRange(QDialog, Ui_SpecifyRange):
 
     @pyqtSlot()
     def accept(self):
-        name =self.name()
+        name = self.name()
         start = self.start_date().toString("yyyyMMddThhmmss")
         end = self.end_date().toString("yyyyMMddThhmmss")
         comment = self.edtComment.toPlainText()
