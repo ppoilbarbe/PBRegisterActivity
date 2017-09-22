@@ -124,9 +124,18 @@ et exportation CSV</string>
     </layout>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="layoutDraw">
+    <layout class="QVBoxLayout" name="layoutDraw" stretch="1,1,0">
+     <property name="spacing">
+      <number>0</number>
+     </property>
      <item>
       <widget class="QFrame" name="frmTextOutput">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>3</verstretch>
+        </sizepolicy>
+       </property>
        <property name="frameShape">
         <enum>QFrame::StyledPanel</enum>
        </property>
@@ -167,6 +176,12 @@ et exportation CSV</string>
      </item>
      <item>
       <widget class="QFrame" name="frmPlot">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>3</verstretch>
+        </sizepolicy>
+       </property>
        <property name="frameShape">
         <enum>QFrame::StyledPanel</enum>
        </property>
@@ -184,7 +199,7 @@ et exportation CSV</string>
        <property name="sizeHint" stdset="0">
         <size>
          <width>20</width>
-         <height>40</height>
+         <height>0</height>
         </size>
        </property>
       </spacer>

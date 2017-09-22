@@ -21,7 +21,7 @@ from .about import About
 from .ui.ui_mainwindow import Ui_MainWindow
 from .utils import to_string
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):

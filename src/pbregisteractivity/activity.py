@@ -266,10 +266,8 @@ class _Activities(object):
         """
         result = {}
         for activity in self._activities:
-            print("AYAYAYAY2", activity)
             x = Activity.from_activity(activity, start=start, end=end)
             if x.seconds_duration > 0.0:
-                print("AYAYAYAY2",x)
                 name = x.name
                 if name not in result:
                     result[name] = dict(

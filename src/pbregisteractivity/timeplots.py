@@ -30,12 +30,20 @@ class TimePlots(QDialog, Ui_TimePlots):
         self.setupUi(self)
 
         today = date.today()
-        self.deStart.setDate(today - timedelta(days=7))
+        self.deStart.setDate(today - timedelta(days=4))
         self.deEnd.setDate(today)
+
+        self.deStart.dateChanged.connect(self.check_window)
+        self.deEnd.dateChanged.connect(self.check_window)
 
         self.btnTimeSeries.clicked.connect(self.plot)
         self.btnPieChart.clicked.connect(self.handle_piechart)
         self.btnTextOutput.clicked.connect(self.handle_text_output)
+
+        self.plot_buttons = [ self.btnTimeSeries,
+                              self.btnPieChart,
+                              self.btnTextOutput,
+                            ]
 
         # a figure instance to plot on
         self._figure = Figure()
@@ -50,6 +58,12 @@ class TimePlots(QDialog, Ui_TimePlots):
         self.layoutPlot.addWidget(self._mpl_toolbar)
         #self.frmPlot.setLayout(layout_plot)
         self.set_text(None)
+
+    def check_window(self):
+        for x in self.plot_buttons:
+            if x.isChecked():
+                x.click()
+                break
 
     def plot(self):
         """ plot some random stuff """
