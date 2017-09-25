@@ -17,6 +17,7 @@ from PyQt5.QtWidgets import QDialog, QVBoxLayout
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
+from matplotlib.dates import DateFormatter, DayLocator, HourLocator
 from .activity import activities
 
 from .ui.ui_timeplots import Ui_TimePlots
@@ -36,7 +37,7 @@ class TimePlots(QDialog, Ui_TimePlots):
         self.deStart.dateChanged.connect(self.check_window)
         self.deEnd.dateChanged.connect(self.check_window)
 
-        self.btnTimeSeries.clicked.connect(self.plot)
+        self.btnTimeSeries.clicked.connect(self.handle_timeseries)
         self.btnPieChart.clicked.connect(self.handle_piechart)
         self.btnTextOutput.clicked.connect(self.handle_text_output)
 
@@ -45,18 +46,13 @@ class TimePlots(QDialog, Ui_TimePlots):
                               self.btnTextOutput,
                             ]
 
-        # a figure instance to plot on
         self._figure = Figure()
 
-        # it takes the `figure` instance as a parameter to __init__
         self._mpl_canvas = FigureCanvas(self._figure)
         self._mpl_toolbar = NavigationToolbar(self._mpl_canvas, self)
 
-        # set the layout
-        #layout_plot = QVBoxLayout(self.frmPlot)
         self.layoutPlot.addWidget(self._mpl_canvas)
         self.layoutPlot.addWidget(self._mpl_toolbar)
-        #self.frmPlot.setLayout(layout_plot)
         self.set_text(None)
 
     def check_window(self):
@@ -65,20 +61,44 @@ class TimePlots(QDialog, Ui_TimePlots):
                 x.click()
                 break
 
-    def plot(self):
-        """ plot some random stuff """
+    def handle_timeseries(self):
         self.set_text(False)
-        # random data
-        data = [random.random() for i in range(10)]
+        start, end = self.get_date_range()
+        what = activities.pack_by_name(start=start, end=end)
+        plt = self._figure.add_subplot(111)
+        plt.clear()
 
-        # create an axis
-        ax = self._figure.add_subplot(111)
-
-        # discards the old graph
-        ax.clear()
-
-        # plot data
-        ax.plot(data, '*-')
+        if len(what) > 0:
+            plt.xaxis.set_major_locator(DayLocator())
+            plt.xaxis.set_major_formatter(DateFormatter('%b-%d'))
+            plt.xaxis.set_minor_locator(HourLocator(interval=2))
+            ylabels = []
+            y = []
+            datemin = None
+            datemax = None
+            for k,v in what.items():
+                ylabels.append(k)
+                y.append(len(ylabels))
+                x1 = [ x.start for x in v ]
+                x2 = [ x.end for x in v ]
+                tmp = min(x1)
+                if datemin is None or tmp < datemin:
+                    datemin = tmp
+                tmp = max(x1)
+                if datemax is None or tmp > datemax:
+                    datemax = tmp
+                plt.hlines(y[-1], x1, x2)
+            plt.set_ylim(len(ylabels) + 0.5, 0.5)
+            plt.set_yticks(y)
+            plt.set_yticklabels(ylabels)
+            datemin -= timedelta(hours=4.0)
+            datemax += timedelta(hours=4.0)
+            plt.xaxis_date()
+            for x in plt.xaxis.get_ticklabels():
+                x.set_rotation(45)
+                x.set_horizontalalignment('right')
+            plt.set_xlim(left=datemin, right=datemax)
+#            plt.xaxis.set_data_interval(datemin, datemax)
 
         # refresh canvas
         self._mpl_canvas.draw()
@@ -101,11 +121,11 @@ class TimePlots(QDialog, Ui_TimePlots):
             labels.append("Divers - {:1.2f}h".format(miscelaneous / 3600.0))
             values.append(miscelaneous)
 
-        ax = self._figure.add_subplot(111)
-        ax.clear()
-        ax.pie(values, labels=labels, autopct='%1.1f%%')
+        plt = self._figure.add_subplot(111)
+        plt.clear()
+        plt.pie(values, labels=labels, autopct='%1.1f%%')
         # Ratio d'aspect égal entre x et y ==> cercle
-        ax.axis('equal')
+        plt.axis('equal')
         # Rafraichis le canevas
         self._mpl_canvas.draw()
 
