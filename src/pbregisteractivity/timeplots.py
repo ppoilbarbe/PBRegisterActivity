@@ -37,6 +37,8 @@ class TimePlots(QDialog, Ui_TimePlots):
         self.deStart.dateChanged.connect(self.check_window)
         self.deEnd.dateChanged.connect(self.check_window)
 
+        self.cbCsvFull.stateChanged.connect(self.check_window)
+
         self.btnTimeSeries.clicked.connect(self.handle_timeseries)
         self.btnPieChart.clicked.connect(self.handle_piechart)
         self.btnTextOutput.clicked.connect(self.handle_text_output)
@@ -87,7 +89,10 @@ class TimePlots(QDialog, Ui_TimePlots):
                 tmp = max(x1)
                 if datemax is None or tmp > datemax:
                     datemax = tmp
-                plt.hlines(y[-1], x1, x2)
+                print(y[-1])
+                print(x1)
+                print(x2)
+                plt.hlines([y[-1]] * len(x1), x1, x2, lw=2, color='red')
             plt.set_ylim(len(ylabels) + 0.5, 0.5)
             plt.set_yticks(y)
             plt.set_yticklabels(ylabels)
@@ -135,9 +140,15 @@ class TimePlots(QDialog, Ui_TimePlots):
         what = activities.pack_durations(start=start, end=end)
         txt = ""
         strio = StringIO(newline='')
-        csvio = csv.DictWriter(strio,
-                               quoting=csv.QUOTE_ALL,
-                               fieldnames=["nom", "durée", "commentaires"])
+        partial = not self.cbCsvFull.isChecked()
+        if partial:
+            csvio = csv.DictWriter(strio,
+                                   quoting=csv.QUOTE_ALL,
+                                   fieldnames=["nom", "duree", "commentaires"])
+        else:
+            csvio = csv.DictWriter(strio,
+                                   quoting=csv.QUOTE_ALL,
+                                   fieldnames=["nom", "debut", "fin", "duree", "duree_heures", "commentaires"])
         csvio.writeheader()
         for k, v in what.items():
             txt += "<h1>{0}</h1>".format(html.escape(k))
@@ -147,11 +158,25 @@ class TimePlots(QDialog, Ui_TimePlots):
                 for x in v['comments']:
                     txt += "<li>{}</li>".format(html.escape(x))
                 txt += "</ul>"
-            csvio.writerow(dict(
-                nom=k,
-                durée="{:1.2f}".format(v['duration']/3600.0),
-                commentaires="\n".join(v['comments']),
-            ))
+            if partial:
+                csvio.writerow(dict(
+                    nom=k,
+                    duree="{:1.2f}".format(v['duration']/3600.0),
+                    commentaires="\n".join(v['comments']),
+                ))
+        if not partial:
+            for k,v in activities.pack_by_name(start=start, end=end).items():
+                for activity in v:
+                    delta = activity.end-activity.start
+
+                    csvio.writerow(dict(
+                        nom=k,
+                        debut=activity.start.strftime("%Y-%m-%d %H:%M:%S"),
+                        fin=activity.start.strftime("%Y-%m-%d %H:%M:%S"),
+                        duree="{}".format(delta),
+                        duree_heures="{:1.3f}".format(delta.total_seconds()/3600.0),
+                        commentaires=activity.comment))
+
         self.edtHtml.setHtml(txt)
         self.edtCsv.setPlainText(strio.getvalue())
 
