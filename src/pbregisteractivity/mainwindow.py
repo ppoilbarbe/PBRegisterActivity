@@ -20,8 +20,7 @@ from .timeplots import TimePlots
 from .about import About
 from .ui.ui_mainwindow import Ui_MainWindow
 from .utils import to_string
-
-__version__ = "0.0.6"
+from .version import __version__ as version
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -67,7 +66,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     @staticmethod
     def program_version():
-        return "{0} - {1}".format(parameters.application_name, __version__)
+        return "{0} - {1}".format(parameters.application_name, version)
 
     def change_title(self, special_text=None):
         if special_text is None or self.windowState() & Qt.WindowMinimized != Qt.WindowMinimized:

@@ -25,7 +25,6 @@ from .ui.ui_timeplots import Ui_TimePlots
 
 # noinspection PyAbstractClass
 class TimePlots(QDialog, Ui_TimePlots):
-
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
@@ -49,10 +48,10 @@ class TimePlots(QDialog, Ui_TimePlots):
         self.btnHtmlSave.clicked.connect(self.handle_savehtml)
         self.btnCsvSave.clicked.connect(self.handle_savecsv)
 
-        self.plot_buttons = [ self.btnTimeLines,
-                              self.btnPieChart,
-                              self.btnTextOutput,
-                            ]
+        self.plot_buttons = [self.btnTimeLines,
+                             self.btnPieChart,
+                             self.btnTextOutput,
+                             ]
 
         self._figure = Figure()
 
@@ -96,11 +95,11 @@ class TimePlots(QDialog, Ui_TimePlots):
             y = []
             datemin = None
             datemax = None
-            for k,v in what.items():
+            for k, v in what.items():
                 ylabels.append(k)
                 y.append(len(ylabels))
-                x1 = [ x.start for x in v ]
-                x2 = [ x.end for x in v ]
+                x1 = [x.start for x in v]
+                x2 = [x.end for x in v]
                 tmp = min(x1)
                 if datemin is None or tmp < datemin:
                     datemin = tmp
@@ -121,7 +120,7 @@ class TimePlots(QDialog, Ui_TimePlots):
                 x.set_rotation(45)
                 x.set_horizontalalignment('right')
             plt.set_xlim(left=datemin, right=datemax)
-#            plt.xaxis.set_data_interval(datemin, datemax)
+        #            plt.xaxis.set_data_interval(datemin, datemax)
 
         # refresh canvas
         self._mpl_canvas.draw()
@@ -138,7 +137,7 @@ class TimePlots(QDialog, Ui_TimePlots):
             if d < 3600.0:
                 miscelaneous += d
             else:
-                labels.append("{} - {:1.2f}h".format(k, d/3600.0))
+                labels.append("{} - {:1.2f}h".format(k, d / 3600.0))
                 values.append(d)
         if miscelaneous > 0:
             labels.append("Divers - {:1.2f}h".format(miscelaneous / 3600.0))
@@ -170,33 +169,33 @@ class TimePlots(QDialog, Ui_TimePlots):
         csvio.writeheader()
         for k, v in what.items():
             txt += "<h1>{0}</h1>".format(html.escape(k))
-            txt += "Durée: {:1.2f}h<br>".format(v['duration']/3600.0)
+            txt += "Durée: {:1.2f}h<br>".format(v['duration'] / 3600.0)
             if len(v['comments']) > 0:
                 txt += "<ul>"
                 for x in v['comments']:
-                    lines = [ html.escape(l) for l in re.split("[\r\n]+", x) if l != "" ]
+                    lines = [html.escape(line) for line in re.split("[\r\n]+", x) if line != ""]
                     txt += "<li>{}</li>".format("<br>".join(lines))
                 txt += "</ul>"
             if partial:
                 csvio.writerow(dict(
                     nom=k,
-                    duree="{:1.2f}".format(v['duration']/3600.0),
+                    duree="{:1.2f}".format(v['duration'] / 3600.0),
                     commentaires="\n".join(v['comments']),
                 ))
         if not partial:
-            for k,v in activities.pack_by_name(start=start, end=end).items():
+            for k, v in activities.pack_by_name(start=start, end=end).items():
                 for activity in v:
-                    delta = activity.end-activity.start
+                    delta = activity.end - activity.start
 
                     csvio.writerow(dict(
                         nom=k,
                         debut=activity.start.strftime("%Y-%m-%d %H:%M:%S"),
                         fin=activity.end.strftime("%Y-%m-%d %H:%M:%S"),
                         duree="{}".format(delta),
-                        duree_heures="{:1.3f}".format(delta.total_seconds()/3600.0),
+                        duree_heures="{:1.3f}".format(delta.total_seconds() / 3600.0),
                         commentaires=activity.comment))
 
-        self.edtHtml.setHtml(txt+"\n")
+        self.edtHtml.setHtml(txt + "\n")
         self.edtCsv.setPlainText(strio.getvalue())
 
     def handle_savehtml(self):
@@ -212,11 +211,11 @@ class TimePlots(QDialog, Ui_TimePlots):
     def save_text(self, kind="Text", ext=".txt", text=""):
         if text is None or len(text) == 0:
             return
-        filter = "{0} (*{1});; Texte (*.txt);; Tous les fichiers (*)".format(kind, ext)
-        fn,flt = QFileDialog.getSaveFileName(self,
-                                           caption="Sauvegarde au format {0}".format(kind),
-                                           filter=filter,
-                                           options=QFileDialog.DontResolveSymlinks)
+        file_filter = "{0} (*{1});; Texte (*.txt);; Tous les fichiers (*)".format(kind, ext)
+        fn, flt = QFileDialog.getSaveFileName(self,
+                                              caption="Sauvegarde au format {0}".format(kind),
+                                              filter=file_filter,
+                                              options=QFileDialog.DontResolveSymlinks)
         if fn is None or fn == "":
             return
         try:
@@ -234,8 +233,6 @@ class TimePlots(QDialog, Ui_TimePlots):
                                      e,
                                  ),
                                  buttons=QMessageBox.Close)
-
-
 
     def get_date_range(self):
         start = self.deStart.dateTime().toPyDateTime()

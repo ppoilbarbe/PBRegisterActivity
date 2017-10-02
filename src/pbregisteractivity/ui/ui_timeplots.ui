@@ -286,11 +286,16 @@ et exportation CSV</string>
  <tabstops>
   <tabstop>deStart</tabstop>
   <tabstop>deEnd</tabstop>
+  <tabstop>btnHtmlSave</tabstop>
   <tabstop>edtHtml</tabstop>
+  <tabstop>cbCsvFull</tabstop>
+  <tabstop>btnCsvSave</tabstop>
   <tabstop>edtCsv</tabstop>
   <tabstop>btnTimeLines</tabstop>
   <tabstop>btnPieChart</tabstop>
   <tabstop>btnTextOutput</tabstop>
+  <tabstop>btnWorkWeek</tabstop>
+  <tabstop>btnToday</tabstop>
  </tabstops>
  <resources>
   <include location="resources.qrc"/>
