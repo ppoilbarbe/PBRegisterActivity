@@ -7,19 +7,19 @@ Dialogue utilisé pour ajouter une plage d'activité manuellement
 
 # Tested with PYTHON 3.5. Not compatible with Python 2.x
 
-import random
-import html
 import csv
+import html
+import re
+from datetime import date, timedelta
 from io import StringIO
 
-from datetime import date, timedelta
-from PyQt5.QtWidgets import QDialog, QVBoxLayout
+from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
-from matplotlib.figure import Figure
 from matplotlib.dates import DateFormatter, DayLocator, HourLocator
-from .activity import activities
+from matplotlib.figure import Figure
 
+from .activity import activities
 from .ui.ui_timeplots import Ui_TimePlots
 
 
@@ -31,7 +31,7 @@ class TimePlots(QDialog, Ui_TimePlots):
         self.setupUi(self)
 
         today = date.today()
-        self.deStart.setDate(today - timedelta(days=4))
+        self.deStart.setDate(today - timedelta(days=today.weekday()))
         self.deEnd.setDate(today)
 
         self.deStart.dateChanged.connect(self.check_window)
@@ -39,11 +39,17 @@ class TimePlots(QDialog, Ui_TimePlots):
 
         self.cbCsvFull.stateChanged.connect(self.check_window)
 
-        self.btnTimeSeries.clicked.connect(self.handle_timeseries)
+        self.btnTimeLines.clicked.connect(self.handle_timelines)
         self.btnPieChart.clicked.connect(self.handle_piechart)
         self.btnTextOutput.clicked.connect(self.handle_text_output)
 
-        self.plot_buttons = [ self.btnTimeSeries,
+        self.btnToday.clicked.connect(self.handle_today)
+        self.btnWorkWeek.clicked.connect(self.handle_workweek)
+
+        self.btnHtmlSave.clicked.connect(self.handle_savehtml)
+        self.btnCsvSave.clicked.connect(self.handle_savecsv)
+
+        self.plot_buttons = [ self.btnTimeLines,
                               self.btnPieChart,
                               self.btnTextOutput,
                             ]
@@ -63,7 +69,19 @@ class TimePlots(QDialog, Ui_TimePlots):
                 x.click()
                 break
 
-    def handle_timeseries(self):
+    def handle_today(self):
+        today = date.today()
+        self.deStart.setDate(today)
+        self.deEnd.setDate(today)
+        self.check_window()
+
+    def handle_workweek(self):
+        today = date.today()
+        self.deStart.setDate(today - timedelta(days=today.weekday()))
+        self.deEnd.setDate(today)
+        self.check_window()
+
+    def handle_timelines(self):
         self.set_text(False)
         start, end = self.get_date_range()
         what = activities.pack_by_name(start=start, end=end)
@@ -156,7 +174,8 @@ class TimePlots(QDialog, Ui_TimePlots):
             if len(v['comments']) > 0:
                 txt += "<ul>"
                 for x in v['comments']:
-                    txt += "<li>{}</li>".format(html.escape(x))
+                    lines = [ html.escape(l) for l in re.split("[\r\n]+", x) if l != "" ]
+                    txt += "<li>{}</li>".format("<br>".join(lines))
                 txt += "</ul>"
             if partial:
                 csvio.writerow(dict(
@@ -172,18 +191,51 @@ class TimePlots(QDialog, Ui_TimePlots):
                     csvio.writerow(dict(
                         nom=k,
                         debut=activity.start.strftime("%Y-%m-%d %H:%M:%S"),
-                        fin=activity.start.strftime("%Y-%m-%d %H:%M:%S"),
+                        fin=activity.end.strftime("%Y-%m-%d %H:%M:%S"),
                         duree="{}".format(delta),
                         duree_heures="{:1.3f}".format(delta.total_seconds()/3600.0),
                         commentaires=activity.comment))
 
-        self.edtHtml.setHtml(txt)
+        self.edtHtml.setHtml(txt+"\n")
         self.edtCsv.setPlainText(strio.getvalue())
 
+    def handle_savehtml(self):
+        self.save_text(kind="HTML", ext=".html", text=self.edtHtml.toHtml())
+
+    def handle_savecsv(self):
+        self.save_text(kind="CSV", ext=".csv", text=self.edtCsv.toPlainText())
 
     def set_text(self, text):
         self.frmTextOutput.setVisible(text is not None and text)
         self.frmPlot.setVisible(text is not None and not text)
+
+    def save_text(self, kind="Text", ext=".txt", text=""):
+        if text is None or len(text) == 0:
+            return
+        filter = "{0} (*{1});; Texte (*.txt);; Tous les fichiers (*)".format(kind, ext)
+        fn,flt = QFileDialog.getSaveFileName(self,
+                                           caption="Sauvegarde au format {0}".format(kind),
+                                           filter=filter,
+                                           options=QFileDialog.DontResolveSymlinks)
+        if fn is None or fn == "":
+            return
+        try:
+            with open(fn, "w") as f:
+                f.write(text)
+            QMessageBox.information(self,
+                                    "SAUVEGARDE",
+                                    "Fichier {} «{}» créé.".format(kind, fn),
+                                    buttons=QMessageBox.Ok)
+        except IOError as e:
+            QMessageBox.critical(self,
+                                 "ERREUR",
+                                 "Problème pour enregistrer dans le fichier «{0}»:\n{1}".format(
+                                     fn,
+                                     e,
+                                 ),
+                                 buttons=QMessageBox.Close)
+
+
 
     def get_date_range(self):
         start = self.deStart.dateTime().toPyDateTime()

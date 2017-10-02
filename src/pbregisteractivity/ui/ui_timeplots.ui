@@ -17,13 +17,13 @@
    <item>
     <layout class="QHBoxLayout" name="layoutActions">
      <item>
-      <widget class="QToolButton" name="btnTimeSeries">
+      <widget class="QToolButton" name="btnTimeLines">
        <property name="toolTip">
         <string>Visualisation temporelle</string>
        </property>
        <property name="icon">
         <iconset resource="resources.qrc">
-         <normaloff>:/images/icons/32x32/tool_histogram.png</normaloff>:/images/icons/32x32/tool_histogram.png</iconset>
+         <normaloff>:/images/icons/32x32/action_cal_timeline.png</normaloff>:/images/icons/32x32/action_cal_timeline.png</iconset>
        </property>
        <property name="checkable">
         <bool>true</bool>
@@ -58,7 +58,7 @@ et exportation CSV</string>
        </property>
        <property name="icon">
         <iconset resource="resources.qrc">
-         <normaloff>:/images/icons/32x32/mimetext_csv.png</normaloff>:/images/icons/32x32/mimetext_csv.png</iconset>
+         <normaloff>:/images/icons/32x32/action_cal_journal.png</normaloff>:/images/icons/32x32/action_cal_journal.png</iconset>
        </property>
        <property name="checkable">
         <bool>true</bool>
@@ -80,6 +80,28 @@ et exportation CSV</string>
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnWorkWeek">
+       <property name="toolTip">
+        <string>Modifie les dates pour sélectionner la semaine courante</string>
+       </property>
+       <property name="icon">
+        <iconset resource="resources.qrc">
+         <normaloff>:/images/icons/32x32/action_cal_workweek.png</normaloff>:/images/icons/32x32/action_cal_workweek.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnToday">
+       <property name="toolTip">
+        <string>Modifie les dates pour sélectionner aujourd'hui</string>
+       </property>
+       <property name="icon">
+        <iconset resource="resources.qrc">
+         <normaloff>:/images/icons/32x32/action_cal_day.png</normaloff>:/images/icons/32x32/action_cal_day.png</iconset>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QLabel" name="lblStart">
@@ -144,11 +166,26 @@ et exportation CSV</string>
        </property>
        <layout class="QVBoxLayout" name="layoutTextOutput">
         <item>
-         <widget class="QLabel" name="lblHtml">
-          <property name="text">
-           <string>En html:</string>
-          </property>
-         </widget>
+         <layout class="QHBoxLayout" name="layoutHtml">
+          <item>
+           <widget class="QLabel" name="lblHtml">
+            <property name="text">
+             <string>En html:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="btnHtmlSave">
+            <property name="toolTip">
+             <string>Sauvegarde au format HTML dans un fichier</string>
+            </property>
+            <property name="icon">
+             <iconset resource="resources.qrc">
+              <normaloff>:/images/icons/32x32/action_save.png</normaloff>:/images/icons/32x32/action_save.png</iconset>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item>
          <widget class="QTextEdit" name="edtHtml">
@@ -176,6 +213,17 @@ et exportation CSV</string>
            <widget class="QCheckBox" name="cbCsvFull">
             <property name="text">
              <string>Complet</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="btnCsvSave">
+            <property name="toolTip">
+             <string>Sauvegarde au format CSV dans un fichier</string>
+            </property>
+            <property name="icon">
+             <iconset resource="resources.qrc">
+              <normaloff>:/images/icons/32x32/action_save.png</normaloff>:/images/icons/32x32/action_save.png</iconset>
             </property>
            </widget>
           </item>
@@ -240,7 +288,7 @@ et exportation CSV</string>
   <tabstop>deEnd</tabstop>
   <tabstop>edtHtml</tabstop>
   <tabstop>edtCsv</tabstop>
-  <tabstop>btnTimeSeries</tabstop>
+  <tabstop>btnTimeLines</tabstop>
   <tabstop>btnPieChart</tabstop>
   <tabstop>btnTextOutput</tabstop>
  </tabstops>

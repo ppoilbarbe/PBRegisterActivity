@@ -462,10 +462,13 @@ Sinon, elle est enregistrée lors de la sortie du programme.</string>
   <action name="actionExtract">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/images/icons/32x32/tool_piechart.png</normaloff>:/images/icons/32x32/tool_piechart.png</iconset>
+     <normaloff>:/images/icons/32x32/action_cal_timespent.png</normaloff>:/images/icons/32x32/action_cal_timespent.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Extractions</string>
+   </property>
+   <property name="toolTip">
+    <string>Extractions du temps passé sur les activités</string>
    </property>
    <property name="shortcut">
     <string>F12</string>

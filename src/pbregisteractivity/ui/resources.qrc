@@ -2,6 +2,11 @@
   <qresource prefix="images">
     <file>icons/128x128/obj_hal9000.png</file>
     <file>icons/32x32/action_add.png</file>
+    <file>icons/32x32/action_cal_day.png</file>
+    <file>icons/32x32/action_cal_journal.png</file>
+    <file>icons/32x32/action_cal_timeline.png</file>
+    <file>icons/32x32/action_cal_timespent.png</file>
+    <file>icons/32x32/action_cal_workweek.png</file>
     <file>icons/32x32/action_cancel.png</file>
     <file>icons/32x32/action_edit.png</file>
     <file>icons/32x32/action_exit.png</file>
@@ -10,8 +15,6 @@
     <file>icons/32x32/action_remove.png</file>
     <file>icons/32x32/action_save.png</file>
     <file>icons/32x32/arrow_right.png</file>
-    <file>icons/32x32/mimetext_csv.png</file>
-    <file>icons/32x32/tool_histogram.png</file>
     <file>icons/32x32/tool_piechart.png</file>
   </qresource>
 </RCC>

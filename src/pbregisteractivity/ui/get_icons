@@ -17,8 +17,15 @@ my @IconList    = qw(
         action_refresh
         action_remove
         action_save
-        tool_histogram
+        action_cal_timeline
+        action_cal_timespent
+        action_cal_day
+        action_cal_workweek
+        action_cal_journal
         tool_piechart
+        );
+my @remove  = qw(
+        tool_histogram
         mimetext_csv
         );
 
@@ -42,3 +49,12 @@ system($Cmd) == 0 or die "Erreur de récupération des icônes\n";
 $Cmd = "$CopyScript --size=128 $IconDir obj_hal9000.png";
 print $Cmd, "\n";
 system($Cmd) == 0 or die "Erreur de récupération des icônes\n";
+
+foreach my $Removed (@remove)
+{
+    foreach (glob("$IconDir/*/$Removed.png"))
+    {
+        print "rm $_\n";
+        unlink $_;
+    }
+}

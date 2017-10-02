@@ -205,7 +205,7 @@ class Ui_MainWindow(object):
         self.actionAbout.setObjectName("actionAbout")
         self.actionExtract = QtWidgets.QAction(MainWindow)
         icon9 = QtGui.QIcon()
-        icon9.addPixmap(QtGui.QPixmap(":/images/icons/32x32/tool_piechart.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon9.addPixmap(QtGui.QPixmap(":/images/icons/32x32/action_cal_timespent.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.actionExtract.setIcon(icon9)
         self.actionExtract.setObjectName("actionExtract")
         self.menuFile.addSeparator()
@@ -293,6 +293,7 @@ class Ui_MainWindow(object):
         self.actionAbout.setText(_translate("MainWindow", "&À propos..."))
         self.actionAbout.setShortcut(_translate("MainWindow", "F1"))
         self.actionExtract.setText(_translate("MainWindow", "&Extractions"))
+        self.actionExtract.setToolTip(_translate("MainWindow", "Extractions du temps passé sur les activités"))
         self.actionExtract.setShortcut(_translate("MainWindow", "F12"))
 
 from . import resources_rc
