@@ -25,6 +25,9 @@ from .ui.ui_timeplots import Ui_TimePlots
 
 # noinspection PyAbstractClass
 class TimePlots(QDialog, Ui_TimePlots):
+    PLOT_TIMELINES = 0
+    PLOT_PIECHART = 1
+    PLOT_TEXT = 2
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
@@ -53,14 +56,18 @@ class TimePlots(QDialog, Ui_TimePlots):
                              self.btnTextOutput,
                              ]
 
-        self._figure = Figure()
 
-        self._mpl_canvas = FigureCanvas(self._figure)
-        self._mpl_toolbar = NavigationToolbar(self._mpl_canvas, self)
-
-        self.layoutPlot.addWidget(self._mpl_canvas)
-        self.layoutPlot.addWidget(self._mpl_toolbar)
-        self.set_text(None)
+        self._mpl_canvas = [None] * 3
+        self._mpl_toolbar = [None] * 3
+        self._figure = [None] * 3
+        for id, layout in [[self.PLOT_TIMELINES, self.layoutTimeLines],
+                           [self.PLOT_PIECHART, self.layoutPieChart]]:
+            self._figure[id] = Figure()
+            self._mpl_canvas[id] = FigureCanvas(self._figure[id])
+            self._mpl_toolbar[id] = NavigationToolbar(self._mpl_canvas[id], self)
+            layout.addWidget(self._mpl_canvas[id])
+            layout.addWidget(self._mpl_toolbar[id])
+        self.switch_panel(None)
 
     def check_window(self):
         for x in self.plot_buttons:
@@ -81,16 +88,17 @@ class TimePlots(QDialog, Ui_TimePlots):
         self.check_window()
 
     def handle_timelines(self):
-        self.set_text(False)
+        self.switch_panel(self.PLOT_TIMELINES)
         start, end = self.get_date_range()
         what = activities.pack_by_name(start=start, end=end)
-        plt = self._figure.add_subplot(111)
-        plt.clear()
+        plt = self.new_plot(self.PLOT_TIMELINES)
+
+        duration = 0.0
 
         if len(what) > 0:
             plt.xaxis.set_major_locator(DayLocator())
             plt.xaxis.set_major_formatter(DateFormatter('%b-%d'))
-            plt.xaxis.set_minor_locator(HourLocator(interval=2))
+            plt.xaxis.set_minor_locator(HourLocator(byhour=(8, 10, 12, 14, 16, 18, 20)))
             ylabels = []
             y = []
             datemin = None
@@ -98,6 +106,7 @@ class TimePlots(QDialog, Ui_TimePlots):
             for k, v in what.items():
                 ylabels.append(k)
                 y.append(len(ylabels))
+                duration = sum([x.seconds_duration for x in v], duration)
                 x1 = [x.start for x in v]
                 x2 = [x.end for x in v]
                 tmp = min(x1)
@@ -106,9 +115,6 @@ class TimePlots(QDialog, Ui_TimePlots):
                 tmp = max(x1)
                 if datemax is None or tmp > datemax:
                     datemax = tmp
-                print(y[-1])
-                print(x1)
-                print(x2)
                 plt.hlines([y[-1]] * len(x1), x1, x2, lw=2, color='red')
             plt.set_ylim(len(ylabels) + 0.5, 0.5)
             plt.set_yticks(y)
@@ -120,20 +126,24 @@ class TimePlots(QDialog, Ui_TimePlots):
                 x.set_rotation(45)
                 x.set_horizontalalignment('right')
             plt.set_xlim(left=datemin, right=datemax)
-        #            plt.xaxis.set_data_interval(datemin, datemax)
-
+            plt.grid(which="major", axis="x", color='black', linestyle='dashed')
+            plt.grid(which="minor", axis="x", color='black', alpha=0.6, linestyle='dotted')
+            self._figure[self.PLOT_TIMELINES].tight_layout()
+        self.plot_title(self.PLOT_TIMELINES, duration=duration)
         # refresh canvas
-        self._mpl_canvas.draw()
+        self._mpl_canvas[self.PLOT_TIMELINES].draw()
 
     def handle_piechart(self):
-        self.set_text(False)
+        self.switch_panel(self.PLOT_PIECHART)
         start, end = self.get_date_range()
         what = activities.pack_durations(start=start, end=end)
         labels = []
         values = []
         miscelaneous = 0.0
+        duration = 0.0
         for k, v in what.items():
             d = v['duration']
+            duration += d
             if d < 3600.0:
                 miscelaneous += d
             else:
@@ -143,16 +153,16 @@ class TimePlots(QDialog, Ui_TimePlots):
             labels.append("Divers - {:1.2f}h".format(miscelaneous / 3600.0))
             values.append(miscelaneous)
 
-        plt = self._figure.add_subplot(111)
-        plt.clear()
+        plt = self.new_plot(self.PLOT_PIECHART)
         plt.pie(values, labels=labels, autopct='%1.1f%%')
         # Ratio d'aspect égal entre x et y ==> cercle
         plt.axis('equal')
+        self.plot_title(self.PLOT_PIECHART, duration=duration)
         # Rafraichis le canevas
-        self._mpl_canvas.draw()
+        self._mpl_canvas[self.PLOT_PIECHART].draw()
 
     def handle_text_output(self):
-        self.set_text(True)
+        self.switch_panel(self.PLOT_TEXT)
         start, end = self.get_date_range()
         what = activities.pack_durations(start=start, end=end)
         txt = ""
@@ -204,9 +214,28 @@ class TimePlots(QDialog, Ui_TimePlots):
     def handle_savecsv(self):
         self.save_text(kind="CSV", ext=".csv", text=self.edtCsv.toPlainText())
 
-    def set_text(self, text):
-        self.frmTextOutput.setVisible(text is not None and text)
-        self.frmPlot.setVisible(text is not None and not text)
+    def switch_panel(self, what):
+        self.frmTextOutput.setVisible(what == self.PLOT_TEXT)
+        self.frmPieChart.setVisible(what == self.PLOT_PIECHART)
+        self.frmTimeLines.setVisible(what == self.PLOT_TIMELINES)
+
+    def new_plot(self, id):
+        fig = self._figure[id]
+        plt = fig.add_subplot(1, 1, 1)
+        plt.clear()
+        fig.set_facecolor("white")
+        return plt
+
+    def plot_title(self, id, duration=0.0):
+        txt = ""
+        if duration > 0.0:
+            txt = "Durées des activités ({:1.2f}h, {})".format(duration/3600,
+                                                               timedelta(seconds=duration))
+        fig = self._figure[id]
+        st = fig.suptitle(txt, fontsize="x-large")
+        st.set_y(0.99)
+        fig.subplots_adjust(top=0.85)
+
 
     def save_text(self, kind="Text", ext=".txt", text=""):
         if text is None or len(text) == 0:
