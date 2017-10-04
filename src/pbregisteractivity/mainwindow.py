@@ -206,10 +206,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 dtxt)
 
     def handle_filter_changed(self):
-        txt = self.edtFilter.text()
+        txt = self.edtFilter.text().lower()
         for index in range(self.listHistory.count()):
             x = self.listHistory.item(index)
-            hidden = txt != "" and txt in x.value().name
+            hidden = txt != "" and txt not in x.value().name.lower()
             x.setHidden(hidden)
             if hidden:
                 x.setSelected(False)
