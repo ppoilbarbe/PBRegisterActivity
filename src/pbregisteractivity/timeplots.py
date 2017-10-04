@@ -29,6 +29,7 @@ class TimePlots(QDialog, Ui_TimePlots):
     PLOT_TIMELINES = 0
     PLOT_PIECHART = 1
     PLOT_TEXT = 2
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
@@ -57,17 +58,16 @@ class TimePlots(QDialog, Ui_TimePlots):
                              self.btnTextOutput,
                              ]
 
-
         self._mpl_canvas = [None] * 3
         self._mpl_toolbar = [None] * 3
         self._figure = [None] * 3
-        for id, layout in [[self.PLOT_TIMELINES, self.layoutTimeLines],
-                           [self.PLOT_PIECHART, self.layoutPieChart]]:
-            self._figure[id] = Figure()
-            self._mpl_canvas[id] = FigureCanvas(self._figure[id])
-            self._mpl_toolbar[id] = NavigationToolbar(self._mpl_canvas[id], self)
-            layout.addWidget(self._mpl_canvas[id])
-            layout.addWidget(self._mpl_toolbar[id])
+        for plotid, layout in [[self.PLOT_TIMELINES, self.layoutTimeLines],
+                               [self.PLOT_PIECHART, self.layoutPieChart]]:
+            self._figure[plotid] = Figure()
+            self._mpl_canvas[plotid] = FigureCanvas(self._figure[plotid])
+            self._mpl_toolbar[plotid] = NavigationToolbar(self._mpl_canvas[plotid], self)
+            layout.addWidget(self._mpl_canvas[plotid])
+            layout.addWidget(self._mpl_toolbar[plotid])
         self.switch_panel(None)
 
     def check_window(self):
@@ -236,7 +236,6 @@ class TimePlots(QDialog, Ui_TimePlots):
         st.set_y(0.99)
         fig.subplots_adjust(top=0.85)
 
-
     def save_text(self, kind="Text", ext=".txt", text=""):
         if text is None or len(text) == 0:
             return
@@ -267,6 +266,3 @@ class TimePlots(QDialog, Ui_TimePlots):
         start = self.deStart.dateTime().toPyDateTime()
         end = self.deEnd.dateTime().toPyDateTime().replace(hour=23, minute=59, second=59, microsecond=999999)
         return start, end
-
-
-

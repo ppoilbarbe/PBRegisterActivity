@@ -53,6 +53,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.cbbActivities.currentTextChanged.connect(self.check_window)
         self.listHistory.itemSelectionChanged.connect(self.handle_history_selected_action)
         self.listHistory.doubleClicked.connect(self.handle_edit_action)
+        self.edtFilter.textChanged.connect(self.handle_filter_changed)
 
         # noinspection PyUnresolvedReferences
         self._timer.timeout.connect(self.check_window)
@@ -186,7 +187,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         for x in activities.all_activities(recent_first=True):
             lst.addItem(QActivityListWidgetItem(x))
 
-    def show_selection(self, selected):
+    @staticmethod
+    def show_selection(selected):
         count = len(selected)
         if count == 0:
             return "Pas de sélection", None, None
@@ -197,10 +199,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         duration = 0
         for x in selected:
             duration += x.value().seconds_duration
-        txt = "<p>{} plages sélectionnées.</p><p>Durée cumulée: <b>{}</b></p>".format(count, format_duration(duration))
+        dtxt = format_duration(duration)
+        txt = "<p>{} plages sélectionnées.</p><p>Durée cumulée: <b>{}</b></p>".format(count, dtxt)
         return ("Plages enregistrées sélectionnées",
                 txt,
-                None)
+                dtxt)
+
+    def handle_filter_changed(self):
+        txt = self.edtFilter.text()
+        for index in range(self.listHistory.count()):
+            x = self.listHistory.item(index)
+            hidden = txt != "" and txt in x.value().name
+            x.setHidden(hidden)
+            if hidden:
+                x.setSelected(False)
 
     def handle_register_action(self):
         self.do_add_activity()
@@ -279,6 +291,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         modaldlg = About(self.program_version())
         modaldlg.exec_()
 
+    # noinspection PyMethodMayBeStatic
     def handle_extract_action(self):
         modaldlg = TimePlots()
         modaldlg.exec_()

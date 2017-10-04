@@ -65,6 +65,7 @@ def to_string(value):
             pass
     return str(value, encoding='utf8', errors='replace')
 
+
 def format_duration(duration: float) -> str:
     """
     Format a duration expressed in decimal seconds as a time in
@@ -77,7 +78,7 @@ def format_duration(duration: float) -> str:
     h, s = divmod(t.seconds, 3600)
     m, s = divmod(s, 60)
     dstr = "{}j ".format(d) if d > 0 else ""
-    return "{:1.2f}h - {}{:02d}:{:02d}:{:02d}".format(duration/3600.0,
+    return "{:1.2f}h - {}{:02d}:{:02d}:{:02d}".format(duration / 3600.0,
                                                       dstr,
                                                       h,
                                                       m,
