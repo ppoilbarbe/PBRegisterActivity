@@ -213,7 +213,7 @@
           </property>
           <layout class="QVBoxLayout" name="layoutSelected">
            <item>
-            <widget class="QLabel" name="lblInfo">
+            <widget class="QLabel" name="lblSelected">
              <property name="font">
               <font>
                <weight>75</weight>
@@ -221,7 +221,7 @@
               </font>
              </property>
              <property name="text">
-              <string>Plage enregistrée sélectionnée</string>
+              <string>Pas de sélection</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
@@ -229,7 +229,11 @@
             </widget>
            </item>
            <item>
-            <widget class="QTextBrowser" name="txtDescription"/>
+            <widget class="QTextBrowser" name="txtSelected">
+             <property name="toolTip">
+              <string>Affiche des informations sur les plages enregistrées sélectionnées</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -480,7 +484,7 @@ Sinon, elle est enregistrée lors de la sortie du programme.</string>
   <tabstop>dteStart</tabstop>
   <tabstop>tbForceAdd</tabstop>
   <tabstop>edtComment</tabstop>
-  <tabstop>txtDescription</tabstop>
+  <tabstop>txtSelected</tabstop>
   <tabstop>listHistory</tabstop>
  </tabstops>
  <resources>

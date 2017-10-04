@@ -21,6 +21,7 @@ from matplotlib.figure import Figure
 
 from .activity import activities
 from .ui.ui_timeplots import Ui_TimePlots
+from .utils import format_duration
 
 
 # noinspection PyAbstractClass
@@ -147,10 +148,10 @@ class TimePlots(QDialog, Ui_TimePlots):
             if d < 3600.0:
                 miscelaneous += d
             else:
-                labels.append("{} - {}".format(k, self.format_duration(d)))
+                labels.append("{} - {}".format(k, format_duration(d)))
                 values.append(d)
         if miscelaneous > 0:
-            labels.append("Divers - {}".format(self.format_duration(miscelaneous)))
+            labels.append("Divers - {}".format(format_duration(miscelaneous)))
             values.append(miscelaneous)
 
         plt = self.new_plot(self.PLOT_PIECHART)
@@ -179,7 +180,7 @@ class TimePlots(QDialog, Ui_TimePlots):
         csvio.writeheader()
         for k, v in what.items():
             txt += "<h1>{0}</h1>".format(html.escape(k))
-            txt += "Durée: {}<br>".format(self.format_duration(v['duration']))
+            txt += "Durée: {}<br>".format(format_duration(v['duration']))
             if len(v['comments']) > 0:
                 txt += "<ul>"
                 for x in v['comments']:
@@ -229,7 +230,7 @@ class TimePlots(QDialog, Ui_TimePlots):
     def plot_title(self, id, duration=0.0):
         txt = ""
         if duration > 0.0:
-            txt = "Durées des activités ({})".format(self.format_duration(duration))
+            txt = "Durées des activités ({})".format(format_duration(duration))
         fig = self._figure[id]
         st = fig.suptitle(txt, fontsize="x-large")
         st.set_y(0.99)
@@ -267,21 +268,5 @@ class TimePlots(QDialog, Ui_TimePlots):
         end = self.deEnd.dateTime().toPyDateTime().replace(hour=23, minute=59, second=59, microsecond=999999)
         return start, end
 
-    def format_duration(self, duration: float) -> str:
-        """
-        Format a duration expressed in decimal seconds as a time in
-        decimal hours and duratons H:M:S
-        :param duration: In seconds
-        :return: Formatted string
-        """
-        t = timedelta(seconds=duration)
-        d = t.days
-        h, s = divmod(t.seconds, 3600)
-        m, s = divmod(s, 60)
-        dstr = "{}j ".format(d) if d > 0 else ""
-        return "{:1.2f}h - {}{:02d}:{:02d}:{:02d}".format(duration/3600.0,
-                                                          dstr,
-                                                          h,
-                                                          m,
-                                                          s)
+
 

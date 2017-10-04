@@ -19,7 +19,7 @@ from .specifyrange import SpecifyRange
 from .timeplots import TimePlots
 from .about import About
 from .ui.ui_mainwindow import Ui_MainWindow
-from .utils import to_string
+from .utils import to_string, format_duration
 from .version import __version__ as version
 
 
@@ -186,6 +186,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         for x in activities.all_activities(recent_first=True):
             lst.addItem(QActivityListWidgetItem(x))
 
+    def show_selection(self, selected):
+        count = len(selected)
+        if count == 0:
+            return "Pas de sélection", None, None
+        if count == 1:
+            return ("Plage enregistrée sélectionnée",
+                    selected[0].value().as_html(),
+                    selected[0].statusTip())
+        duration = 0
+        for x in selected:
+            duration += x.value().seconds_duration
+        txt = "<p>{} plages sélectionnées.</p><p>Durée cumulée: <b>{}</b></p>".format(count, format_duration(duration))
+        return ("Plages enregistrées sélectionnées",
+                txt,
+                None)
+
     def handle_register_action(self):
         self.do_add_activity()
         self.fill_activity_list()
@@ -235,17 +251,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def handle_history_selected_action(self):
         selected = self.listHistory.selectedItems()
-        selected_count = len(selected)
-        if selected_count != 1:
-            self.txtDescription.clear()
-            # noinspection PyUnresolvedReferences
-            self.statusBar.clearMessage()
+        what, text, status = self.show_selection(selected)
+        self.lblSelected.setText(what)
+        if text:
+            self.txtSelected.setHtml(text)
         else:
-            text = selected[0].value().as_html()
-            self.txtDescription.setHtml(text)
-            # noinspection PyUnresolvedReferences
-            self.statusBar.showMessage(selected[0].statusTip())
-        self.set_list_actions_enabled(selected_count=selected_count)
+            self.txtSelected.clear()
+        if status:
+            self.statusBar.showMessage(status)
+        else:
+            self.statusBar.clearMessage()
+        self.set_list_actions_enabled(selected_count=len(selected))
         self.check_window()
 
     def handle_cancel_action(self):
@@ -283,3 +299,4 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.save_window_state()
         parameters.write()
         activities.write()
+
