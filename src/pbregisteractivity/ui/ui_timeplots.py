@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_timeplots.ui'
 #
-# Created by: PyQt5 UI code generator 5.5.1
+# Created by: PyQt5 UI code generator 5.9
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -42,16 +42,22 @@ class Ui_TimePlots(object):
         self.layoutActions.addWidget(self.btnTextOutput)
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.layoutActions.addItem(spacerItem)
-        self.btnWorkWeek = QtWidgets.QToolButton(TimePlots)
+        self.btnPrevWeek = QtWidgets.QToolButton(TimePlots)
         icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap(":/images/icons/32x32/action_cal_workweek.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.btnWorkWeek.setIcon(icon3)
+        icon3.addPixmap(QtGui.QPixmap(":/images/icons/32x32/action_revert.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btnPrevWeek.setIcon(icon3)
+        self.btnPrevWeek.setObjectName("btnPrevWeek")
+        self.layoutActions.addWidget(self.btnPrevWeek)
+        self.btnWorkWeek = QtWidgets.QToolButton(TimePlots)
+        icon4 = QtGui.QIcon()
+        icon4.addPixmap(QtGui.QPixmap(":/images/icons/32x32/action_cal_workweek.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btnWorkWeek.setIcon(icon4)
         self.btnWorkWeek.setObjectName("btnWorkWeek")
         self.layoutActions.addWidget(self.btnWorkWeek)
         self.btnToday = QtWidgets.QToolButton(TimePlots)
-        icon4 = QtGui.QIcon()
-        icon4.addPixmap(QtGui.QPixmap(":/images/icons/32x32/action_cal_day.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.btnToday.setIcon(icon4)
+        icon5 = QtGui.QIcon()
+        icon5.addPixmap(QtGui.QPixmap(":/images/icons/32x32/action_cal_day.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btnToday.setIcon(icon5)
         self.btnToday.setObjectName("btnToday")
         self.layoutActions.addWidget(self.btnToday)
         self.lblStart = QtWidgets.QLabel(TimePlots)
@@ -89,9 +95,9 @@ class Ui_TimePlots(object):
         self.lblHtml.setObjectName("lblHtml")
         self.layoutHtml.addWidget(self.lblHtml)
         self.btnHtmlSave = QtWidgets.QToolButton(self.frmTextOutput)
-        icon5 = QtGui.QIcon()
-        icon5.addPixmap(QtGui.QPixmap(":/images/icons/32x32/action_save.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.btnHtmlSave.setIcon(icon5)
+        icon6 = QtGui.QIcon()
+        icon6.addPixmap(QtGui.QPixmap(":/images/icons/32x32/action_save.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btnHtmlSave.setIcon(icon6)
         self.btnHtmlSave.setObjectName("btnHtmlSave")
         self.layoutHtml.addWidget(self.btnHtmlSave)
         self.layoutTextOutput.addLayout(self.layoutHtml)
@@ -112,7 +118,7 @@ class Ui_TimePlots(object):
         self.cbCsvFull.setObjectName("cbCsvFull")
         self.layoutCsv.addWidget(self.cbCsvFull)
         self.btnCsvSave = QtWidgets.QToolButton(self.frmTextOutput)
-        self.btnCsvSave.setIcon(icon5)
+        self.btnCsvSave.setIcon(icon6)
         self.btnCsvSave.setObjectName("btnCsvSave")
         self.layoutCsv.addWidget(self.btnCsvSave)
         self.layoutTextOutput.addLayout(self.layoutCsv)
@@ -168,7 +174,8 @@ class Ui_TimePlots(object):
         TimePlots.setTabOrder(self.edtCsv, self.btnTimeLines)
         TimePlots.setTabOrder(self.btnTimeLines, self.btnPieChart)
         TimePlots.setTabOrder(self.btnPieChart, self.btnTextOutput)
-        TimePlots.setTabOrder(self.btnTextOutput, self.btnWorkWeek)
+        TimePlots.setTabOrder(self.btnTextOutput, self.btnPrevWeek)
+        TimePlots.setTabOrder(self.btnPrevWeek, self.btnWorkWeek)
         TimePlots.setTabOrder(self.btnWorkWeek, self.btnToday)
 
     def retranslateUi(self, TimePlots):
@@ -178,6 +185,7 @@ class Ui_TimePlots(object):
         self.btnPieChart.setToolTip(_translate("TimePlots", "Visualisation durées"))
         self.btnTextOutput.setToolTip(_translate("TimePlots", "Visualisation durées sous forme de texte\n"
 "et exportation CSV"))
+        self.btnPrevWeek.setToolTip(_translate("TimePlots", "Semaine précédente"))
         self.btnWorkWeek.setToolTip(_translate("TimePlots", "Modifie les dates pour sélectionner la semaine courante"))
         self.btnToday.setToolTip(_translate("TimePlots", "Modifie les dates pour sélectionner aujourd\'hui"))
         self.lblStart.setText(_translate("TimePlots", "Début:"))

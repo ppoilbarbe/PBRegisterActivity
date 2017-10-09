@@ -47,6 +47,7 @@ class TimePlots(QDialog, Ui_TimePlots):
         self.btnPieChart.clicked.connect(self.handle_piechart)
         self.btnTextOutput.clicked.connect(self.handle_text_output)
 
+        self.btnPrevWeek.clicked.connect(self.handle_previous_week)
         self.btnToday.clicked.connect(self.handle_today)
         self.btnWorkWeek.clicked.connect(self.handle_workweek)
 
@@ -77,15 +78,19 @@ class TimePlots(QDialog, Ui_TimePlots):
                 break
 
     def handle_today(self):
-        today = date.today()
-        self.deStart.setDate(today)
-        self.deEnd.setDate(today)
-        self.check_window()
+        self.set_dates(date.today(), 0)
 
     def handle_workweek(self):
-        today = date.today()
-        self.deStart.setDate(today - timedelta(days=today.weekday()))
-        self.deEnd.setDate(today)
+        refdate = date.today()
+        self.set_dates(refdate - timedelta(days=refdate.weekday()), 4)
+
+    def handle_previous_week(self):
+        refdate = self.deStart.dateTime().toPyDateTime()
+        self.set_dates(refdate - timedelta(days=refdate.weekday()+7), 4)
+
+    def set_dates(self, start, days):
+        self.deStart.setDate(start)
+        self.deEnd.setDate(start + timedelta(days=days))
         self.check_window()
 
     def handle_timelines(self):
