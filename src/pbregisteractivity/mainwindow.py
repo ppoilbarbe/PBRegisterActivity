@@ -9,30 +9,33 @@ Fait aussi office de programme principal de l'interface graphique.
 
 # Tested with PYTHON 3.5. Not compatible with Python 2.x
 
-from PyQt5.QtCore import QByteArray, QDateTime, QTimer, Qt
-from PyQt5.QtWidgets import QDialog, QMainWindow, QMessageBox
+from PyQt5.QtCore import QDateTime, QTimer, Qt
+from PyQt5.QtWidgets import QDialog, QMainWindow, QMessageBox, QLCDNumber
 
+from datetime import datetime, timedelta
+from .about import About
 from .activity import Activity, activities
 from .custom_widgets import QActivityListWidgetItem
 from .parameters import parameters
 from .specifyrange import SpecifyRange
 from .timeplots import TimePlots
-from .about import About
 from .ui.ui_mainwindow import Ui_MainWindow
 from .utils import to_string, format_duration
 from .version import __version__ as version
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
+    WINDOW_NAME = "main_window"
     def __init__(self):
         super().__init__()
         self._title_normal = False
+        self._tick_count = 0
         self._timer = QTimer(self)
         self.setupUi(self)
         self.more_ui()
 
     def main(self):
-        self.restore_window_state()
+        parameters.restore_window_state(self)
         self.show()
 
     def more_ui(self):
@@ -55,8 +58,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.listHistory.doubleClicked.connect(self.handle_edit_action)
         self.edtFilter.textChanged.connect(self.handle_filter_changed)
 
+        self.lcdDayTime = QLCDNumber(self.layoutWidget1)
+        self.lcdDayTime.setSmallDecimalPoint(False)
+        self.lcdDayTime.setDigitCount(5)
+        self.lcdDayTime.setSegmentStyle(QLCDNumber.Flat)
+        self.lcdDayTime.setObjectName("lcdDayTime")
+        self.lcdDayTime.setToolTip("Cumul du temps sur la journée")
+        self.statusBar.addPermanentWidget(self.lcdDayTime)
+
+
         # noinspection PyUnresolvedReferences
-        self._timer.timeout.connect(self.check_window)
+        self._timer.timeout.connect(self.handle_timer)
 
         self._timer.setInterval(1000)
         self._timer.start()
@@ -78,25 +90,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.setWindowTitle(special_text)
             self._title_normal = False
 
-    def restore_window_state(self):
-        data = parameters.get_window_geometry()
-        if data != "":
-            self.restoreGeometry(QByteArray.fromBase64(data.encode("utf-8")))
-
-        data = parameters.get_window_state()
-        if data != "":
-            self.restoreState(QByteArray.fromBase64(data.encode("utf-8")))
-
-    def save_window_state(self):
-        parameters.set_window_geometry(self.saveGeometry().toBase64())
-        parameters.set_window_state(self.saveState().toBase64())
-
-    def check_window(self):
+    def check_window(self, with_day_time=True):
         has_name = len(self.current_activity_name()) != 0
         date_is_ok = self.show_time()
         self.actionSave.setEnabled(activities.modified())
         self.actionRegister.setEnabled(has_name and date_is_ok)
         self.tbForceAdd.setEnabled(has_name and date_is_ok)
+        if with_day_time:
+            self.update_day_time()
 
     def set_list_actions_enabled(self, selected_count=0):
         self.actionRemove.setEnabled(selected_count != 0)
@@ -106,12 +107,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def show_time(self):
         end_date = self.end_date()
         diff = int(self.start_date().secsTo(end_date))
-        if diff < 0:
-            txt = "--:--:--"
-        else:
-            (h, m) = divmod(diff, 3600)
-            (m, s) = divmod(m, 60)
-            txt = "{:02d}:{:02d}:{:02d}".format(h, m, s)
+        txt = self._time_text(diff)
         name = self.current_activity_name()
         if name == "":
             name = "<pas de nom>"
@@ -146,6 +142,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             ok = True
         lbl.setStyleSheet(style)
         return ok
+
+    def update_day_time(self):
+        current_diff = self.start_date().secsTo(self.end_date())
+        today = datetime.today().replace(hour=0, minute=0, second=0, microsecond=0)
+        for x in activities.pack_durations(start=today, end=today + timedelta(days=1)).values():
+            current_diff += x['duration']
+        self.lcdDayTime.display(self._time_text(current_diff, with_seconds=False))
+        self._tick_count = 0
+
 
     def set_now(self):
         self.dteStart.setDateTime(QDateTime.currentDateTime())
@@ -204,6 +209,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         return ("Plages enregistrées sélectionnées",
                 txt,
                 dtxt)
+
+    def handle_timer(self):
+        self._tick_count += 1
+        self.check_window(with_day_time=self._tick_count >= 30)
 
     def handle_filter_changed(self):
         txt = self.edtFilter.text().lower()
@@ -309,7 +318,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if reply == QMessageBox.Yes:
                 self.do_add_activity()
         event.accept()
-        self.save_window_state()
+        parameters.save_window_state(self)
         parameters.write()
         activities.write()
 
+    @staticmethod
+    def _time_text(seconds, with_seconds=True):
+        if with_seconds:
+            length = 8
+        else:
+            length = 5
+        if seconds < 0:
+            txt = "--:--:--"
+        else:
+            (h, m) = divmod(seconds, 3600)
+            (m, s) = divmod(m, 60)
+            txt = "{:02d}:{:02d}:{:02d}".format(int(h), int(m), int(s))
+        return txt[:length]

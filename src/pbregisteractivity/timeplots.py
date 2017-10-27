@@ -13,6 +13,7 @@ import re
 from datetime import date, timedelta
 from io import StringIO
 
+from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
@@ -20,6 +21,7 @@ from matplotlib.dates import DateFormatter, DayLocator, HourLocator
 from matplotlib.figure import Figure
 
 from .activity import activities
+from .parameters import parameters
 from .ui.ui_timeplots import Ui_TimePlots
 from .utils import format_duration
 
@@ -29,6 +31,7 @@ class TimePlots(QDialog, Ui_TimePlots):
     PLOT_TIMELINES = 0
     PLOT_PIECHART = 1
     PLOT_TEXT = 2
+    WINDOW_NAME = "graphs"
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -70,6 +73,7 @@ class TimePlots(QDialog, Ui_TimePlots):
             layout.addWidget(self._mpl_canvas[plotid])
             layout.addWidget(self._mpl_toolbar[plotid])
         self.switch_panel(None)
+        parameters.restore_window_state(self)
 
     def check_window(self):
         for x in self.plot_buttons:
@@ -271,3 +275,17 @@ class TimePlots(QDialog, Ui_TimePlots):
         start = self.deStart.dateTime().toPyDateTime()
         end = self.deEnd.dateTime().toPyDateTime().replace(hour=23, minute=59, second=59, microsecond=999999)
         return start, end
+
+    def closeEvent(self, event):
+        parameters.save_window_state(self)
+        event.accept()
+
+    @pyqtSlot()
+    def reject(self):
+        parameters.save_window_state(self)
+        return super().reject()
+
+    @pyqtSlot()
+    def accept(self):
+        parameters.save_window_state(self)
+        return super().accept()
