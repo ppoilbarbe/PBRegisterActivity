@@ -26,10 +26,16 @@ from .version import __version__ as version
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     WINDOW_NAME = "main_window"
+    FILTER_NAME = 1
+    FILTER_COMMENT = 2
+    FILTER_ALL = 3
     def __init__(self):
         super().__init__()
         self._title_normal = False
         self._tick_count = 0
+        self._filter_type = 0
+        self._last_daytime_text = "00:00"
+        self._filter_type = 0
         self._timer = QTimer(self)
         self.setupUi(self)
         self.more_ui()
@@ -57,6 +63,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.listHistory.itemSelectionChanged.connect(self.handle_history_selected_action)
         self.listHistory.doubleClicked.connect(self.handle_edit_action)
         self.edtFilter.textChanged.connect(self.handle_filter_changed)
+        self.cbFilterType.stateChanged.connect(self.handle_filter_type_changed)
 
         self.lcdDayTime = QLCDNumber(self.layoutWidget1)
         self.lcdDayTime.setSmallDecimalPoint(False)
@@ -65,6 +72,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.lcdDayTime.setObjectName("lcdDayTime")
         self.lcdDayTime.setToolTip("Cumul du temps sur la journée")
         self.statusBar.addPermanentWidget(self.lcdDayTime)
+
+        # Initialise le texte de la checkbox
+        self.cbFilterType.setCheckState(parameters.app_get_int("filter_state",
+                                                               default=Qt.Unchecked))
+        self.handle_filter_type_changed()
 
 
         # noinspection PyUnresolvedReferences
@@ -92,12 +104,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def check_window(self, with_day_time=True):
         has_name = len(self.current_activity_name()) != 0
+        if with_day_time:
+            self.update_day_time()
         date_is_ok = self.show_time()
         self.actionSave.setEnabled(activities.modified())
         self.actionRegister.setEnabled(has_name and date_is_ok)
         self.tbForceAdd.setEnabled(has_name and date_is_ok)
-        if with_day_time:
-            self.update_day_time()
 
     def set_list_actions_enabled(self, selected_count=0):
         self.actionRemove.setEnabled(selected_count != 0)
@@ -111,7 +123,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         name = self.current_activity_name()
         if name == "":
             name = "<pas de nom>"
-        self.change_title(special_text="{0} - {1}".format(txt, name))
+        self.change_title(special_text="{}-{} [{}]".format(txt,
+                                                           name,
+                                                           self._last_daytime_text))
         self.lcdDuration.display(txt)
         txt = self.end_date().toString("yyyy/MM/dd hh:mm:ss")
         lbl = self.lblEndText
@@ -148,7 +162,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         today = datetime.today().replace(hour=0, minute=0, second=0, microsecond=0)
         for x in activities.pack_durations(start=today, end=today + timedelta(days=1)).values():
             current_diff += x['duration']
-        self.lcdDayTime.display(self._time_text(current_diff, with_seconds=False))
+        self._last_daytime_text = self._time_text(current_diff, with_seconds=False)
+        self.lcdDayTime.display(self._last_daytime_text)
         self._tick_count = 0
 
 
@@ -218,10 +233,27 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         txt = self.edtFilter.text().lower()
         for index in range(self.listHistory.count()):
             x = self.listHistory.item(index)
-            hidden = txt != "" and txt not in x.value().name.lower()
+            hidden = txt != ""
+            if hidden and self._filter_type & self.FILTER_NAME != 0:
+                hidden = txt not in x.value().name.lower()
+            if hidden and self._filter_type & self.FILTER_COMMENT != 0:
+                hidden = txt not in x.value().comment.lower()
             x.setHidden(hidden)
             if hidden:
                 x.setSelected(False)
+
+    def handle_filter_type_changed(self):
+        state = self.cbFilterType.checkState()
+        if state == Qt.Unchecked:
+            self._filter_type = self.FILTER_NAME
+            self.cbFilterType.setText("N")
+        elif state == Qt.Checked:
+            self._filter_type = self.FILTER_COMMENT
+            self.cbFilterType.setText("C")
+        else:
+            self._filter_type = self.FILTER_ALL
+            self.cbFilterType.setText("2")
+        self.handle_filter_changed()
 
     def handle_register_action(self):
         self.do_add_activity()

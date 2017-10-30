@@ -93,6 +93,9 @@ class _Parameters(object):
     def app_get_bool(self, name, default=False):
         return self._conf.getboolean(self._app_section, name, fallback=default)
 
+    def app_get_int(self, name, default=None):
+        return self._conf.getint(self._app_section, name, fallback=default)
+
 
     def write(self):
         if self._modified:
