@@ -212,7 +212,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def handle_timer(self):
         self._tick_count += 1
-        self.check_window(with_day_time=self._tick_count >= 30)
+        self.check_window(with_day_time=self._tick_count >= 10)
 
     def handle_filter_changed(self):
         txt = self.edtFilter.text().lower()

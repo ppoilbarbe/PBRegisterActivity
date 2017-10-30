@@ -25,6 +25,7 @@ class _Parameters(object):
     def __init__(self):
         self._modified = False
         self._application_name = "PBRegisterActivity"
+        self._app_section = self._application_name.lower()
         self._config_dir = "." + self._application_name.lower()
 
         c = ConfigParser()
@@ -77,12 +78,28 @@ class _Parameters(object):
         if hasattr(self, "saveState"):
             self._set_wininfo(name + self.STATE, window.saveState().toBase64())
 
+    def app_get(self, name, default=None):
+        return self._conf.get(self._app_section, name, fallback=default)
+
+    def app_set(self, name, value):
+        old = self.app_get(name)
+        if old is not None and old == value:
+            return
+        self._modified = True
+        if not self._conf.has_section(self._app_section):
+            self._conf.add_section(self._app_section)
+        self._conf.set(self._app_section, name, str(value))
+
+    def app_get_bool(self, name, default=False):
+        return self._conf.getboolean(self._app_section, name, fallback=default)
+
 
     def write(self):
         if self._modified:
             try:
                 with open(self.config_file, "w") as f:
                     f.write(self._get_conf_str())
+                self._modified = False
             except IOError:
                 pass
 

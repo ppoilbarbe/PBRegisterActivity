@@ -7,6 +7,7 @@ Dialogue utilisé pour ajouter une plage d'activité manuellement
 
 # Tested with PYTHON 3.5. Not compatible with Python 2.x
 
+import os
 import csv
 import html
 import re
@@ -32,6 +33,7 @@ class TimePlots(QDialog, Ui_TimePlots):
     PLOT_PIECHART = 1
     PLOT_TEXT = 2
     WINDOW_NAME = "graphs"
+    PARAM_FULL_CVS = "full_csv"
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -73,6 +75,7 @@ class TimePlots(QDialog, Ui_TimePlots):
             layout.addWidget(self._mpl_canvas[plotid])
             layout.addWidget(self._mpl_toolbar[plotid])
         self.switch_panel(None)
+        self.cbCsvFull.setChecked(parameters.app_get_bool(self.PARAM_FULL_CVS))
         parameters.restore_window_state(self)
 
     def check_window(self):
@@ -219,10 +222,10 @@ class TimePlots(QDialog, Ui_TimePlots):
         self.edtCsv.setPlainText(strio.getvalue())
 
     def handle_savehtml(self):
-        self.save_text(kind="HTML", ext=".html", text=self.edtHtml.toHtml())
+        self.save_text(kind="HTML", ext=".html", text=self.edtHtml.toHtml(), param="html_dir")
 
     def handle_savecsv(self):
-        self.save_text(kind="CSV", ext=".csv", text=self.edtCsv.toPlainText())
+        self.save_text(kind="CSV", ext=".csv", text=self.edtCsv.toPlainText(), param="csv_dir")
 
     def switch_panel(self, what):
         self.frmTextOutput.setVisible(what == self.PLOT_TEXT)
@@ -245,13 +248,17 @@ class TimePlots(QDialog, Ui_TimePlots):
         st.set_y(0.99)
         fig.subplots_adjust(top=0.85)
 
-    def save_text(self, kind="Text", ext=".txt", text=""):
+    def save_text(self, kind="Text", ext=".txt", text="", param=None):
         if text is None or len(text) == 0:
             return
         file_filter = "{0} (*{1});; Texte (*.txt);; Tous les fichiers (*)".format(kind, ext)
+        directory = ""
+        if param is not None:
+            directory = parameters.app_get(param, default="")
         fn, flt = QFileDialog.getSaveFileName(self,
                                               caption="Sauvegarde au format {0}".format(kind),
                                               filter=file_filter,
+                                              directory=directory,
                                               options=QFileDialog.DontResolveSymlinks)
         if fn is None or fn == "":
             return
@@ -262,6 +269,8 @@ class TimePlots(QDialog, Ui_TimePlots):
                                     "SAUVEGARDE",
                                     "Fichier {} «{}» créé.".format(kind, fn),
                                     buttons=QMessageBox.Ok)
+            if param is not None:
+                parameters.app_set(param, os.path.dirname(fn))
         except IOError as e:
             QMessageBox.critical(self,
                                  "ERREUR",
@@ -276,16 +285,20 @@ class TimePlots(QDialog, Ui_TimePlots):
         end = self.deEnd.dateTime().toPyDateTime().replace(hour=23, minute=59, second=59, microsecond=999999)
         return start, end
 
-    def closeEvent(self, event):
+    def window_is_about_to_be_closed(self):
+        parameters.app_set(self.PARAM_FULL_CVS, self.cbCsvFull.isChecked())
         parameters.save_window_state(self)
+
+    def closeEvent(self, event):
+        self.window_is_about_to_be_closed()
         event.accept()
 
     @pyqtSlot()
     def reject(self):
-        parameters.save_window_state(self)
+        self.window_is_about_to_be_closed()
         return super().reject()
 
     @pyqtSlot()
     def accept(self):
-        parameters.save_window_state(self)
+        self.window_is_about_to_be_closed()
         return super().accept()
