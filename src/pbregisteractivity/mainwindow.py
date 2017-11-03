@@ -321,7 +321,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def handle_cancel_action(self):
         self.set_now()
-        self.restore_window_state()
 
     def handle_force_add_action(self):
         modaldlg = SpecifyRange(self.get_activity_from_window(), "Création d'une activité")
