@@ -74,6 +74,7 @@ class TimePlots(QDialog, Ui_TimePlots):
             self._mpl_toolbar[plotid] = NavigationToolbar(self._mpl_canvas[plotid], self)
             layout.addWidget(self._mpl_canvas[plotid])
             layout.addWidget(self._mpl_toolbar[plotid])
+        self.lblDayDuration.setText("Durée journalière: {}h".format(parameters.day_duration))
         self.switch_panel(None)
         self.cbCsvFull.setChecked(parameters.app_get_bool(self.PARAM_FULL_CVS))
         parameters.restore_window_state(self)

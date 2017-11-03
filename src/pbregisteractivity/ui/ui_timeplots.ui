@@ -157,10 +157,34 @@ et exportation CSV</string>
     </layout>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="layoutDraw" stretch="1,1,1,0">
+    <layout class="QVBoxLayout" name="layoutDraw" stretch="0,1,1,1,0">
      <property name="spacing">
       <number>0</number>
      </property>
+     <item>
+      <layout class="QHBoxLayout" name="layoutInfo">
+       <item>
+        <widget class="QLabel" name="lblDayDuration">
+         <property name="text">
+          <string>Durée jour</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
      <item>
       <widget class="QFrame" name="frmTextOutput">
        <property name="sizePolicy">

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_timeplots.ui'
 #
-# Created by: PyQt5 UI code generator 5.9
+# Created by: PyQt5 UI code generator 5.5.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -78,6 +78,14 @@ class Ui_TimePlots(object):
         self.layoutDraw = QtWidgets.QVBoxLayout()
         self.layoutDraw.setSpacing(0)
         self.layoutDraw.setObjectName("layoutDraw")
+        self.layoutInfo = QtWidgets.QHBoxLayout()
+        self.layoutInfo.setObjectName("layoutInfo")
+        self.lblDayDuration = QtWidgets.QLabel(TimePlots)
+        self.lblDayDuration.setObjectName("lblDayDuration")
+        self.layoutInfo.addWidget(self.lblDayDuration)
+        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.layoutInfo.addItem(spacerItem1)
+        self.layoutDraw.addLayout(self.layoutInfo)
         self.frmTextOutput = QtWidgets.QFrame(TimePlots)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -148,11 +156,11 @@ class Ui_TimePlots(object):
         self.layoutPieChart.setContentsMargins(4, 4, 4, 4)
         self.layoutPieChart.setObjectName("layoutPieChart")
         self.layoutDraw.addWidget(self.frmPieChart)
-        spacerItem1 = QtWidgets.QSpacerItem(20, 0, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.layoutDraw.addItem(spacerItem1)
-        self.layoutDraw.setStretch(0, 1)
+        spacerItem2 = QtWidgets.QSpacerItem(20, 0, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.layoutDraw.addItem(spacerItem2)
         self.layoutDraw.setStretch(1, 1)
         self.layoutDraw.setStretch(2, 1)
+        self.layoutDraw.setStretch(3, 1)
         self.layoutTimePlots.addLayout(self.layoutDraw)
         self.buttonBox = QtWidgets.QDialogButtonBox(TimePlots)
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
@@ -194,6 +202,7 @@ class Ui_TimePlots(object):
         self.lblEnd.setText(_translate("TimePlots", "Fin:"))
         self.deEnd.setToolTip(_translate("TimePlots", "Date de fin de la période à considérer"))
         self.deEnd.setDisplayFormat(_translate("TimePlots", "yyyy/MM/dd"))
+        self.lblDayDuration.setText(_translate("TimePlots", "Durée jour"))
         self.lblHtml.setText(_translate("TimePlots", "En html:"))
         self.btnHtmlSave.setToolTip(_translate("TimePlots", "Sauvegarde au format HTML dans un fichier"))
         self.edtHtml.setToolTip(_translate("TimePlots", "Représentation textuelle"))
