@@ -19,6 +19,7 @@ from .custom_widgets import QActivityListWidgetItem
 from .parameters import parameters
 from .specifyrange import SpecifyRange
 from .timeplots import TimePlots
+from .prefs import Prefs
 from .ui.ui_mainwindow import Ui_MainWindow
 from .utils import to_string, format_duration
 from .version import __version__ as version
@@ -29,6 +30,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     FILTER_NAME = 1
     FILTER_COMMENT = 2
     FILTER_ALL = 3
+
     def __init__(self):
         super().__init__()
         self._title_normal = False
@@ -37,6 +39,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self._last_daytime_text = "00:00"
         self._filter_type = 0
         self._timer = QTimer(self)
+        self.lcdDayTime = None
         self.setupUi(self)
         self.more_ui()
 
@@ -53,6 +56,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.actionEdit.triggered.connect(self.handle_edit_action)
         self.actionSave.triggered.connect(self.handle_save_action)
         self.actionSwapActivity.triggered.connect(self.handle_swap_activity_action)
+        self.actionPrefs.triggered.connect(self.handle_prefs_action)
         self.actionAbout.triggered.connect(self.handle_about_action)
         self.actionExtract.triggered.connect(self.handle_extract_action)
 
@@ -77,7 +81,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.cbFilterType.setCheckState(parameters.app_get_int("filter_state",
                                                                default=Qt.Unchecked))
         self.handle_filter_type_changed()
-
 
         # noinspection PyUnresolvedReferences
         self._timer.timeout.connect(self.handle_timer)
@@ -165,7 +168,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self._last_daytime_text = self._time_text(current_diff, with_seconds=False)
         self.lcdDayTime.display(self._last_daytime_text)
         self._tick_count = 0
-
 
     def set_now(self):
         self.dteStart.setDateTime(QDateTime.currentDateTime())
@@ -330,6 +332,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def handle_about_action(self):
         modaldlg = About(self.program_version())
+        modaldlg.exec_()
+
+    def handle_prefs_action(self):
+        modaldlg = Prefs()
         modaldlg.exec_()
 
     # noinspection PyMethodMayBeStatic

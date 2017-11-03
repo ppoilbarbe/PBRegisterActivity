@@ -14,9 +14,6 @@ from configparser import ConfigParser
 
 from PyQt5.QtCore import QByteArray
 
-from .utils import to_string
-
-
 class _Parameters(object):
     PARAM_SECTION = "windows"
     GEOMETRY = "_geometry"
@@ -61,6 +58,14 @@ class _Parameters(object):
         basename = "{0}_running_once.lock".format(self.application_name.lower())
         return os.path.join(self._base_dir(), basename)
 
+    @property
+    def day_duration(self):
+        return self.app_get_int("day_duration", default=8)
+
+    @day_duration.setter
+    def day_duration(self, value):
+        self.app_set("day_duration", int(value))
+
     def restore_window_state(self, window):
         name = window.WINDOW_NAME
         data = self._get_wininfo(name + self.GEOMETRY)
@@ -96,7 +101,6 @@ class _Parameters(object):
     def app_get_int(self, name, default=None):
         return self._conf.getint(self._app_section, name, fallback=default)
 
-
     def write(self):
         if self._modified:
             try:
@@ -112,11 +116,15 @@ class _Parameters(object):
         return ""
 
     def _set_wininfo(self, name, data):
-        d = to_string(data)
+        if isinstance(data, str):
+            d = str
+        else:
+            d = str(data, encoding='utf8', errors='replace')
         if not self._conf.has_section(self.PARAM_SECTION):
             self._conf.add_section(self.PARAM_SECTION)
         if self._get_wininfo(name) != d:
             self._conf.set(self.PARAM_SECTION, name, d)
             self._modified = True
+
 
 parameters = _Parameters()

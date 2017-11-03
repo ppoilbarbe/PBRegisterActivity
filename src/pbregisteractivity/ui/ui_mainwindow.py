@@ -222,8 +222,14 @@ class Ui_MainWindow(object):
         icon9.addPixmap(QtGui.QPixmap(":/images/icons/32x32/action_cal_timespent.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.actionExtract.setIcon(icon9)
         self.actionExtract.setObjectName("actionExtract")
+        self.actionPrefs = QtWidgets.QAction(MainWindow)
+        icon10 = QtGui.QIcon()
+        icon10.addPixmap(QtGui.QPixmap(":/images/icons/32x32/action_preferences.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionPrefs.setIcon(icon10)
+        self.actionPrefs.setObjectName("actionPrefs")
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionSave)
+        self.menuFile.addAction(self.actionPrefs)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionQuit)
         self.menuAction.addAction(self.actionRegister)
@@ -315,5 +321,7 @@ class Ui_MainWindow(object):
         self.actionExtract.setText(_translate("MainWindow", "&Extractions"))
         self.actionExtract.setToolTip(_translate("MainWindow", "Extractions du temps passé sur les activités"))
         self.actionExtract.setShortcut(_translate("MainWindow", "F12"))
+        self.actionPrefs.setText(_translate("MainWindow", "&Préférences"))
+        self.actionPrefs.setToolTip(_translate("MainWindow", "Paramètres généraux"))
 
 from . import resources_rc

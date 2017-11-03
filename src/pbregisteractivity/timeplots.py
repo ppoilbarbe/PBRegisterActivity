@@ -232,18 +232,18 @@ class TimePlots(QDialog, Ui_TimePlots):
         self.frmPieChart.setVisible(what == self.PLOT_PIECHART)
         self.frmTimeLines.setVisible(what == self.PLOT_TIMELINES)
 
-    def new_plot(self, id):
-        fig = self._figure[id]
+    def new_plot(self, figure_id):
+        fig = self._figure[figure_id]
         plt = fig.add_subplot(1, 1, 1)
         plt.clear()
         fig.set_facecolor("white")
         return plt
 
-    def plot_title(self, id, duration=0.0):
+    def plot_title(self, figure_id, duration=0.0):
         txt = ""
         if duration > 0.0:
             txt = "Durées des activités ({})".format(format_duration(duration))
-        fig = self._figure[id]
+        fig = self._figure[figure_id]
         st = fig.suptitle(txt, fontsize="x-large")
         st.set_y(0.99)
         fig.subplots_adjust(top=0.85)

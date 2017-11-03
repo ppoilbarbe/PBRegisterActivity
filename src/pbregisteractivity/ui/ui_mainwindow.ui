@@ -291,6 +291,7 @@ le nom contient le texte saisi</string>
     </property>
     <addaction name="separator"/>
     <addaction name="actionSave"/>
+    <addaction name="actionPrefs"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -508,6 +509,18 @@ Sinon, elle est enregistrée lors de la sortie du programme.</string>
    </property>
    <property name="shortcut">
     <string>F12</string>
+   </property>
+  </action>
+  <action name="actionPrefs">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/images/icons/32x32/action_preferences.png</normaloff>:/images/icons/32x32/action_preferences.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Préférences</string>
+   </property>
+   <property name="toolTip">
+    <string>Paramètres généraux</string>
    </property>
   </action>
  </widget>

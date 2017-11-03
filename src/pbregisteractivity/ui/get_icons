@@ -23,6 +23,7 @@ my @IconList    = qw(
         action_cal_day
         action_cal_workweek
         action_cal_journal
+        action_preferences
         tool_piechart
         );
 my @remove  = qw(

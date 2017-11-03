@@ -6,6 +6,7 @@ import os
 import sys
 import traceback
 from datetime import timedelta
+from .parameters import parameters
 
 from PyQt5.QtWidgets import QApplication, QMessageBox
 
@@ -73,8 +74,10 @@ def format_duration(duration: float) -> str:
     :param duration: In seconds
     :return: Formatted string
     """
-    t = timedelta(seconds=duration)
-    d = t.days
+    secs_by_day = parameters.day_duration * 3600.0
+    d = int(duration // secs_by_day)
+    t = timedelta(seconds=duration - d * secs_by_day)
+    assert t.days == 0
     h, s = divmod(t.seconds, 3600)
     m, s = divmod(s, 60)
     dstr = "{}j ".format(d) if d > 0 else ""
