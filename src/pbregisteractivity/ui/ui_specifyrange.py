@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_SpecifyRange(object):
     def setupUi(self, SpecifyRange):
         SpecifyRange.setObjectName("SpecifyRange")
-        SpecifyRange.resize(584, 262)
+        SpecifyRange.resize(584, 296)
         self.layoutDialog = QtWidgets.QVBoxLayout(SpecifyRange)
         self.layoutDialog.setObjectName("layoutDialog")
         self.lblTitle = QtWidgets.QLabel(SpecifyRange)
@@ -37,7 +37,7 @@ class Ui_SpecifyRange(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.dteStart.sizePolicy().hasHeightForWidth())
         self.dteStart.setSizePolicy(sizePolicy)
-        self.dteStart.setCurrentSection(QtWidgets.QDateTimeEdit.HourSection)
+        self.dteStart.setCurrentSection(QtWidgets.QDateTimeEdit.YearSection)
         self.dteStart.setCalendarPopup(True)
         self.dteStart.setObjectName("dteStart")
         self.layoutInput.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.dteStart)
@@ -93,7 +93,7 @@ class Ui_SpecifyRange(object):
         SpecifyRange.setWindowTitle(_translate("SpecifyRange", "Dialog"))
         self.lblTitle.setText(_translate("SpecifyRange", "TextLabel"))
         self.lblStart.setText(_translate("SpecifyRange", "Heure début:"))
-        self.dteStart.setDisplayFormat(_translate("SpecifyRange", "yyyy/MM/dd HH:mm:ss"))
+        self.dteStart.setDisplayFormat(_translate("SpecifyRange", "yyyy-MM-dd HH:mm:ss"))
         self.lblDuration.setText(_translate("SpecifyRange", "Durée:"))
         self.sbDayDuration.setSuffix(_translate("SpecifyRange", "j"))
         self.timeDuration.setDisplayFormat(_translate("SpecifyRange", "HH:mm:ss"))

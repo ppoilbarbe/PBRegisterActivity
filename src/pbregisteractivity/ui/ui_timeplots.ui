@@ -6,12 +6,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>609</width>
+    <width>738</width>
     <height>436</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Diagrammes</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/images/icons/32x32/action_cal_timespent.png</normaloff>:/images/icons/32x32/action_cal_timespent.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="layoutTimePlots" stretch="0,1,0">
    <item>
@@ -75,8 +79,8 @@ et exportation CSV</string>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>40</width>
-         <height>20</height>
+         <width>0</width>
+         <height>0</height>
         </size>
        </property>
       </spacer>
@@ -84,7 +88,7 @@ et exportation CSV</string>
      <item>
       <widget class="QToolButton" name="btnPrevWeek">
        <property name="toolTip">
-        <string>Semaine précédente</string>
+        <string>Reculer d'une semaine</string>
        </property>
        <property name="icon">
         <iconset resource="resources.qrc">
@@ -100,6 +104,17 @@ et exportation CSV</string>
        <property name="icon">
         <iconset resource="resources.qrc">
          <normaloff>:/images/icons/32x32/action_cal_workweek.png</normaloff>:/images/icons/32x32/action_cal_workweek.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnNextWeek">
+       <property name="toolTip">
+        <string>Avancer d'une semaine</string>
+       </property>
+       <property name="icon">
+        <iconset resource="resources.qrc">
+         <normaloff>:/images/icons/32x32/action_progress.png</normaloff>:/images/icons/32x32/action_progress.png</iconset>
        </property>
       </widget>
      </item>
@@ -127,10 +142,17 @@ et exportation CSV</string>
         <string>Date de début de la période à considérer</string>
        </property>
        <property name="displayFormat">
-        <string>yyyy/MM/dd</string>
+        <string>ddd yyyy-MM-dd  </string>
        </property>
        <property name="calendarPopup">
         <bool>true</bool>
+       </property>
+       <property name="date">
+        <date>
+         <year>7999</year>
+         <month>12</month>
+         <day>29</day>
+        </date>
        </property>
       </widget>
      </item>
@@ -147,7 +169,7 @@ et exportation CSV</string>
         <string>Date de fin de la période à considérer</string>
        </property>
        <property name="displayFormat">
-        <string>yyyy/MM/dd</string>
+        <string>ddd yyyy-MM-dd   </string>
        </property>
        <property name="calendarPopup">
         <bool>true</bool>

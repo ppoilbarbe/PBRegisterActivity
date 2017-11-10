@@ -16,6 +16,7 @@ my @IconList    = qw(
         action_ok
         action_refresh
         action_remove
+        action_progress
         action_revert
         action_save
         action_cal_timeline

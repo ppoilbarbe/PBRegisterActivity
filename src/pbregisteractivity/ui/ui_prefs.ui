@@ -13,7 +13,11 @@
   <property name="windowTitle">
    <string>Préférences</string>
   </property>
-  <layout class="QVBoxLayout" name="layoutPrefs" stretch="0,0">
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/images/icons/32x32/action_preferences.png</normaloff>:/images/icons/32x32/action_preferences.png</iconset>
+  </property>
+  <layout class="QVBoxLayout" name="layoutPrefs">
    <item>
     <layout class="QFormLayout" name="layoutData">
      <item row="0" column="0">
@@ -27,6 +31,9 @@
       <layout class="QHBoxLayout" name="layoutDayDuration">
        <item>
         <widget class="QSpinBox" name="spinDayDuration">
+         <property name="toolTip">
+          <string>Durée du jour de travail en heures</string>
+         </property>
          <property name="minimum">
           <number>1</number>
          </property>

@@ -12,6 +12,9 @@ class Ui_Prefs(object):
     def setupUi(self, Prefs):
         Prefs.setObjectName("Prefs")
         Prefs.resize(208, 115)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/images/icons/32x32/action_preferences.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        Prefs.setWindowIcon(icon)
         self.layoutPrefs = QtWidgets.QVBoxLayout(Prefs)
         self.layoutPrefs.setObjectName("layoutPrefs")
         self.layoutData = QtWidgets.QFormLayout()
@@ -45,5 +48,6 @@ class Ui_Prefs(object):
         _translate = QtCore.QCoreApplication.translate
         Prefs.setWindowTitle(_translate("Prefs", "Préférences"))
         self.lblDayDuration.setText(_translate("Prefs", "Durée du jour:"))
+        self.spinDayDuration.setToolTip(_translate("Prefs", "Durée du jour de travail en heures"))
 
 from . import resources_rc

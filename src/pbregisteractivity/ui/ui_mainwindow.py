@@ -275,7 +275,7 @@ class Ui_MainWindow(object):
         self.lblCurrent.setText(_translate("MainWindow", "Activité en cours"))
         self.lblCurrentAction.setText(_translate("MainWindow", "Action en cours:"))
         self.lblStart.setText(_translate("MainWindow", "Heure début:"))
-        self.dteStart.setDisplayFormat(_translate("MainWindow", "yyyy/MM/dd HH:mm:ss"))
+        self.dteStart.setDisplayFormat(_translate("MainWindow", "yyyy-MM-dd HH:mm:ss"))
         self.lblDuration.setText(_translate("MainWindow", "Durée:"))
         self.lblEndText.setText(_translate("MainWindow", "TextLabel"))
         self.tbForceAdd.setToolTip(_translate("MainWindow", "Ajout d\'une période en forçant la durée (sera saisie)"))
