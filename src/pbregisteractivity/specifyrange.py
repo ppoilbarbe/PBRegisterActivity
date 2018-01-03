@@ -33,9 +33,12 @@ class SpecifyRange(QDialog, Ui_SpecifyRange):
         self.check_window()
 
         self.edtName.textChanged.connect(self.check_window)
-        self.sbDayDuration.valueChanged.connect(self.check_window)
-        self.timeDuration.dateTimeChanged.connect(self.check_window)
-        self.dteStart.dateTimeChanged.connect(self.check_window)
+        self.sbDayDuration.valueChanged.connect(self.duration_changed)
+        self.timeDuration.dateTimeChanged.connect(self.duration_changed)
+        self.dteStart.dateTimeChanged.connect(self.duration_changed)
+        self.dteEnd.dateTimeChanged.connect(self.end_changed)
+        self._in_update = False
+        self.duration_changed()
 
     def name(self):
         return to_string(self.edtName.text())
@@ -44,17 +47,43 @@ class SpecifyRange(QDialog, Ui_SpecifyRange):
         return self.dteStart.dateTime()
 
     def end_date(self):
+        return self.dteEnd.dateTime()
+
+    def secs_duration(self):
+        return self.start_date().secsTo(self.end_date())
+
+    def days_duration(self):
+        result, _ = divmod(self.secs_duration(), 86400)
+        return result
+
+    def check_window(self):
+        valid_name = self.name() != ""
+        valid_end = self.start_date() < self.end_date() and self.days_duration() <= self.sbDayDuration.maximum()
+        self.lblEndWarning.setVisible(not valid_end)
+        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(valid_name and valid_end)
+
+    def duration_changed(self):
+        if self._in_update:
+            return
+        self._in_update = True
         days = self.sbDayDuration.value()
         time = self.timeDuration.time()
         duration = days * 86400 + time.hour() * 3600 + time.minute() * 60 + time.second()
-        return self.start_date().addSecs(duration)
+        self.dteEnd.setDateTime(self.start_date().addSecs(duration))
+        self.check_window()
+        self._in_update = False
 
-    def check_window(self):
-        valid = self.name() != ""
-        end = self.end_date()
-        valid = valid and self.start_date() < end
-        self.lblEndText.setText(end.toString("yyyy/MM/dd hh:mm:ss"))
-        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(valid)
+    def end_changed(self):
+        if self._in_update:
+            return
+        self._in_update = True
+        duration = self.secs_duration()
+        if duration > 0:
+            days, seconds = divmod(duration, 86400)
+            self.sbDayDuration.setValue(days)
+            self.timeDuration.setTime(QTime(0, 0, 0).addSecs(seconds))
+        self.check_window()
+        self._in_update = False
 
     @pyqtSlot()
     def accept(self):

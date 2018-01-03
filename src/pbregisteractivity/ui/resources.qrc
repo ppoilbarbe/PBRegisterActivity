@@ -18,6 +18,7 @@
     <file>icons/32x32/action_revert.png</file>
     <file>icons/32x32/action_save.png</file>
     <file>icons/32x32/arrow_right.png</file>
+    <file>icons/32x32/info_warning.png</file>
     <file>icons/32x32/tool_piechart.png</file>
   </qresource>
 </RCC>
