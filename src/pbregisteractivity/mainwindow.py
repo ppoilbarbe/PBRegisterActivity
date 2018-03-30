@@ -350,10 +350,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self,
                 "Question de fin",
                 "Sauvegarder la dernière activité avant de quitter",
-                buttons=QMessageBox.Yes | QMessageBox.No,
+                buttons=QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel,
                 defaultButton=QMessageBox.No)
             if reply == QMessageBox.Yes:
                 self.do_add_activity()
+            if reply == QMessageBox.Cancel:
+                event.ignore()
+                return
         event.accept()
         parameters.save_window_state(self)
         parameters.write()

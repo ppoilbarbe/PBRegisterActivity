@@ -1,7 +1,7 @@
 BINARY = $(CURDIR)/PBRegisterActivity
 
 .PHONY: all
-all: $(BINARY)
+all: ui $(BINARY)
 
 SRC_FILES := $(shell cd src ; find . -name '*.py')
 

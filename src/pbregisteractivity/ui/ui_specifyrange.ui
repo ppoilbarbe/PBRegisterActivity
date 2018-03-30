@@ -67,23 +67,93 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QDateTimeEdit" name="dteStart">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
+      <layout class="QHBoxLayout" name="layoutStart">
+       <property name="topMargin">
+        <number>0</number>
        </property>
-       <property name="currentSection">
-        <enum>QDateTimeEdit::YearSection</enum>
-       </property>
-       <property name="displayFormat">
-        <string>yyyy-MM-dd HH:mm:ss</string>
-       </property>
-       <property name="calendarPopup">
-        <bool>true</bool>
+       <item>
+        <widget class="QDateTimeEdit" name="dteStart">
+         <property name="currentSection">
+          <enum>QDateTimeEdit::HourSection</enum>
+         </property>
+         <property name="displayFormat">
+          <string>yyyy-MM-dd HH:mm:ss</string>
+         </property>
+         <property name="calendarPopup">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="lblEnd">
+       <property name="text">
+        <string>Heure fin:</string>
        </property>
       </widget>
+     </item>
+     <item row="2" column="1">
+      <layout class="QHBoxLayout" name="layoutEnd">
+       <item>
+        <widget class="QDateTimeEdit" name="dteEnd">
+         <property name="currentSection">
+          <enum>QDateTimeEdit::HourSection</enum>
+         </property>
+         <property name="displayFormat">
+          <string>yyyy-MM-dd HH:mm:ss</string>
+         </property>
+         <property name="calendarPopup">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="lblEndWarning">
+         <property name="maximumSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Date/heure de fin incorrecte</string>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="resources.qrc">:/images/icons/32x32/info_warning.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </item>
      <item row="3" column="0">
       <widget class="QLabel" name="lblDuration">
@@ -130,54 +200,14 @@
       </layout>
      </item>
      <item row="4" column="0">
-      <widget class="QLabel" name="lblEnd">
-       <property name="text">
-        <string>Heure fin:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0">
       <widget class="QLabel" name="lblComment">
        <property name="text">
         <string>Commentaire:</string>
        </property>
       </widget>
      </item>
-     <item row="6" column="1">
-      <widget class="QPlainTextEdit" name="edtComment"/>
-     </item>
      <item row="4" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0">
-       <item>
-        <widget class="QDateTimeEdit" name="dteEnd">
-         <property name="displayFormat">
-          <string>yyyy-MM-dd HH:mm:ss</string>
-         </property>
-         <property name="calendarPopup">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="lblEndWarning">
-         <property name="maximumSize">
-          <size>
-           <width>24</width>
-           <height>24</height>
-          </size>
-         </property>
-         <property name="toolTip">
-          <string>Date/heure de fin incorrecte</string>
-         </property>
-         <property name="pixmap">
-          <pixmap resource="resources.qrc">:/images/icons/32x32/info_warning.png</pixmap>
-         </property>
-         <property name="scaledContents">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      <widget class="QPlainTextEdit" name="edtComment"/>
      </item>
     </layout>
    </item>
@@ -208,7 +238,6 @@
  </widget>
  <tabstops>
   <tabstop>edtName</tabstop>
-  <tabstop>dteStart</tabstop>
   <tabstop>sbDayDuration</tabstop>
   <tabstop>timeDuration</tabstop>
   <tabstop>edtComment</tabstop>
