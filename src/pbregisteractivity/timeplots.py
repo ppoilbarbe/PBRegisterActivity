@@ -75,7 +75,8 @@ class TimePlots(QDialog, Ui_TimePlots):
             self._mpl_toolbar[plotid] = NavigationToolbar(self._mpl_canvas[plotid], self)
             layout.addWidget(self._mpl_canvas[plotid])
             layout.addWidget(self._mpl_toolbar[plotid])
-        self.lblDayDuration.setText("Durée journalière: {}h".format(parameters.day_duration))
+        self.lblDurations.setText("Durée journalière: {}h; Divers=Durée<{}min".format(parameters.day_duration,
+                                                                                      parameters.misc_duration))
         self.switch_panel(None)
         self.cbCsvFull.setChecked(parameters.app_get_bool(self.PARAM_FULL_CVS))
         parameters.restore_window_state(self)
@@ -168,7 +169,7 @@ class TimePlots(QDialog, Ui_TimePlots):
         for k, v in what.items():
             d = v['duration']
             duration += d
-            if d < 3600.0:
+            if d < parameters.misc_duration * 60:
                 miscelaneous += d
             else:
                 labels.append("{} - {}".format(k, format_duration(d)))

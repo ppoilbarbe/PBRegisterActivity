@@ -35,11 +35,13 @@ class Prefs(QDialog, Ui_Prefs):
         super().__init__(parent)
         self.setupUi(self)
         self.spinDayDuration.setValue(parameters.day_duration)
+        self.spinMisc.setValue(parameters.misc_duration)
         parameters.restore_window_state(self)
 
 
     def save_data(self):
         parameters.day_duration = self.spinDayDuration.value()
+        parameters.misc_duration = self.spinMisc.value()
 
     def window_is_about_to_be_closed(self):
         parameters.save_window_state(self)

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>208</width>
-    <height>115</height>
+    <width>262</width>
+    <height>117</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,6 +34,9 @@
          <property name="toolTip">
           <string>Durée du jour de travail en heures</string>
          </property>
+         <property name="suffix">
+          <string>h</string>
+         </property>
          <property name="minimum">
           <number>1</number>
          </property>
@@ -43,7 +46,52 @@
         </widget>
        </item>
        <item>
-        <spacer name="horizontalSpacer">
+        <spacer name="hsDayDuration">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="lblMisc">
+       <property name="text">
+        <string>Divers si durée:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QSpinBox" name="spinMisc">
+         <property name="toolTip">
+          <string>Durée en dessous de laquelle une activité
+est regroupée en tant que &quot;Divers&quot;.
+Si 0, il n'y a pas de regroupement.</string>
+         </property>
+         <property name="suffix">
+          <string>min</string>
+         </property>
+         <property name="prefix">
+          <string>&lt; </string>
+         </property>
+         <property name="maximum">
+          <number>1440</number>
+         </property>
+         <property name="singleStep">
+          <number>15</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="hsMisc">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>

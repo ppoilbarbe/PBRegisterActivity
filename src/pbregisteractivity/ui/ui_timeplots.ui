@@ -186,14 +186,14 @@ et exportation CSV</string>
      <item>
       <layout class="QHBoxLayout" name="layoutInfo">
        <item>
-        <widget class="QLabel" name="lblDayDuration">
+        <widget class="QLabel" name="lblDurations">
          <property name="text">
           <string>Durée jour</string>
          </property>
         </widget>
        </item>
        <item>
-        <spacer name="horizontalSpacer_2">
+        <spacer name="hsInfo">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>

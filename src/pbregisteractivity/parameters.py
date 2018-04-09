@@ -66,6 +66,14 @@ class _Parameters(object):
     def day_duration(self, value):
         self.app_set("day_duration", int(value))
 
+    @property
+    def misc_duration(self):
+        return self.app_get_int("miscellaneous_duration", default=60)
+
+    @misc_duration.setter
+    def misc_duration(self, value):
+        self.app_set("miscellaneous_duration", int(value))
+
     def restore_window_state(self, window):
         name = window.WINDOW_NAME
         data = self._get_wininfo(name + self.GEOMETRY)
