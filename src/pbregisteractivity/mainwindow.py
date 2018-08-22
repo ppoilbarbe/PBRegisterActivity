@@ -112,7 +112,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         date_is_ok = self.show_time()
         self.actionSave.setEnabled(activities.modified())
         self.actionRegister.setEnabled(has_name and date_is_ok)
-        self.tbForceAdd.setEnabled(has_name and date_is_ok)
 
     def set_list_actions_enabled(self, selected_count=0):
         self.actionRemove.setEnabled(selected_count != 0)

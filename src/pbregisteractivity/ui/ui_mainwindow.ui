@@ -160,6 +160,9 @@ le nom contient le texte saisi</string>
            <layout class="QHBoxLayout" name="layoutDuration" stretch="0,1,0">
             <item>
              <widget class="QLCDNumber" name="lcdDuration">
+              <property name="toolTip">
+               <string>Durée calculée entre l'heure de début et l'heure courante.</string>
+              </property>
               <property name="smallDecimalPoint">
                <bool>false</bool>
               </property>
@@ -206,6 +209,9 @@ le nom contient le texte saisi</string>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="toolTip">
+             <string>Nom de l'action en cours d'enregistrement.</string>
+            </property>
             <property name="editable">
              <bool>true</bool>
             </property>
@@ -224,6 +230,9 @@ le nom contient le texte saisi</string>
               <width>16777215</width>
               <height>120</height>
              </size>
+            </property>
+            <property name="toolTip">
+             <string>Commentaire à associer à l'activité</string>
             </property>
            </widget>
           </item>
@@ -282,7 +291,7 @@ le nom contient le texte saisi</string>
      <x>0</x>
      <y>0</y>
      <width>640</width>
-     <height>24</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

@@ -24,7 +24,9 @@ class SpecifyRange(QDialog, Ui_SpecifyRange):
         self.setupUi(self)
         self.setWindowTitle(title)
         self.lblTitle.setText(title)
-        self.edtName.setText(activity.name)
+        self.cbbName.clear()
+        self.cbbName.addItems(activities.actvitiy_names())
+        self.cbbName.setCurrentText(activity.name)
         self.dteStart.setDateTime(activity.start)
         self.edtComment.setPlainText(activity.comment)
         d = activity.duration
@@ -32,7 +34,7 @@ class SpecifyRange(QDialog, Ui_SpecifyRange):
         self.timeDuration.setTime(QTime(0, 0, 0).addSecs(d.seconds))
         self.check_window()
 
-        self.edtName.textChanged.connect(self.check_window)
+        self.cbbName.currentTextChanged.connect(self.check_window)
         self.sbDayDuration.valueChanged.connect(self.duration_changed)
         self.timeDuration.dateTimeChanged.connect(self.duration_changed)
         self.dteStart.dateTimeChanged.connect(self.duration_changed)
@@ -41,7 +43,7 @@ class SpecifyRange(QDialog, Ui_SpecifyRange):
         self.duration_changed()
 
     def name(self):
-        return to_string(self.edtName.text())
+        return to_string(self.cbbName.currentText())
 
     def start_date(self):
         return self.dteStart.dateTime()

@@ -1,0 +1,12 @@
+image: registry-s3.vlandata.cls.fr:5000/si-indus/docker-xenial/image:v1.0
+
+sbefore_script:
+    - apt-get install make
+
+build:
+    only:
+        - master
+    stage: build
+    script:
+        - make ui
+        - make

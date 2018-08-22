@@ -56,9 +56,6 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="edtName"/>
-     </item>
      <item row="1" column="0">
       <widget class="QLabel" name="lblStart">
        <property name="text">
@@ -74,7 +71,7 @@
        <item>
         <widget class="QDateTimeEdit" name="dteStart">
          <property name="currentSection">
-          <enum>QDateTimeEdit::HourSection</enum>
+          <enum>QDateTimeEdit::YearSection</enum>
          </property>
          <property name="displayFormat">
           <string>yyyy-MM-dd HH:mm:ss</string>
@@ -111,7 +108,7 @@
        <item>
         <widget class="QDateTimeEdit" name="dteEnd">
          <property name="currentSection">
-          <enum>QDateTimeEdit::HourSection</enum>
+          <enum>QDateTimeEdit::YearSection</enum>
          </property>
          <property name="displayFormat">
           <string>yyyy-MM-dd HH:mm:ss</string>
@@ -209,6 +206,16 @@
      <item row="4" column="1">
       <widget class="QPlainTextEdit" name="edtComment"/>
      </item>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="cbbName">
+       <property name="toolTip">
+        <string>Nom de l'activité à créer/mettre à jour</string>
+       </property>
+       <property name="editable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>
@@ -237,7 +244,6 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>edtName</tabstop>
   <tabstop>sbDayDuration</tabstop>
   <tabstop>timeDuration</tabstop>
   <tabstop>edtComment</tabstop>
