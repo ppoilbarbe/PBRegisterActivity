@@ -1,7 +1,8 @@
 image: registry-s3.vlandata.cls.fr:5000/si-indus/docker-xenial/image:v1.0
 
 before_script:
-    - apt-get install make
+    - apt-get update
+    - apt-get install --yes make pyqt5-dev-tools zip
 
 build:
     only:
