@@ -67,6 +67,14 @@ class _Parameters(object):
         self.app_set("day_duration", int(value))
 
     @property
+    def minimize_to_tray(self):
+        return self.app_get_bool("minimize_to_tray", default=False)
+
+    @minimize_to_tray.setter
+    def minimize_to_tray(self, value):
+        self.app_set("minimize_to_tray", bool(value))
+
+    @property
     def misc_duration(self):
         return self.app_get_int("miscellaneous_duration", default=60)
 

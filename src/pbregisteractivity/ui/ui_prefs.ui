@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>262</width>
-    <height>117</height>
+    <width>376</width>
+    <height>159</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -105,7 +105,55 @@ Si 0, il n'y a pas de regroupement.</string>
        </item>
       </layout>
      </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="lblMinimizeTo">
+       <property name="text">
+        <string>Minimiser en:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <layout class="QHBoxLayout" name="layoutMinimizeTo">
+       <property name="spacing">
+        <number>3</number>
+       </property>
+       <item>
+        <widget class="QCheckBox" name="cbToTray">
+         <property name="text">
+          <string>Zone de notification (Qt5.6 et plus)</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="lblReload1">
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; color:#ff1414; vertical-align:super;&quot;&gt;*&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="lblReload">
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; color:#ff1414;&quot;&gt;* Nécessite un redémarrage&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
@@ -130,12 +178,12 @@ Si 0, il n'y a pas de regroupement.</string>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>257</x>
+     <y>127</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
-     <y>274</y>
+     <y>136</y>
     </hint>
    </hints>
   </connection>
@@ -146,12 +194,12 @@ Si 0, il n'y a pas de regroupement.</string>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>261</x>
+     <y>127</y>
     </hint>
     <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
+     <x>270</x>
+     <y>136</y>
     </hint>
    </hints>
   </connection>

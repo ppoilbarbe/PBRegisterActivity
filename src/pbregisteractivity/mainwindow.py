@@ -9,19 +9,22 @@ Fait aussi office de programme principal de l'interface graphique.
 
 # Tested with PYTHON 3.5. Not compatible with Python 2.x
 
-from PyQt5.QtCore import QDateTime, QTimer, Qt
-from PyQt5.QtWidgets import QDialog, QMainWindow, QMessageBox, QLCDNumber
-
 from datetime import datetime, timedelta
+from pkg_resources import parse_version
+
+from PyQt5.QtCore import QDateTime, QTimer, Qt, QT_VERSION_STR
+from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtWidgets import QAction, QDialog, QLCDNumber, QMainWindow, QMenu, QMessageBox, QStyle, QSystemTrayIcon, qApp
+
 from .about import About
 from .activity import Activity, activities
 from .custom_widgets import QActivityListWidgetItem
 from .parameters import parameters
+from .prefs import Prefs
 from .specifyrange import SpecifyRange
 from .timeplots import TimePlots
-from .prefs import Prefs
 from .ui.ui_mainwindow import Ui_MainWindow
-from .utils import to_string, format_duration
+from .utils import format_duration, to_string
 from .version import __version__ as version
 
 
@@ -40,12 +43,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self._filter_type = 0
         self._timer = QTimer(self)
         self.lcdDayTime = None
+        self.tray_icon = None
+        self.tray_closing = False
         self.setupUi(self)
         self.more_ui()
 
     def main(self):
         parameters.restore_window_state(self)
         self.show()
+        if self.tray_icon is not None:
+            self.tray_icon.show()
 
     def more_ui(self):
         self.change_title()
@@ -92,18 +99,48 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.fill_activity_list()
 
+        # Init QSystemTrayIcon
+        # Before 5.6, QSystemTrayIcon does not work correctly
+        if QSystemTrayIcon.isSystemTrayAvailable() and parse_version(QT_VERSION_STR) >= parse_version("5.6") and parameters.minimize_to_tray:
+            self.tray_icon = QSystemTrayIcon(self)
+            icon = QIcon()
+            icon.addPixmap(QPixmap(":/images/icons/128x128/obj_hal9000.png"), QIcon.Normal, QIcon.Off)
+            self.tray_icon.setIcon(icon)
+
+            '''
+                Define and add steps to work with the system tray icon
+                show - show window
+                hide - hide window
+                exit - exit from application
+            '''
+            show_action = QAction("Restaurer", self)
+            quit_action = QAction("Quitter", self)
+            hide_action = QAction("Masquer", self)
+            show_action.triggered.connect(self.show)
+            hide_action.triggered.connect(self.hide)
+            quit_action.triggered.connect(self.to_tray_quit)
+            tray_menu = QMenu()
+            tray_menu.addAction(show_action)
+            tray_menu.addAction(hide_action)
+            tray_menu.addAction(quit_action)
+            self.tray_icon.setContextMenu(tray_menu)
+            self.tray_icon.activated.connect(self.tray_icon_activated)
+
     @staticmethod
     def program_version():
         return "{0} - {1}".format(parameters.application_name, version)
 
-    def change_title(self, special_text=None):
-        if special_text is None or self.windowState() & Qt.WindowMinimized != Qt.WindowMinimized:
+    def change_title(self, special_text=""):
+        if special_text == "" or self.windowState() & Qt.WindowMinimized != Qt.WindowMinimized:
             if not self._title_normal:
                 self.setWindowTitle(self.program_version())
                 self._title_normal = True
         else:
             self.setWindowTitle(special_text)
             self._title_normal = False
+        if self.tray_icon is not None:
+            self.tray_icon.setToolTip(special_text)
+
 
     def check_window(self, with_day_time=True):
         has_name = len(self.current_activity_name()) != 0
@@ -342,24 +379,40 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         modaldlg.exec_()
 
     def closeEvent(self, event):
-        self._timer.stop()
-        if self.current_activity_name() != "":
-            # noinspection PyCallByClass
-            reply = QMessageBox.question(
-                self,
-                "Question de fin",
-                "Sauvegarder la dernière activité avant de quitter",
-                buttons=QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel,
-                defaultButton=QMessageBox.No)
-            if reply == QMessageBox.Yes:
-                self.do_add_activity()
-            if reply == QMessageBox.Cancel:
-                event.ignore()
-                return
-        event.accept()
-        parameters.save_window_state(self)
-        parameters.write()
-        activities.write()
+        if self.tray_icon is None or self.tray_closing:
+            self.tray_closing = False
+            self._timer.stop()
+            if self.current_activity_name() != "":
+                # noinspection PyCallByClass
+                reply = QMessageBox.question(
+                    self,
+                    "Question de fin",
+                    "Sauvegarder la dernière activité avant de quitter",
+                    buttons=QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel,
+                    defaultButton=QMessageBox.No)
+                if reply == QMessageBox.Yes:
+                    self.do_add_activity()
+                if reply == QMessageBox.Cancel:
+                    event.ignore()
+                    self._timer.start()
+                    if self.tray_icon is not None:
+                        # Rechache la fenêtre
+                        self.hide()
+                    return
+            event.accept()
+            parameters.save_window_state(self)
+            parameters.write()
+            activities.write()
+        else:
+            event.ignore()
+            self.hide()
+            self.tray_icon.showMessage(
+                parameters.application_name,
+                "Application réduite dans la zone de notification",
+                QSystemTrayIcon.Information,
+                2000
+            )
+
 
     @staticmethod
     def _time_text(seconds, with_seconds=True):
@@ -374,3 +427,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             (m, s) = divmod(m, 60)
             txt = "{:02d}:{:02d}:{:02d}".format(int(h), int(m), int(s))
         return txt[:length]
+
+    def raise_window(self):
+        self.show()
+        self.setWindowState(self.windowState() & ~Qt.WindowMinimized | Qt.WindowActive)
+        self.raise_()
+
+    def to_tray_quit(self, event):
+        self.tray_closing = True
+        self.raise_window()
+        self.close()
+
+    def tray_icon_activated(self, reason):
+        if reason == QSystemTrayIcon.DoubleClick:
+            self.raise_window()
