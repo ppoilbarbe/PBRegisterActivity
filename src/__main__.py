@@ -6,7 +6,7 @@ import fcntl
 import os
 import sys
 
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, qApp
 from PyQt5.QtCore import QLocale, QTranslator, QLibraryInfo
 
 from pbregisteractivity.mainwindow import MainWindow
@@ -48,7 +48,8 @@ def translate_stock_widgets(app: QApplication) -> None:
     :param app: Application
     :return: None
     """
-    qt_name = 'qt_{0}'.format(QLocale.system().name()[:2])
+    locale_name = QLocale.system().name()
+    qt_name = 'qt_{0}'.format(locale_name)
     translator = QTranslator()
     translator.load(qt_name, QLibraryInfo.location(QLibraryInfo.TranslationsPath))
     app.installTranslator(translator)

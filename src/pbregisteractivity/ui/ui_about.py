@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_about.ui'
 #
-# Created by: PyQt5 UI code generator 5.9
+# Created by: PyQt5 UI code generator 5.5.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_About(object):
     def setupUi(self, About):
         About.setObjectName("About")
-        About.resize(222, 162)
+        About.resize(278, 218)
         self.layoutAbout = QtWidgets.QVBoxLayout(About)
         self.layoutAbout.setObjectName("layoutAbout")
         self.layoutContent = QtWidgets.QHBoxLayout()
@@ -59,6 +59,28 @@ class Ui_About(object):
         self.lblAuthor.setSizePolicy(sizePolicy)
         self.lblAuthor.setObjectName("lblAuthor")
         self.layoutText.addWidget(self.lblAuthor)
+        self.formLayout = QtWidgets.QFormLayout()
+        self.formLayout.setLabelAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.formLayout.setObjectName("formLayout")
+        self.lblPythonVersionLbl = QtWidgets.QLabel(self.frmText)
+        self.lblPythonVersionLbl.setObjectName("lblPythonVersionLbl")
+        self.formLayout.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.lblPythonVersionLbl)
+        self.lblPythonVersion = QtWidgets.QLabel(self.frmText)
+        self.lblPythonVersion.setObjectName("lblPythonVersion")
+        self.formLayout.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.lblPythonVersion)
+        self.lblQtVersionLbl = QtWidgets.QLabel(self.frmText)
+        self.lblQtVersionLbl.setObjectName("lblQtVersionLbl")
+        self.formLayout.setWidget(2, QtWidgets.QFormLayout.LabelRole, self.lblQtVersionLbl)
+        self.lblQtVersion = QtWidgets.QLabel(self.frmText)
+        self.lblQtVersion.setObjectName("lblQtVersion")
+        self.formLayout.setWidget(2, QtWidgets.QFormLayout.FieldRole, self.lblQtVersion)
+        self.lblPyqtVersionLbl = QtWidgets.QLabel(self.frmText)
+        self.lblPyqtVersionLbl.setObjectName("lblPyqtVersionLbl")
+        self.formLayout.setWidget(3, QtWidgets.QFormLayout.LabelRole, self.lblPyqtVersionLbl)
+        self.lblPyQtVersion = QtWidgets.QLabel(self.frmText)
+        self.lblPyQtVersion.setObjectName("lblPyQtVersion")
+        self.formLayout.setWidget(3, QtWidgets.QFormLayout.FieldRole, self.lblPyQtVersion)
+        self.layoutText.addLayout(self.formLayout)
         spacerItem2 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.layoutText.addItem(spacerItem2)
         self.layoutContent.addWidget(self.frmText)
@@ -79,6 +101,12 @@ class Ui_About(object):
         _translate = QtCore.QCoreApplication.translate
         About.setWindowTitle(_translate("About", "À propos."))
         self.lblVersion.setText(_translate("About", "Version"))
-        self.lblAuthor.setText(_translate("About", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600;\">Ph. Poilbarbe</span><br/>© 2017</p></body></html>"))
+        self.lblAuthor.setText(_translate("About", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600;\">Ph. Poilbarbe</span><br/>© 2017-2018</p></body></html>"))
+        self.lblPythonVersionLbl.setText(_translate("About", "<html><head/><body><p><span style=\" font-style:italic;\">Version python:</span></p></body></html>"))
+        self.lblPythonVersion.setText(_translate("About", "TextLabel"))
+        self.lblQtVersionLbl.setText(_translate("About", "<html><head/><body><p><span style=\" font-style:italic;\">Version QT:</span></p></body></html>"))
+        self.lblQtVersion.setText(_translate("About", "TextLabel"))
+        self.lblPyqtVersionLbl.setText(_translate("About", "Version PyQT"))
+        self.lblPyQtVersion.setText(_translate("About", "TextLabel"))
 
 from . import resources_rc

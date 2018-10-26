@@ -56,7 +56,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def more_ui(self):
         self.change_title()
-        self.actionQuit.triggered.connect(self.close)
+        self.actionQuit.triggered.connect(self.handle_quit_action)
         self.actionRegister.triggered.connect(self.handle_register_action)
         self.actionCancel.triggered.connect(self.handle_cancel_action)
         self.actionRemove.triggered.connect(self.handle_remove_action)
@@ -292,6 +292,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self._filter_type = self.FILTER_ALL
             self.cbFilterType.setText("2")
         self.handle_filter_changed()
+
+    def handle_quit_action(self):
+        # Quitter par le menu fait sortir, pas mettre dans la zone de notification
+        self.tray_closing = True
+        self.close()
 
     def handle_register_action(self):
         self.do_add_activity()
