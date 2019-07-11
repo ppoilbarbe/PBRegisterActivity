@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>376</width>
-    <height>159</height>
+    <width>388</width>
+    <height>187</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -68,7 +68,7 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout">
+      <layout class="QHBoxLayout" name="layoutMisc">
        <item>
         <widget class="QSpinBox" name="spinMisc">
          <property name="toolTip">
@@ -119,6 +119,9 @@ Si 0, il n'y a pas de regroupement.</string>
        </property>
        <item>
         <widget class="QCheckBox" name="cbToTray">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Minimisation de l'application en zone de notification plutôt que dans la barre des tâches&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
          <property name="text">
           <string>Zone de notification (Qt5.6 et plus)</string>
          </property>
@@ -143,6 +146,27 @@ Si 0, il n'y a pas de regroupement.</string>
           </size>
          </property>
         </spacer>
+       </item>
+      </layout>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="lblAutoSave">
+       <property name="text">
+        <string>Sauvegarde auto:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <layout class="QHBoxLayout" name="layoutAutoSave">
+       <item>
+        <widget class="QCheckBox" name="cbAutoSave">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Lorsque le programme se termine, sauvegarde automatiquement la période de temps en cours de comptage. Si aucun nom n'a été donné, crée un nom par défaut.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="text">
+          <string>Si plus de 10 min</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>

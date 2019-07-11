@@ -14,6 +14,7 @@ from configparser import ConfigParser
 
 from PyQt5.QtCore import QByteArray
 
+
 class _Parameters(object):
     PARAM_SECTION = "windows"
     GEOMETRY = "_geometry"
@@ -31,7 +32,7 @@ class _Parameters(object):
         c.read(self.config_file)
 
     def _base_dir(self):
-        bd = os.path.join(os.environ['HOME'], self._config_dir)
+        bd = os.path.join(os.environ["HOME"], self._config_dir)
         if not os.path.isdir(bd):
             os.mkdir(bd)
         return bd
@@ -73,6 +74,14 @@ class _Parameters(object):
     @minimize_to_tray.setter
     def minimize_to_tray(self, value):
         self.app_set("minimize_to_tray", bool(value))
+
+    @property
+    def auto_save(self):
+        return self.app_get_bool("auto_save", default=False)
+
+    @auto_save.setter
+    def auto_save(self, value):
+        self.app_set("auto_save", bool(value))
 
     @property
     def misc_duration(self):
@@ -135,7 +144,7 @@ class _Parameters(object):
         if isinstance(data, str):
             d = str
         else:
-            d = str(data, encoding='utf8', errors='replace')
+            d = str(data, encoding="utf8", errors="replace")
         if not self._conf.has_section(self.PARAM_SECTION):
             self._conf.add_section(self.PARAM_SECTION)
         if self._get_wininfo(name) != d:

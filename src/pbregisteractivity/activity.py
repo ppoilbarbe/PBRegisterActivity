@@ -39,15 +39,18 @@ class Activity(object):
 
     @classmethod
     def from_string(cls, string):
-        fields = string.replace("%linefeed%", "\n").replace("%carriagereturn%", "\r").split("|", maxsplit=3)
+        fields = (
+            string.replace("%linefeed%", "\n")
+            .replace("%carriagereturn%", "\r")
+            .split("|", maxsplit=3)
+        )
         if len(fields) < 3:
             raise ActivityError("Ligne incorrectre, champs manquants: {0}", string)
         if len(fields) <= 3:
             fields.append("")
-        return cls(fields[0].strip(),
-                   fields[1].strip(),
-                   fields[2].strip(),
-                   fields[3].strip())
+        return cls(
+            fields[0].strip(), fields[1].strip(), fields[2].strip(), fields[3].strip()
+        )
 
     @classmethod
     def from_activity(cls, activity, start=None, end=None):
@@ -59,10 +62,7 @@ class Activity(object):
             start = activity.start
         if end > activity.end:
             end = activity.end
-        return cls(activity.name,
-                   start,
-                   end,
-                   activity.comment)
+        return cls(activity.name, start, end, activity.comment)
 
     def as_string(self):
         result = "{name}|{start}|{end}|{comment}".format(
@@ -74,30 +74,32 @@ class Activity(object):
         return result.replace("\n", "%linefeed%").replace("\r", "%carriagereturn%")
 
     def as_html(self):
-        fmt = "".join((
-            '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" ',
-            '"http://www.w3.org/TR/REC-html40/strict.dtd">',
-            '<html>',
-            '<head>',
-            '<meta name="qrichtext" content="1"/>',
-            '<style type="text/css">',
-            'p, li {{ white-space: pre-wrap; font-style:normal; font-family:monospace }} ',
-            'p {{ margin-top:0px; margin-bottom:0px; margin-left:0px; ',
-            'margin-right:0px; -qt-block-indent:0; text-indent:0px;}}',
-            '</style>',
-            '</head>',
-            '''<body style="font-family:'Sans Serif'; ''',
-            '''font-size:9pt; font-weight:400; font-style:normal;">''',
-            "<h2>{name}</h2><p>{comment}</p>",
-            "<ul>",
-            "<li>Début : {start}</li>",
-            "<li>Fin   : {end}</li>",
-            "<li>Durée : {duration}<br>",
-            "        {hduration:1.5f} (heure décimale)</li>",
-            "</ul",
-            '</body>',
-            '</html>',
-        ))
+        fmt = "".join(
+            (
+                '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" ',
+                '"http://www.w3.org/TR/REC-html40/strict.dtd">',
+                "<html>",
+                "<head>",
+                '<meta name="qrichtext" content="1"/>',
+                '<style type="text/css">',
+                "p, li {{ white-space: pre-wrap; font-style:normal; font-family:monospace }} ",
+                "p {{ margin-top:0px; margin-bottom:0px; margin-left:0px; ",
+                "margin-right:0px; -qt-block-indent:0; text-indent:0px;}}",
+                "</style>",
+                "</head>",
+                """<body style="font-family:'Sans Serif'; """,
+                """font-size:9pt; font-weight:400; font-style:normal;">""",
+                "<h2>{name}</h2><p>{comment}</p>",
+                "<ul>",
+                "<li>Début : {start}</li>",
+                "<li>Fin   : {end}</li>",
+                "<li>Durée : {duration}<br>",
+                "        {hduration:1.5f} (heure décimale)</li>",
+                "</ul",
+                "</body>",
+                "</html>",
+            )
+        )
         result = fmt.format(
             name=html.escape(self.name),
             comment=html.escape(self.comment).replace("\n", "<br>"),
@@ -179,8 +181,9 @@ class Activity(object):
                 d = datetime.strptime(value, self.DATE_FORMAT)
             return d.replace(microsecond=0)
         except ValueError as e:
-            raise ActivityError("{} '{}' invalide (pas au format ISO): {}",
-                                msg, value, e)
+            raise ActivityError(
+                "{} '{}' invalide (pas au format ISO): {}", msg, value, e
+            )
 
     def __str__(self):
         return self.as_string()
@@ -220,11 +223,13 @@ class _Activities(object):
         return sorted({x.name for x in self._activities})
 
     def all_activities(self, recent_first=False):
-        return sorted([x for x in self._activities],
-                      key=lambda x: x.start.isoformat() + " " + x.name,
-                      reverse=recent_first)
+        return sorted(
+            [x for x in self._activities],
+            key=lambda x: x.start.isoformat() + " " + x.name,
+            reverse=recent_first,
+        )
 
-    def pack_by_name(self, start: datetime=None, end: datetime=None) -> dict:
+    def pack_by_name(self, start: datetime = None, end: datetime = None) -> dict:
         """
         Retourne la liste de toutes les activités dans la période de temps
         demandée. Si une activité est à cheval sur une des bornes demandées,
@@ -248,7 +253,7 @@ class _Activities(object):
                 result[name].append(x)
         return result
 
-    def pack_durations(self, start: datetime=None, end: datetime=None) -> dict:
+    def pack_durations(self, start: datetime = None, end: datetime = None) -> dict:
         """
         Retourne les activités présentes dans dans la période de temps
         demandée. Si une activité est à cheval sur une des bornes demandées,
@@ -270,12 +275,10 @@ class _Activities(object):
             if x.seconds_duration > 0.0:
                 name = x.name
                 if name not in result:
-                    result[name] = dict(
-                        duration=0.0,
-                        comments=[])
-                result[name]['duration'] += x.seconds_duration
-                if x.comment != "" and x.comment not in result[name]['comments']:
-                    result[name]['comments'].append(x.comment)
+                    result[name] = dict(duration=0.0, comments=[])
+                result[name]["duration"] += x.seconds_duration
+                if x.comment != "" and x.comment not in result[name]["comments"]:
+                    result[name]["comments"].append(x.comment)
         return result
 
     def modified(self):

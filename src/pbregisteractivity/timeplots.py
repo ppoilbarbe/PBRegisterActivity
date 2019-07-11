@@ -7,19 +7,19 @@ Dialogue utilisé pour ajouter une plage d'activité manuellement
 
 # Tested with PYTHON 3.5. Not compatible with Python 2.x
 
-import os
 import csv
 import html
+import os
 import re
 from datetime import date, timedelta
 from io import StringIO
 
-from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.dates import DateFormatter, DayLocator, HourLocator
 from matplotlib.figure import Figure
+from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
 
 from .activity import activities
 from .parameters import parameters
@@ -60,23 +60,27 @@ class TimePlots(QDialog, Ui_TimePlots):
         self.btnHtmlSave.clicked.connect(self.handle_savehtml)
         self.btnCsvSave.clicked.connect(self.handle_savecsv)
 
-        self.plot_buttons = [self.btnTimeLines,
-                             self.btnPieChart,
-                             self.btnTextOutput,
-                             ]
+        self.plot_buttons = [self.btnTimeLines, self.btnPieChart, self.btnTextOutput]
 
         self._mpl_canvas = [None] * 3
         self._mpl_toolbar = [None] * 3
         self._figure = [None] * 3
-        for plotid, layout in [[self.PLOT_TIMELINES, self.layoutTimeLines],
-                               [self.PLOT_PIECHART, self.layoutPieChart]]:
+        for plotid, layout in [
+            [self.PLOT_TIMELINES, self.layoutTimeLines],
+            [self.PLOT_PIECHART, self.layoutPieChart],
+        ]:
             self._figure[plotid] = Figure()
             self._mpl_canvas[plotid] = FigureCanvas(self._figure[plotid])
-            self._mpl_toolbar[plotid] = NavigationToolbar(self._mpl_canvas[plotid], self)
+            self._mpl_toolbar[plotid] = NavigationToolbar(
+                self._mpl_canvas[plotid], self
+            )
             layout.addWidget(self._mpl_canvas[plotid])
             layout.addWidget(self._mpl_toolbar[plotid])
-        self.lblDurations.setText("Durée journalière: {}h; Divers=Durée<{}min".format(parameters.day_duration,
-                                                                                      parameters.misc_duration))
+        self.lblDurations.setText(
+            "Durée journalière: {}h; Divers=Durée<{}min".format(
+                parameters.day_duration, parameters.misc_duration
+            )
+        )
         self.switch_panel(None)
         self.cbCsvFull.setChecked(parameters.app_get_bool(self.PARAM_FULL_CVS))
         parameters.restore_window_state(self)
@@ -122,7 +126,7 @@ class TimePlots(QDialog, Ui_TimePlots):
 
         if len(what) > 0:
             plt.xaxis.set_major_locator(DayLocator())
-            plt.xaxis.set_major_formatter(DateFormatter('%b-%d'))
+            plt.xaxis.set_major_formatter(DateFormatter("%b-%d"))
             plt.xaxis.set_minor_locator(HourLocator(byhour=(8, 10, 12, 14, 16, 18, 20)))
             ylabels = []
             y = []
@@ -140,7 +144,7 @@ class TimePlots(QDialog, Ui_TimePlots):
                 tmp = max(x1)
                 if datemax is None or tmp > datemax:
                     datemax = tmp
-                plt.hlines([y[-1]] * len(x1), x1, x2, lw=2, color='red')
+                plt.hlines([y[-1]] * len(x1), x1, x2, lw=2, color="red")
             plt.set_ylim(len(ylabels) + 0.5, 0.5)
             plt.set_yticks(y)
             plt.set_yticklabels(ylabels)
@@ -149,10 +153,12 @@ class TimePlots(QDialog, Ui_TimePlots):
             plt.xaxis_date()
             for x in plt.xaxis.get_ticklabels():
                 x.set_rotation(45)
-                x.set_horizontalalignment('right')
+                x.set_horizontalalignment("right")
             plt.set_xlim(left=datemin, right=datemax)
-            plt.grid(which="major", axis="x", color='black', linestyle='dashed')
-            plt.grid(which="minor", axis="x", color='black', alpha=0.6, linestyle='dotted')
+            plt.grid(which="major", axis="x", color="black", linestyle="dashed")
+            plt.grid(
+                which="minor", axis="x", color="black", alpha=0.6, linestyle="dotted"
+            )
             self._figure[self.PLOT_TIMELINES].tight_layout()
         self.plot_title(self.PLOT_TIMELINES, duration=duration)
         # refresh canvas
@@ -167,7 +173,7 @@ class TimePlots(QDialog, Ui_TimePlots):
         miscelaneous = 0.0
         duration = 0.0
         for k, v in what.items():
-            d = v['duration']
+            d = v["duration"]
             duration += d
             if d < parameters.misc_duration * 60:
                 miscelaneous += d
@@ -179,9 +185,9 @@ class TimePlots(QDialog, Ui_TimePlots):
             values.append(miscelaneous)
 
         plt = self.new_plot(self.PLOT_PIECHART)
-        plt.pie(values, labels=labels, autopct='%1.1f%%')
+        plt.pie(values, labels=labels, autopct="%1.1f%%")
         # Ratio d'aspect égal entre x et y ==> cercle
-        plt.axis('equal')
+        plt.axis("equal")
         self.plot_title(self.PLOT_PIECHART, duration=duration)
         # Rafraichis le canevas
         self._mpl_canvas[self.PLOT_PIECHART].draw()
@@ -191,53 +197,79 @@ class TimePlots(QDialog, Ui_TimePlots):
         start, end = self.get_date_range()
         what = activities.pack_durations(start=start, end=end)
         txt = ""
-        strio = StringIO(newline='')
+        strio = StringIO(newline="")
         partial = not self.cbCsvFull.isChecked()
         if partial:
-            csvio = csv.DictWriter(strio,
-                                   quoting=csv.QUOTE_ALL,
-                                   fieldnames=["nom", "duree", "commentaires"])
+            csvio = csv.DictWriter(
+                strio,
+                quoting=csv.QUOTE_ALL,
+                fieldnames=["nom", "duree", "commentaires"],
+            )
         else:
-            csvio = csv.DictWriter(strio,
-                                   quoting=csv.QUOTE_ALL,
-                                   fieldnames=["nom", "debut", "fin", "duree", "duree_heures", "commentaires"])
+            csvio = csv.DictWriter(
+                strio,
+                quoting=csv.QUOTE_ALL,
+                fieldnames=[
+                    "nom",
+                    "debut",
+                    "fin",
+                    "duree",
+                    "duree_heures",
+                    "commentaires",
+                ],
+            )
         csvio.writeheader()
         for k, v in what.items():
             txt += "<h1>{0}</h1>".format(html.escape(k))
-            txt += "Durée: {}<br>".format(format_duration(v['duration']))
-            if len(v['comments']) > 0:
+            txt += "Durée: {}<br>".format(format_duration(v["duration"]))
+            if len(v["comments"]) > 0:
                 txt += "<ul>"
-                for x in v['comments']:
-                    lines = [html.escape(line) for line in re.split("[\r\n]+", x) if line != ""]
+                for x in v["comments"]:
+                    lines = [
+                        html.escape(line)
+                        for line in re.split("[\r\n]+", x)
+                        if line != ""
+                    ]
                     txt += "<li>{}</li>".format("<br>".join(lines))
                 txt += "</ul>"
             if partial:
-                csvio.writerow(dict(
-                    nom=k,
-                    duree="{:1.2f}".format(v['duration'] / 3600.0),
-                    commentaires="\n".join(v['comments']),
-                ))
+                csvio.writerow(
+                    dict(
+                        nom=k,
+                        duree="{:1.2f}".format(v["duration"] / 3600.0),
+                        commentaires="\n".join(v["comments"]),
+                    )
+                )
         if not partial:
             for k, v in activities.pack_by_name(start=start, end=end).items():
                 for activity in v:
                     delta = activity.end - activity.start
 
-                    csvio.writerow(dict(
-                        nom=k,
-                        debut=activity.start.strftime("%Y-%m-%d %H:%M:%S"),
-                        fin=activity.end.strftime("%Y-%m-%d %H:%M:%S"),
-                        duree="{}".format(delta),
-                        duree_heures="{:1.3f}".format(delta.total_seconds() / 3600.0),
-                        commentaires=activity.comment))
+                    csvio.writerow(
+                        dict(
+                            nom=k,
+                            debut=activity.start.strftime("%Y-%m-%d %H:%M:%S"),
+                            fin=activity.end.strftime("%Y-%m-%d %H:%M:%S"),
+                            duree="{}".format(delta),
+                            duree_heures="{:1.3f}".format(
+                                delta.total_seconds() / 3600.0
+                            ),
+                            commentaires=activity.comment,
+                        )
+                    )
 
         self.edtHtml.setHtml(txt + "\n")
         self.edtCsv.setPlainText(strio.getvalue())
 
     def handle_savehtml(self):
-        self.save_text(kind="HTML", ext=".html", text=self.edtHtml.toHtml(), param="html_dir")
+        self.save_text(
+            kind="HTML", ext=".html", text=self.edtHtml.toHtml(), param="html_dir"
+        )
 
     def handle_savecsv(self):
-        self.save_text(kind="CSV", ext=".csv", text=self.edtCsv.toPlainText(), param="csv_dir")
+        self.save_text(
+            kind="CSV", ext=".csv", text=self.edtCsv.toPlainText(), param="csv_dir"
+        )
 
     def switch_panel(self, what):
         self.frmTextOutput.setVisible(what == self.PLOT_TEXT)
@@ -263,38 +295,47 @@ class TimePlots(QDialog, Ui_TimePlots):
     def save_text(self, kind="Text", ext=".txt", text="", param=None):
         if text is None or len(text) == 0:
             return
-        file_filter = "{0} (*{1});; Texte (*.txt);; Tous les fichiers (*)".format(kind, ext)
+        file_filter = "{0} (*{1});; Texte (*.txt);; Tous les fichiers (*)".format(
+            kind, ext
+        )
         directory = ""
         if param is not None:
             directory = parameters.app_get(param, default="")
-        fn, flt = QFileDialog.getSaveFileName(self,
-                                              caption="Sauvegarde au format {0}".format(kind),
-                                              filter=file_filter,
-                                              directory=directory,
-                                              options=QFileDialog.DontResolveSymlinks)
+        fn, flt = QFileDialog.getSaveFileName(
+            self,
+            caption="Sauvegarde au format {0}".format(kind),
+            filter=file_filter,
+            directory=directory,
+            options=QFileDialog.DontResolveSymlinks,
+        )
         if fn is None or fn == "":
             return
         try:
             with open(fn, "w") as f:
                 f.write(text)
-            QMessageBox.information(self,
-                                    "SAUVEGARDE",
-                                    "Fichier {} «{}» créé.".format(kind, fn),
-                                    buttons=QMessageBox.Ok)
+            QMessageBox.information(
+                self,
+                "SAUVEGARDE",
+                "Fichier {} «{}» créé.".format(kind, fn),
+                buttons=QMessageBox.Ok,
+            )
             if param is not None:
                 parameters.app_set(param, os.path.dirname(fn))
         except IOError as e:
-            QMessageBox.critical(self,
-                                 "ERREUR",
-                                 "Problème pour enregistrer dans le fichier «{0}»:\n{1}".format(
-                                     fn,
-                                     e,
-                                 ),
-                                 buttons=QMessageBox.Close)
+            QMessageBox.critical(
+                self,
+                "ERREUR",
+                "Problème pour enregistrer dans le fichier «{0}»:\n{1}".format(fn, e),
+                buttons=QMessageBox.Close,
+            )
 
     def get_date_range(self):
         start = self.deStart.dateTime().toPyDateTime()
-        end = self.deEnd.dateTime().toPyDateTime().replace(hour=23, minute=59, second=59, microsecond=999999)
+        end = (
+            self.deEnd.dateTime()
+            .toPyDateTime()
+            .replace(hour=23, minute=59, second=59, microsecond=999999)
+        )
         return start, end
 
     def window_is_about_to_be_closed(self):

@@ -21,21 +21,16 @@ class QActivityListWidgetItem(QListWidgetItem):
         end = value.end.strftime("%Y/%m/%d %H:%M:%S")
         duration = str(value.end - value.start)
         txt = "{name} ({start} - {duration})".format(
-            name=value.name,
-            start=start,
-            duration=duration,
+            name=value.name, start=start, duration=duration
         )
         self.setText(txt)
         txt = "Début: {start}<br>Fin: {end}<br>Durée: {duration}".format(
-            start=start,
-            end=end,
-            duration=duration)
+            start=start, end=end, duration=duration
+        )
         self.setToolTip(txt)
         txt = "{name} - Début: {start}; Fin: {end}; Durée: {duration}".format(
-            name=value.name,
-            start=start,
-            end=end,
-            duration=duration)
+            name=value.name, start=start, end=end, duration=duration
+        )
         self.setStatusTip(txt)
         self.setData(Qt.UserRole, value)
 

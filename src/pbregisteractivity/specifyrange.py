@@ -60,7 +60,10 @@ class SpecifyRange(QDialog, Ui_SpecifyRange):
 
     def check_window(self):
         valid_name = self.name() != ""
-        valid_end = self.start_date() < self.end_date() and self.days_duration() <= self.sbDayDuration.maximum()
+        valid_end = (
+            self.start_date() < self.end_date()
+            and self.days_duration() <= self.sbDayDuration.maximum()
+        )
         self.lblEndWarning.setVisible(not valid_end)
         self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(valid_name and valid_end)
 
@@ -70,7 +73,9 @@ class SpecifyRange(QDialog, Ui_SpecifyRange):
         self._in_update = True
         days = self.sbDayDuration.value()
         time = self.timeDuration.time()
-        duration = days * 86400 + time.hour() * 3600 + time.minute() * 60 + time.second()
+        duration = (
+            days * 86400 + time.hour() * 3600 + time.minute() * 60 + time.second()
+        )
         self.dteEnd.setDateTime(self.start_date().addSecs(duration))
         self.check_window()
         self._in_update = False
@@ -99,8 +104,5 @@ class SpecifyRange(QDialog, Ui_SpecifyRange):
             self._activity.end = end
             self._activity.comment = comment
         else:
-            activities.add(Activity(name,
-                                    start,
-                                    end,
-                                    comment))
+            activities.add(Activity(name, start, end, comment))
         return super().accept()

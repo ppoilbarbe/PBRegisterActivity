@@ -7,11 +7,10 @@ Dialogue Version
 
 # Tested with PYTHON 3.5. Not compatible with Python 2.x
 
-import re
 import sys
 
-from PyQt5.QtCore import QT_VERSION_STR
 from PyQt5.Qt import PYQT_VERSION_STR
+from PyQt5.QtCore import QT_VERSION_STR
 from PyQt5.QtWidgets import QDialog
 
 from .ui.ui_about import Ui_About

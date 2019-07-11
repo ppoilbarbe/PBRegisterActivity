@@ -24,13 +24,14 @@ class Prefs(QDialog, Ui_Prefs):
         self.spinDayDuration.setValue(parameters.day_duration)
         self.spinMisc.setValue(parameters.misc_duration)
         self.cbToTray.setChecked(parameters.minimize_to_tray)
+        self.cbAutoSave.setChecked(parameters.auto_save)
         parameters.restore_window_state(self)
-
 
     def save_data(self):
         parameters.day_duration = self.spinDayDuration.value()
         parameters.misc_duration = self.spinMisc.value()
         parameters.minimize_to_tray = self.cbToTray.isChecked()
+        parameters.auto_save = self.cbAutoSave.isChecked()
 
     def window_is_about_to_be_closed(self):
         parameters.save_window_state(self)
