@@ -82,7 +82,8 @@ class Activity(object):
                 "<head>",
                 '<meta name="qrichtext" content="1"/>',
                 '<style type="text/css">',
-                "p, li {{ white-space: pre-wrap; font-style:normal; font-family:monospace }} ",
+                "p, li {{ white-space: pre-wrap; font-style:normal; "
+                "font-family:monospace }} ",
                 "p {{ margin-top:0px; margin-bottom:0px; margin-left:0px; ",
                 "margin-right:0px; -qt-block-indent:0; text-indent:0px;}}",
                 "</style>",

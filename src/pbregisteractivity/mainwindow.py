@@ -10,10 +10,10 @@ Fait aussi office de programme principal de l'interface graphique.
 # Tested with PYTHON 3.5. Not compatible with Python 2.x
 
 from datetime import datetime, timedelta
-from pkg_resources import parse_version
 
-from PyQt5.QtCore import QDateTime, QTimer, Qt, QT_VERSION_STR
-from PyQt5.QtGui import QPixmap, QIcon
+from pkg_resources import parse_version
+from PyQt5.QtCore import QDateTime, Qt, QT_VERSION_STR, QTimer
+from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import (
     QAction,
     QDialog,
@@ -21,13 +21,11 @@ from PyQt5.QtWidgets import (
     QMainWindow,
     QMenu,
     QMessageBox,
-    QStyle,
     QSystemTrayIcon,
-    qApp,
 )
 
 from .about import About
-from .activity import Activity, activities
+from .activity import activities, Activity
 from .custom_widgets import QActivityListWidgetItem
 from .parameters import parameters
 from .prefs import Prefs
@@ -290,7 +288,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         txt = "<p>{} plages sélectionnées.</p><p>Durée cumulée: <b>{}</b></p>".format(
             count, dtxt
         )
-        return ("Plages enregistrées sélectionnées", txt, dtxt)
+        return "Plages enregistrées sélectionnées", txt, dtxt
 
     def handle_timer(self):
         self._tick_count += 1
@@ -408,7 +406,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         modaldlg = About(self.program_version())
         modaldlg.exec_()
 
-    def handle_prefs_action(self):
+    @staticmethod
+    def handle_prefs_action():
         modaldlg = Prefs()
         modaldlg.exec_()
 
@@ -480,6 +479,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setWindowState(self.windowState() & ~Qt.WindowMinimized | Qt.WindowActive)
         self.raise_()
 
+    # noinspection PyUnusedLocal
     def to_tray_quit(self, event):
         self.tray_closing = True
         self.raise_window()
