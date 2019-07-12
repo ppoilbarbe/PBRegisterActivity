@@ -20,7 +20,7 @@ deploy:
   script:
     - make ui
     - make
-  artifact:
+  artifacts:
     name: "PBRegisterActivity-$CI_COMMIT_REF_NAME"
     paths:
       - PBRegisterActivity
