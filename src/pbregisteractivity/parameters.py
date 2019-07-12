@@ -1,7 +1,4 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-#
-
 """
 Paramètres généraux
 """
@@ -95,11 +92,13 @@ class _Parameters(object):
         name = window.WINDOW_NAME
         data = self._get_wininfo(name + self.GEOMETRY)
         if data != "":
+            # noinspection PyArgumentList,PyCallByClass
             window.restoreGeometry(QByteArray.fromBase64(data.encode("utf-8")))
 
         if hasattr(window, "restoreState"):
             data = self._get_wininfo(name + self.STATE)
             if data != "":
+                # noinspection PyArgumentList,PyCallByClass
                 window.restoreState(QByteArray.fromBase64(data.encode("utf-8")))
 
     def save_window_state(self, window):

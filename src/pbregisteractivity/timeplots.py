@@ -1,6 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#
 """
 Dialogue utilisé pour ajouter une plage d'activité manuellement
 """
@@ -35,6 +33,7 @@ class TimePlots(QDialog, Ui_TimePlots):
     WINDOW_NAME = "graphs"
     PARAM_FULL_CVS = "full_csv"
 
+    # noinspection PyTypeChecker
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
@@ -301,6 +300,7 @@ class TimePlots(QDialog, Ui_TimePlots):
         directory = ""
         if param is not None:
             directory = parameters.app_get(param, default="")
+        # noinspection PyArgumentList,PyCallByClass
         fn, flt = QFileDialog.getSaveFileName(
             self,
             caption="Sauvegarde au format {0}".format(kind),
@@ -313,6 +313,7 @@ class TimePlots(QDialog, Ui_TimePlots):
         try:
             with open(fn, "w") as f:
                 f.write(text)
+            # noinspection PyArgumentList,PyCallByClass
             QMessageBox.information(
                 self,
                 "SAUVEGARDE",
@@ -322,6 +323,7 @@ class TimePlots(QDialog, Ui_TimePlots):
             if param is not None:
                 parameters.app_set(param, os.path.dirname(fn))
         except IOError as e:
+            # noinspection PyArgumentList,PyCallByClass
             QMessageBox.critical(
                 self,
                 "ERREUR",

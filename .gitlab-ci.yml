@@ -1,25 +1,36 @@
-image: registry-s3.vlandata.cls.fr:5000/si-indus/docker-xenial/image:v1.0
+#image: registry-s3.vlandata.cls.fr:5000/si-indus/docker-xenial/image:v1.0
+image: python:3.5
 
 before_script:
-  - apt-get update
-  - apt-get install --yes make pyqt5-dev-tools zip
+  - "apt-get update && apt-get install --yes make pyqt5-dev-tools zip pylint3"
 
-build:
-  only:
-    - master
-  stage: build
-  script:
-    - make ui
-    - make
-
-deploy:
+.common: &common_def
   only:
     - tags
     - web
-  stage: deploy
+    - master
   script:
     - make ui
     - make
+    - |
+      export PYTHONPATH="$CI_PROJECT_DIR/src:$PYTHONPATH"
+      pylint3 src/__main__ || r=$?
+      if [ $r -ne 0 -a $r -le 2 ]
+      then
+        echo "Pylint fatal error: $r"
+        exit $r
+      else
+        echo "Pylint status=$r"
+      fi
+build:
+  <<: *common_def
+  stage: build
+
+deploy:
+  <<: *common_def
+  stage: deploy
+  except:
+    - master
   artifacts:
     name: "PBRegisterActivity-$CI_COMMIT_REF_NAME"
     paths:

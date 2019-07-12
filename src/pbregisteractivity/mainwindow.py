@@ -1,7 +1,4 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-#
-
 """
 Implémente le comportement de la fenêtre printipale.
 Fait aussi office de programme principal de l'interface graphique.
@@ -62,6 +59,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if self.tray_icon is not None:
             self.tray_icon.show()
 
+    # noinspection PyArgumentList,PyUnresolvedReferences
     def more_ui(self):
         self.change_title()
         self.actionQuit.triggered.connect(self.handle_quit_action)
@@ -92,6 +90,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.lcdDayTime.setSegmentStyle(QLCDNumber.Flat)
         self.lcdDayTime.setObjectName("lcdDayTime")
         self.lcdDayTime.setToolTip("Cumul du temps sur la journée")
+        # noinspection PyUnresolvedReferences
         self.statusBar.addPermanentWidget(self.lcdDayTime)
 
         # Initialise le texte de la checkbox
@@ -100,7 +99,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         )
         self.handle_filter_type_changed()
 
-        # noinspection PyUnresolvedReferences
         self._timer.timeout.connect(self.handle_timer)
 
         self._timer.setInterval(1000)
@@ -229,6 +227,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self._tick_count = 0
 
     def set_now(self):
+        # noinspection PyArgumentList
         self.dteStart.setDateTime(QDateTime.currentDateTime())
         self.edtComment.clear()
         self.cbbActivities.clearEditText()
@@ -240,6 +239,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     @staticmethod
     def end_date():
+        # noinspection PyArgumentList
         return QDateTime.currentDateTime()
 
     def current_activity_name(self):
@@ -348,6 +348,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             msg = "les {0} plages sélectionnées".format(len(selected))
         msg = "Êtes-vous sûr de vouloir supprimer {0} ?".format(msg)
+        # noinspection PyArgumentList,PyCallByClass
         reply = QMessageBox.question(
             self,
             "Suppression de plages",
@@ -375,6 +376,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def handle_save_action(self):
         activities.write()
 
+    # noinspection PyUnresolvedReferences
     def handle_history_selected_action(self):
         selected = self.listHistory.selectedItems()
         what, text, status = self.show_selection(selected)
@@ -425,6 +427,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 if parameters.auto_save:
                     reply = QMessageBox.Yes
                 else:
+                    # noinspection PyArgumentList,PyCallByClass
                     reply = QMessageBox.question(
                         self,
                         "Question de fin",

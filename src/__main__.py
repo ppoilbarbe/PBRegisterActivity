@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-#
 
 import fcntl
 import os
 import sys
 
+from PyQt5.QtCore import QLibraryInfo, QLocale, QTranslator
+from PyQt5.QtWidgets import QApplication
+
 from pbregisteractivity.mainwindow import MainWindow
 from pbregisteractivity.parameters import parameters
 from pbregisteractivity.utils import handle_gui_exception
-from PyQt5.QtCore import QLibraryInfo, QLocale, QTranslator
-from PyQt5.QtWidgets import QApplication
 
 
 class SingleInstanceException(BaseException):
@@ -44,6 +44,7 @@ class SingleInstance:
             os.unlink(self.lockfile)
 
 
+# noinspection PyArgumentList
 def translate_stock_widgets(app: QApplication) -> None:
     """
     Set standard Qt internal strings translated
@@ -59,8 +60,7 @@ def translate_stock_widgets(app: QApplication) -> None:
 
 def main():
     try:
-        # noinspection PyUnusedLocal
-        x = SingleInstance(parameters.unique_instance_lock_file)
+        locked = SingleInstance(parameters.unique_instance_lock_file)
     except SingleInstanceException:
         sys.exit(1)
 
@@ -70,7 +70,9 @@ def main():
     mw.main()
     sys.excepthook = handle_gui_exception
     exitcode = app.exec()
+    del locked
     sys.exit(exitcode)
 
 
-main()
+if __name__ == "__main__":
+    main()

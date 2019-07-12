@@ -1,6 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#
 """
 Dialogue utilisé pour ajouter une plage d'activité manuellement
 """
