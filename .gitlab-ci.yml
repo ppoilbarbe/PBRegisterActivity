@@ -1,13 +1,26 @@
 image: registry-s3.vlandata.cls.fr:5000/si-indus/docker-xenial/image:v1.0
 
 before_script:
-    - apt-get update
-    - apt-get install --yes make pyqt5-dev-tools zip
+  - apt-get update
+  - apt-get install --yes make pyqt5-dev-tools zip
 
 build:
-    only:
-        - master
-    stage: build
-    script:
-        - make ui
-        - make
+  only:
+    - master
+  stage: build
+  script:
+    - make ui
+    - make
+
+deploy:
+  only:
+    - tags
+    - web
+  stage: deploy
+  script:
+    - make ui
+    - make
+  artifact:
+    name: "PBRegisterActivity-$CI_COMMIT_REF_NAME"
+    paths:
+      - PBRegisterActivity
