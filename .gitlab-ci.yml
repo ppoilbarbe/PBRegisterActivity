@@ -35,3 +35,4 @@ deploy:
     name: "PBRegisterActivity-$CI_COMMIT_REF_NAME"
     paths:
       - PBRegisterActivity
+    expire_in: 3 months
