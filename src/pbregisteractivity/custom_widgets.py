@@ -5,6 +5,7 @@ Enregistre l'activité
 
 # Tested with PYTHON 3.5. Not compatible with Python 2.x
 
+# pylint: disable=no-name-in-module
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QListWidgetItem
 

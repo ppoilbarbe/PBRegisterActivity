@@ -8,6 +8,7 @@ Fait aussi office de programme principal de l'interface graphique.
 
 from datetime import datetime, timedelta
 
+# pylint: disable=no-name-in-module
 from pkg_resources import parse_version
 from PyQt5.QtCore import QDateTime, Qt, QT_VERSION_STR, QTimer
 from PyQt5.QtGui import QIcon, QPixmap

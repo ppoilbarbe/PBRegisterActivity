@@ -30,18 +30,21 @@
      <item row="0" column="1">
       <layout class="QHBoxLayout" name="layoutDayDuration">
        <item>
-        <widget class="QSpinBox" name="spinDayDuration">
+        <widget class="QDoubleSpinBox" name="spinDayDuration">
          <property name="toolTip">
           <string>Durée du jour de travail en heures</string>
          </property>
          <property name="suffix">
           <string>h</string>
          </property>
-         <property name="minimum">
-          <number>1</number>
-         </property>
          <property name="maximum">
-          <number>24</number>
+          <double>24.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.250000000000000</double>
+         </property>
+         <property name="value">
+          <double>0.000000000000000</double>
          </property>
         </widget>
        </item>

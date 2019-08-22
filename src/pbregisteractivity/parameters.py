@@ -58,11 +58,11 @@ class _Parameters(object):
 
     @property
     def day_duration(self):
-        return self.app_get_int("day_duration", default=8)
+        return self.app_get_float("day_duration", default=8.0)
 
     @day_duration.setter
     def day_duration(self, value):
-        self.app_set("day_duration", int(value))
+        self.app_set("day_duration", "{:1.02f}".format(float(value)))
 
     @property
     def minimize_to_tray(self):
@@ -124,6 +124,9 @@ class _Parameters(object):
 
     def app_get_int(self, name, default=None):
         return self._conf.getint(self._app_section, name, fallback=default)
+
+    def app_get_float(self, name, default=None):
+        return self._conf.getfloat(self._app_section, name, fallback=default)
 
     def write(self):
         if self._modified:

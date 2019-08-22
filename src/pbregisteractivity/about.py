@@ -7,6 +7,7 @@ Dialogue Version
 
 import sys
 
+# pylint: disable=no-name-in-module
 from PyQt5.Qt import PYQT_VERSION_STR
 from PyQt5.QtCore import QT_VERSION_STR
 from PyQt5.QtWidgets import QDialog

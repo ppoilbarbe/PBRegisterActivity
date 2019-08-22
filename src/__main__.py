@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""
+Main program for PBRegisterActivity
+"""
+
 import fcntl
 import os
 import sys
 
+# pylint: disable=no-name-in-module
 from PyQt5.QtCore import QLibraryInfo, QLocale, QTranslator
 from PyQt5.QtWidgets import QApplication
 
