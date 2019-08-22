@@ -8,6 +8,7 @@ Enregistre l'activité
 # pylint: disable=no-name-in-module
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QListWidgetItem
+from PyQt5.QtGui import QColor
 
 from .activity import Activity
 
@@ -29,6 +30,9 @@ class QActivityListWidgetItem(QListWidgetItem):
         txt = "{name} - Début: {start}; Fin: {end}; Durée: {duration}".format(
             name=value.name, start=start, end=end, duration=duration
         )
+        if value.is_automatic:
+            self.setBackground(QColor(Qt.darkRed))
+            self.setForeground(QColor(Qt.yellow))
         self.setStatusTip(txt)
         self.setData(Qt.UserRole, value)
 

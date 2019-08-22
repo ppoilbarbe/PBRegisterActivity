@@ -269,6 +269,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         lst = self.listHistory
         lst.clear()
         for x in activities.all_activities(recent_first=True):
+            print("AYAYAY", x, type(x))
             lst.addItem(QActivityListWidgetItem(x))
 
     @staticmethod
@@ -441,7 +442,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                         self.current_activity_name() == ""
                         and int(self.start_date().secsTo(self.end_date())) > 600
                     ):
-                        self.cbbActivities.setCurrentText("Automatic name")
+                        self.cbbActivities.setCurrentText(Activity.AUTOMATIC)
                     self.do_add_activity()
                 if reply == QMessageBox.Cancel:
                     event.ignore()

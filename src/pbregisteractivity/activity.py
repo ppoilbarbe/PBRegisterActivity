@@ -19,6 +19,7 @@ class ActivityError(Exception):
 
 class Activity(object):
     DATE_FORMAT = "%Y%m%dT%H%M%S"
+    AUTOMATIC = "Automatic name"
 
     def __init__(self, name, start, end, comment):
         self._name = "not set"
@@ -118,6 +119,10 @@ class Activity(object):
         if x != self._name:
             self._modified = True
             self._name = x
+
+    @property
+    def is_automatic(self):
+        return self.name == self.AUTOMATIC
 
     @property
     def start(self):
