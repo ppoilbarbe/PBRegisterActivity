@@ -70,7 +70,7 @@ def to_string(value):
     return str(value, encoding="utf8", errors="replace")
 
 
-def format_duration(duration: float) -> str:
+def format_duration(duration: float, with_partial_day: bool = False) -> str:
     """
     Format a duration expressed in decimal seconds as a time in
     decimal hours and duratons H:M:S
@@ -84,4 +84,9 @@ def format_duration(duration: float) -> str:
     h, s = divmod(t.seconds, 3600)
     m, s = divmod(s, 60)
     dstr = "{}j ".format(d) if d > 0 else ""
-    return "{:1.2f}h - {}{:02d}:{:02d}:{:02d}".format(duration / 3600.0, dstr, h, m, s)
+    partial_day = (
+        " - {:1.2f}j".format(duration / secs_by_day) if with_partial_day else ""
+    )
+    return "{:1.2f}h - {}{:02d}:{:02d}:{:02d}{}".format(
+        duration / 3600.0, dstr, h, m, s, partial_day
+    )

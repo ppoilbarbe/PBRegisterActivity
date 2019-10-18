@@ -437,6 +437,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                         buttons=QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel,
                         defaultButton=QMessageBox.No,
                     )
+                if reply == QMessageBox.Cancel:
+                    event.ignore()
+                    self._timer.start()
+                    if self.tray_icon is not None:
+                        # Recache la fenêtre
+                        self.hide()
+                    return
                 if reply == QMessageBox.Yes:
                     if (
                         self.current_activity_name() == ""
@@ -444,13 +451,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     ):
                         self.cbbActivities.setCurrentText(Activity.AUTOMATIC)
                     self.do_add_activity()
-                if reply == QMessageBox.Cancel:
-                    event.ignore()
-                    self._timer.start()
-                    if self.tray_icon is not None:
-                        # Rechache la fenêtre
-                        self.hide()
-                    return
             event.accept()
             parameters.save_window_state(self)
             parameters.write()

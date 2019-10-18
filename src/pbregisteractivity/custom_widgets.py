@@ -7,8 +7,8 @@ Enregistre l'activité
 
 # pylint: disable=no-name-in-module
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QListWidgetItem
 from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QListWidgetItem
 
 from .activity import Activity
 

@@ -5,12 +5,12 @@ Dialogue utilisé pour ajouter une plage d'activité manuellement
 
 # Tested with PYTHON 3.5. Not compatible with Python 2.x
 
-from PyQt5.QtCore import QTime, pyqtSlot
+from PyQt5.QtCore import pyqtSlot, QTime
 from PyQt5.QtWidgets import QDialog, QDialogButtonBox
 
-from .activity import Activity, activities
-from .utils import to_string
+from .activity import activities, Activity
 from .ui.ui_specifyrange import Ui_SpecifyRange
+from .utils import to_string
 
 
 # noinspection PyAbstractClass

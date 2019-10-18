@@ -285,7 +285,9 @@ class TimePlots(QDialog, Ui_TimePlots):
     def plot_title(self, figure_id, duration=0.0):
         txt = ""
         if duration > 0.0:
-            txt = "Durées des activités ({})".format(format_duration(duration))
+            txt = "Durées des activités ({})".format(
+                format_duration(duration, with_partial_day=True)
+            )
         fig = self._figure[figure_id]
         st = fig.suptitle(txt, fontsize="x-large")
         st.set_y(0.99)

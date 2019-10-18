@@ -104,7 +104,7 @@ class _Parameters(object):
     def save_window_state(self, window):
         name = window.WINDOW_NAME
         self._set_wininfo(name + self.GEOMETRY, window.saveGeometry().toBase64())
-        if hasattr(self, "saveState"):
+        if hasattr(window, "saveState"):
             self._set_wininfo(name + self.STATE, window.saveState().toBase64())
 
     def app_get(self, name, default=None):
