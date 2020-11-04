@@ -269,7 +269,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         lst = self.listHistory
         lst.clear()
         for x in activities.all_activities(recent_first=True):
-            print("AYAYAY", x, type(x))
             lst.addItem(QActivityListWidgetItem(x))
 
     @staticmethod
