@@ -277,8 +277,8 @@ class TimePlots(QDialog, Ui_TimePlots):
 
     def new_plot(self, figure_id):
         fig = self._figure[figure_id]
+        fig.clear()
         plt = fig.add_subplot(1, 1, 1)
-        plt.clear()
         fig.set_facecolor("white")
         return plt
 

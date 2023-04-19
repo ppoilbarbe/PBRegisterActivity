@@ -19,7 +19,7 @@ from pbregisteractivity.utils import handle_gui_exception
 
 
 class SingleInstanceException(BaseException):
-    pass
+    """raised when an instance of program is active"""
 
 
 class SingleInstance:
@@ -52,7 +52,7 @@ class SingleInstance:
 # noinspection PyArgumentList
 def translate_stock_widgets(app: QApplication) -> None:
     """
-    Set standard Qt internal strings translated
+    Set QT standard internal strings translated
     :param app: Application
     :return: None
     """
