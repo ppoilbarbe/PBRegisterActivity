@@ -202,7 +202,7 @@ class TimePlots(QDialog, Ui_TimePlots):
             csvio = csv.DictWriter(
                 strio,
                 quoting=csv.QUOTE_ALL,
-                fieldnames=["nom", "duree", "commentaires"],
+                fieldnames=["nom", "duree", "duree_heures", "commentaires"],
             )
         else:
             csvio = csv.DictWriter(
@@ -232,10 +232,13 @@ class TimePlots(QDialog, Ui_TimePlots):
                     txt += "<li>{}</li>".format("<br>".join(lines))
                 txt += "</ul>"
             if partial:
+                h, s = divmod(int(v["duration"]), 3600)
+                m, s = divmod(s, 60)
                 csvio.writerow(
                     dict(
                         nom=k,
-                        duree="{:1.2f}".format(v["duration"] / 3600.0),
+                        duree="{}:{:02d}:{:02d}".format(h, m, s),
+                        duree_heures="{:1.2f}".format(v["duration"] / 3600.0),
                         commentaires="\n".join(v["comments"]),
                     )
                 )
