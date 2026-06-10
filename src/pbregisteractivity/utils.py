@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 import os
 import sys
 import traceback
 from datetime import timedelta
 
-from PyQt5.QtWidgets import QApplication, QMessageBox
+from PySide6.QtWidgets import QApplication, QMessageBox
 
 from .parameters import parameters
 
@@ -23,20 +22,16 @@ def handle_gui_exception(exc_type, exc_value, exc_traceback):
     if len(t) > 10:
         err_msg = "...\n" + err_msg
     err_msg += "\nContinuer quand même ?"
-    # Here collecting traceback and some log files to be sent for debugging.
-    # But also possible to handle the error and continue working.
-    # noinspection PyArgumentList
     if (
         QMessageBox.critical(
             None,
             "ERREUR - Exception non capturée",
             err_msg,
-            buttons=QMessageBox.Yes | QMessageBox.No,
-            defaultButton=QMessageBox.No,
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
         )
-        != QMessageBox.Yes
+        != QMessageBox.StandardButton.Yes
     ):
-        # noinspection PyArgumentList
         QApplication.quit()
 
 
@@ -54,7 +49,7 @@ def to_string(value):
         return value
 
     if isinstance(value, float):
-        s = ("{0:1.8f}".format(value)).rstrip("0")
+        s = (f"{value:1.8f}").rstrip("0")
         if s[-1] == ".":
             s += "0"
         return s
@@ -73,7 +68,7 @@ def to_string(value):
 def format_duration(duration: float, with_partial_day: bool = False) -> str:
     """
     Format a duration expressed in decimal seconds as a time in
-    decimal hours and duratons H:M:S
+    decimal hours and durations H:M:S
     :param duration: In seconds
     :return: Formatted string
     """
@@ -83,10 +78,6 @@ def format_duration(duration: float, with_partial_day: bool = False) -> str:
     assert t.days == 0
     h, s = divmod(t.seconds, 3600)
     m, s = divmod(s, 60)
-    dstr = "{}j ".format(d) if d > 0 else ""
-    partial_day = (
-        " - {:1.2f}j".format(duration / secs_by_day) if with_partial_day else ""
-    )
-    return "{:1.2f}h - {}{:02d}:{:02d}:{:02d}{}".format(
-        duration / 3600.0, dstr, h, m, s, partial_day
-    )
+    dstr = f"{d}j " if d > 0 else ""
+    partial_day = f" - {duration / secs_by_day:1.2f}j" if with_partial_day else ""
+    return f"{duration / 3600.0:1.2f}h - {dstr}{h:02d}:{m:02d}:{s:02d}{partial_day}"

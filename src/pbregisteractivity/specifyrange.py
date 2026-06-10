@@ -1,14 +1,11 @@
-# -*- coding: utf-8 -*-
 """
 Dialogue utilisé pour ajouter une plage d'activité manuellement
 """
 
-# Tested with PYTHON 3.5. Not compatible with Python 2.x
+from PySide6.QtCore import QTime, Slot
+from PySide6.QtWidgets import QDialog, QDialogButtonBox
 
-from PyQt5.QtCore import pyqtSlot, QTime
-from PyQt5.QtWidgets import QDialog, QDialogButtonBox
-
-from .activity import activities, Activity
+from .activity import Activity, activities
 from .ui.ui_specifyrange import Ui_SpecifyRange
 from .utils import to_string
 
@@ -23,7 +20,7 @@ class SpecifyRange(QDialog, Ui_SpecifyRange):
         self.setWindowTitle(title)
         self.lblTitle.setText(title)
         self.cbbName.clear()
-        self.cbbName.addItems(activities.actvitiy_names())
+        self.cbbName.addItems(activities.activity_names())
         self.cbbName.setCurrentText(activity.name)
         self.dteStart.setDateTime(activity.start)
         self.edtComment.setPlainText(activity.comment)
@@ -63,7 +60,9 @@ class SpecifyRange(QDialog, Ui_SpecifyRange):
             and self.days_duration() <= self.sbDayDuration.maximum()
         )
         self.lblEndWarning.setVisible(not valid_end)
-        self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(valid_name and valid_end)
+        self.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(
+            valid_name and valid_end
+        )
 
     def duration_changed(self):
         if self._in_update:
@@ -90,7 +89,7 @@ class SpecifyRange(QDialog, Ui_SpecifyRange):
         self.check_window()
         self._in_update = False
 
-    @pyqtSlot()
+    @Slot()
     def accept(self):
         name = self.name()
         start = self.start_date().toString("yyyyMMddThhmmss")

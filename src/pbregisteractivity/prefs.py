@@ -1,12 +1,9 @@
-# -*- coding: utf-8 -*-
 """
 Dialogue utilisé pour ajouter une plage d'activité manuellement
 """
 
-# Tested with PYTHON 3.5. Not compatible with Python 2.x
-
-from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtWidgets import QDialog
+from PySide6.QtCore import Slot
+from PySide6.QtWidgets import QDialog
 
 from .parameters import parameters
 from .ui.ui_prefs import Ui_Prefs
@@ -34,16 +31,16 @@ class Prefs(QDialog, Ui_Prefs):
     def window_is_about_to_be_closed(self):
         parameters.save_window_state(self)
 
-    def closeEvent(self, event):
+    def closeEvent(self, event):  # noqa: N802
         self.window_is_about_to_be_closed()
         event.accept()
 
-    @pyqtSlot()
+    @Slot()
     def reject(self):
         self.window_is_about_to_be_closed()
         return super().reject()
 
-    @pyqtSlot()
+    @Slot()
     def accept(self):
         self.save_data()
         self.window_is_about_to_be_closed()

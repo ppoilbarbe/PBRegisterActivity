@@ -1,19 +1,14 @@
-# -*- coding: utf-8 -*-
 """
-Implémente le comportement de la fenêtre printipale.
+Implémente le comportement de la fenêtre principale.
 Fait aussi office de programme principal de l'interface graphique.
 """
 
-# Tested with PYTHON 3.5. Not compatible with Python 2.x
-
 from datetime import datetime, timedelta
+from importlib.metadata import version as _pkg_version
 
-# pylint: disable=no-name-in-module
-from pkg_resources import parse_version
-from PyQt5.QtCore import QDateTime, Qt, QT_VERSION_STR, QTimer
-from PyQt5.QtGui import QIcon, QPixmap
-from PyQt5.QtWidgets import (
-    QAction,
+from PySide6.QtCore import QDateTime, Qt, QTimer
+from PySide6.QtGui import QAction, QIcon, QPixmap
+from PySide6.QtWidgets import (
     QDialog,
     QLCDNumber,
     QMainWindow,
@@ -23,7 +18,7 @@ from PyQt5.QtWidgets import (
 )
 
 from .about import About
-from .activity import activities, Activity
+from .activity import Activity, activities
 from .custom_widgets import QActivityListWidgetItem
 from .parameters import parameters
 from .prefs import Prefs
@@ -31,7 +26,11 @@ from .specifyrange import SpecifyRange
 from .timeplots import TimePlots
 from .ui.ui_mainwindow import Ui_MainWindow
 from .utils import format_duration, to_string
-from .version import __version__ as version
+
+version = _pkg_version("pbregisteractivity")
+
+# Intervalle de sauvegarde automatique silencieuse (en secondes)
+_AUTOSAVE_INTERVAL = 300
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -44,6 +43,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super().__init__()
         self._title_normal = False
         self._tick_count = 0
+        self._autosave_ticks = 0
         self._filter_type = 0
         self._last_daytime_text = "00:00"
         self._filter_type = 0
@@ -88,47 +88,35 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.lcdDayTime = QLCDNumber(self.layoutWidget1)
         self.lcdDayTime.setSmallDecimalPoint(False)
         self.lcdDayTime.setDigitCount(5)
-        self.lcdDayTime.setSegmentStyle(QLCDNumber.Flat)
+        self.lcdDayTime.setSegmentStyle(QLCDNumber.SegmentStyle.Flat)
         self.lcdDayTime.setObjectName("lcdDayTime")
         self.lcdDayTime.setToolTip("Cumul du temps sur la journée")
         # noinspection PyUnresolvedReferences
         self.statusBar.addPermanentWidget(self.lcdDayTime)
 
-        # Initialise le texte de la checkbox
         self.cbFilterType.setCheckState(
-            parameters.app_get_int("filter_state", default=Qt.Unchecked)
+            Qt.CheckState(parameters.app_get_int("filter_state", default=0))
         )
         self.handle_filter_type_changed()
 
         self._timer.timeout.connect(self.handle_timer)
-
         self._timer.setInterval(1000)
         self._timer.start()
 
         self.set_now()
-
         self.fill_activity_list()
 
-        # Init QSystemTrayIcon
-        # Before 5.6, QSystemTrayIcon does not work correctly
-        if (
-            QSystemTrayIcon.isSystemTrayAvailable()
-            and parse_version(QT_VERSION_STR) >= parse_version("5.6")
-            and parameters.minimize_to_tray
-        ):
+        # Init QSystemTrayIcon — PySide6/Qt6 tray support est toujours disponible
+        if QSystemTrayIcon.isSystemTrayAvailable() and parameters.minimize_to_tray:
             self.tray_icon = QSystemTrayIcon(self)
             icon = QIcon()
             icon.addPixmap(
                 QPixmap(":/images/icons/128x128/obj_hal9000.png"),
-                QIcon.Normal,
-                QIcon.Off,
+                QIcon.Mode.Normal,
+                QIcon.State.Off,
             )
             self.tray_icon.setIcon(icon)
 
-            # Define and add steps to work with the system tray icon
-            #   show - show window
-            #   hide - hide window
-            #   exit - exit from application
             show_action = QAction("Restaurer", self)
             quit_action = QAction("Quitter", self)
             hide_action = QAction("Masquer", self)
@@ -144,12 +132,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     @staticmethod
     def program_version():
-        return "{0} - {1}".format(parameters.application_name, version)
+        return f"{parameters.application_name} - {version}"
 
     def change_title(self, special_text=""):
         if (
             special_text == ""
-            or self.windowState() & Qt.WindowMinimized != Qt.WindowMinimized
+            or self.windowState() & Qt.WindowState.WindowMinimized
+            != Qt.WindowState.WindowMinimized
         ):
             if not self._title_normal:
                 self.setWindowTitle(self.program_version())
@@ -180,33 +169,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         name = self.current_activity_name()
         if name == "":
             name = "<pas de nom>"
-        self.change_title(
-            special_text="{}-{} [{}]".format(txt, name, self._last_daytime_text)
-        )
+        self.change_title(special_text=f"{txt}-{name} [{self._last_daytime_text}]")
         self.lcdDuration.display(txt)
         txt = self.end_date().toString("yyyy/MM/dd hh:mm:ss")
         lbl = self.lblEndText
         lbl.setText(txt)
         ok = False
         if diff >= 90 * 3600:
-            style = (
-                "{name} {{"
-                "color:{fg}; "
-                "background-color:{bg}; "
-                "font-weight: bold;"
-                "}}"
-            )
+            style = "{name} {{color:{fg}; background-color:{bg}; font-weight: bold;}}"
             style = style.format(
                 name=lbl.metaObject().className(), fg="#FFFF00", bg="#FF0000"
             )
         elif diff < 0:
-            style = (
-                "{name} {{"
-                "color:{fg}; "
-                "background-color:{bg}; "
-                "font-weight: bold;"
-                "}}"
-            )
+            style = "{name} {{color:{fg}; background-color:{bg}; font-weight: bold;}}"
             style = style.format(
                 name=lbl.metaObject().className(), fg="#000000", bg="#F3F346"
             )
@@ -255,15 +230,29 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         )
 
     def do_add_activity(self):
-        if self.current_activity_name() != "":
-            activities.add(self.get_activity_from_window())
-            return True
-        return False
+        if self.current_activity_name() == "":
+            return False
+        activity = self.get_activity_from_window()
+        overlaps = activities.overlapping_with(activity)
+        if overlaps:
+            names = ", ".join(sorted({a.name for a in overlaps}))
+            reply = QMessageBox.warning(
+                self,
+                "Chevauchement détecté",
+                f"Cette activité chevauche {len(overlaps)} plage(s) "
+                f"existante(s) ({names}).\nEnregistrer quand même ?",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.No,
+            )
+            if reply != QMessageBox.StandardButton.Yes:
+                return False
+        activities.add(activity)
+        return True
 
     def fill_activity_list(self):
         oldtxt = self.cbbActivities.currentText()
         self.cbbActivities.clear()
-        self.cbbActivities.addItems(activities.actvitiy_names())
+        self.cbbActivities.addItems(activities.activity_names())
         self.cbbActivities.setCurrentText(oldtxt)
         self.set_list_actions_enabled()
         lst = self.listHistory
@@ -286,13 +275,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         for x in selected:
             duration += x.value().seconds_duration
         dtxt = format_duration(duration)
-        txt = "<p>{} plages sélectionnées.</p><p>Durée cumulée: <b>{}</b></p>".format(
-            count, dtxt
-        )
+        txt = f"<p>{count} plages sélectionnées.</p><p>Durée cumulée: <b>{dtxt}</b></p>"
         return "Plages enregistrées sélectionnées", txt, dtxt
 
     def handle_timer(self):
         self._tick_count += 1
+        self._autosave_ticks += 1
+        if self._autosave_ticks >= _AUTOSAVE_INTERVAL:
+            activities.write()
+            self._autosave_ticks = 0
         self.check_window(with_day_time=self._tick_count >= 10)
 
     def handle_filter_changed(self):
@@ -310,10 +301,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def handle_filter_type_changed(self):
         state = self.cbFilterType.checkState()
-        if state == Qt.Unchecked:
+        if state == Qt.CheckState.Unchecked:
             self._filter_type = self.FILTER_NAME
             self.cbFilterType.setText("N")
-        elif state == Qt.Checked:
+        elif state == Qt.CheckState.Checked:
             self._filter_type = self.FILTER_COMMENT
             self.cbFilterType.setText("C")
         else:
@@ -347,17 +338,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if len(selected) < 2:
             msg = "la plage sélectionnée"
         else:
-            msg = "les {0} plages sélectionnées".format(len(selected))
-        msg = "Êtes-vous sûr de vouloir supprimer {0} ?".format(msg)
+            msg = f"les {len(selected)} plages sélectionnées"
+        msg = f"Êtes-vous sûr de vouloir supprimer {msg} ?"
         # noinspection PyArgumentList,PyCallByClass
         reply = QMessageBox.question(
             self,
             "Suppression de plages",
             msg,
-            buttons=QMessageBox.Yes | QMessageBox.No,
-            defaultButton=QMessageBox.No,
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No,
         )
-        if reply == QMessageBox.Yes:
+        if reply == QMessageBox.StandardButton.Yes:
             for x in selected:
                 activities.remove(x.value())
             self.fill_activity_list()
@@ -370,7 +361,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         modaldlg = SpecifyRange(
             selected[0].value(), "Modification d'une activité", modify=True
         )
-        if modaldlg.exec_() != QDialog.Rejected:
+        if modaldlg.exec() != QDialog.DialogCode.Rejected:
             self.fill_activity_list()
 
     # noinspection PyMethodMayBeStatic
@@ -400,50 +391,51 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         modaldlg = SpecifyRange(
             self.get_activity_from_window(), "Création d'une activité"
         )
-        if modaldlg.exec_() != QDialog.Rejected:
+        if modaldlg.exec() != QDialog.DialogCode.Rejected:
             self.cbbActivities.clearEditText()
             self.edtComment.clear()
             self.fill_activity_list()
 
     def handle_about_action(self):
         modaldlg = About(self.program_version())
-        modaldlg.exec_()
+        modaldlg.exec()
 
     @staticmethod
     def handle_prefs_action():
         modaldlg = Prefs()
-        modaldlg.exec_()
+        modaldlg.exec()
 
     # noinspection PyMethodMayBeStatic
     def handle_extract_action(self):
         modaldlg = TimePlots()
-        modaldlg.exec_()
+        modaldlg.exec()
 
-    def closeEvent(self, event):
+    def closeEvent(self, event):  # noqa: N802
         if self.tray_icon is None or self.tray_closing:
             self.tray_closing = False
             self._timer.stop()
             if self.current_activity_name() != "" or parameters.auto_save:
                 # noinspection PyCallByClass
                 if parameters.auto_save:
-                    reply = QMessageBox.Yes
+                    reply = QMessageBox.StandardButton.Yes
                 else:
                     # noinspection PyArgumentList,PyCallByClass
                     reply = QMessageBox.question(
                         self,
                         "Question de fin",
                         "Sauvegarder la dernière activité avant de quitter",
-                        buttons=QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel,
-                        defaultButton=QMessageBox.No,
+                        QMessageBox.StandardButton.Yes
+                        | QMessageBox.StandardButton.No
+                        | QMessageBox.StandardButton.Cancel,
+                        QMessageBox.StandardButton.No,
                     )
-                if reply == QMessageBox.Cancel:
+                if reply == QMessageBox.StandardButton.Cancel:
                     event.ignore()
                     self._timer.start()
                     if self.tray_icon is not None:
-                        # Recache la fenêtre
                         self.hide()
                     return
-                if reply == QMessageBox.Yes:
+                if reply == QMessageBox.StandardButton.Yes:
                     if (
                         self.current_activity_name() == ""
                         and int(self.start_date().secsTo(self.end_date())) > 600
@@ -460,7 +452,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.tray_icon.showMessage(
                 parameters.application_name,
                 "Application réduite dans la zone de notification",
-                QSystemTrayIcon.Information,
+                QSystemTrayIcon.MessageIcon.Information,
                 2000,
             )
 
@@ -475,12 +467,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             (h, m) = divmod(seconds, 3600)
             (m, s) = divmod(m, 60)
-            txt = "{:02d}:{:02d}:{:02d}".format(int(h), int(m), int(s))
+            txt = f"{int(h):02d}:{int(m):02d}:{int(s):02d}"
         return txt[:length]
 
     def raise_window(self):
         self.show()
-        self.setWindowState(self.windowState() & ~Qt.WindowMinimized | Qt.WindowActive)
+        self.setWindowState(
+            self.windowState() & ~Qt.WindowState.WindowMinimized
+            | Qt.WindowState.WindowActive
+        )
         self.raise_()
 
     # noinspection PyUnusedLocal
@@ -490,5 +485,5 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.close()
 
     def tray_icon_activated(self, reason):
-        if reason == QSystemTrayIcon.DoubleClick:
+        if reason == QSystemTrayIcon.ActivationReason.DoubleClick:
             self.raise_window()

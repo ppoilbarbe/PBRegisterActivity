@@ -1,16 +1,12 @@
-# -*- coding: utf-8 -*-
 """
 Dialogue Version
 """
 
-# Tested with PYTHON 3.5. Not compatible with Python 2.x
+import platform
 
-import sys
-
-# pylint: disable=no-name-in-module
-from PyQt5.Qt import PYQT_VERSION_STR
-from PyQt5.QtCore import QT_VERSION_STR
-from PyQt5.QtWidgets import QDialog
+import PySide6
+from PySide6.QtCore import qVersion
+from PySide6.QtWidgets import QDialog
 
 from .ui.ui_about import Ui_About
 
@@ -21,6 +17,6 @@ class About(QDialog, Ui_About):
         super().__init__()
         self.setupUi(self)
         self.lblVersion.setText(version)
-        self.lblQtVersion.setText(QT_VERSION_STR)
-        self.lblPythonVersion.setText(sys.version)
-        self.lblPyQtVersion.setText(PYQT_VERSION_STR)
+        self.lblPythonVersion.setText(platform.python_version())
+        self.lblQtVersion.setText(qVersion())
+        self.lblPySide6Version.setText(PySide6.__version__)

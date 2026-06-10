@@ -3,72 +3,44 @@
 Programme pour enregistrer son activité afin de pouvoir remplir le CRA
 (Compte-Rendu d'Activité) ou un autre type de justificatif.
 
-## Prérequis
+## Installation
 
-### Exécution
+Télécharger l'exécutable correspondant à votre plateforme depuis la page
+des releases, puis le rendre exécutable (Linux/macOS) :
 
-  - Python 3.5 standard (ou supérieur) doit être installé
-  - PyQt5 (Python Bindings for Qt 5) doit être accessible
-  - matplotlib (tracés graphiques)
+```bash
+chmod +x pbregisteractivity-*-linux-x86_64
+./pbregisteractivity-*-linux-x86_64
+```
 
-### Compilation
+Aucune installation Python ni de dépendances supplémentaires n'est requise :
+l'exécutable est autonome.
 
-  - zip
+## Utilisation
 
-### Développement
+Au lancement, la fenêtre principale permet de :
 
-  Les prérequis d'exécution, de compilation et:
+- saisir le nom de l'activité en cours (avec auto-complétion sur l'historique)
+- ajuster l'heure de début si nécessaire
+- enregistrer la plage avec **Enregistrer**
 
-  - Designer 5 (modification de l'interface)
-  - les outils de conversion vers Python des fichiers ui et qrc doivent
-    être installés (pyuic5 et pyrcc5, paquet debian `pyqt5-dev-tools`)
+La barre de statut affiche le cumul de temps sur la journée. La fenêtre
+peut être réduite dans la zone de notification système.
 
-## Compilation
+Le menu **Extraire** ouvre un dialogue d'analyse avec trois vues
+(chronologie, camembert, texte) et permet d'exporter en HTML ou CSV.
 
-Le programme est écrit en Python mais est conçu pour être autonome en
-un seul fichier.
+## Fichiers de données
 
-### Livraison
+| Fichier | Rôle |
+|---|---|
+| `~/.pbregisteractivity/config.ini` | Configuration de l'application |
+| `~/.pbregisteractivity/activity.txt` | Activités enregistrées |
 
-Pour créer l'exécutable, taper la commande «`make`», le fichier
-`PBRegisterActivity` est alors utilisable tel que comme commande.
+## Licence
 
-On peut aussi le lancer en préfixant le nom par `python3` (ou python si
-c'est la version 3 qui est votre version par défaut)
+GNU General Public License v3 — voir le fichier [LICENSE](LICENSE).
 
-    python3 PBRegisterActivity
+---
 
-### Pendant le développement
-
-Lors de chaque modification d'interface graphique (fichiers .ui et .uic),
-il faut lancer «make» dans le répertoire ui ou lancer «make ui» dans le
-réperoire racine.
-
-La commande «python3 src» dans le répertoire racine permet le lancement
-de l'application sans créer le fichier qui embarque tout.
-
-## Fichiers
-
-### Configuration
-
-La configuration du programme est dans
-`$HOME/.pbregisteractivity/config.ini`
-
-### Données
-
-Les données saisies sont enregistrées dans
-`$HOME/.pbregisteractivity/activity.txt`
-
-### Verrou
-
-Pour que l'application ne s'exécute pas 2 fois en même temps
-sur le même compte, un fichier verrou est mis en place:
-`$HOME/.pbregisteractivity/pbregisteractivity_running_once.lock`.
-
-Ceci est nécessaire car le fichier de données est entièrement récrit
-par l'application et on ne saurait pas qui écrirait la bonne
-valeur, si tant est qu'il y en ait une, lorsque deux programmes,
-voire plus, s'exécutent en même temps.
-
-Le fichier est présent durant toute l'exécution du programme puis
-est supprimé.
+*Pour la compilation et le développement, voir [CODING.md](CODING.md).*

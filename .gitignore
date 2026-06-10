@@ -1,4 +1,48 @@
-/.idea
-/PBRegisterActivity*
-__pycache__
-*.pyc
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# Sphinx
+docs/_build/
+docs/changelog.rst
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Qt — generated from .ui and .qrc files, never committed
+src/pbregisteractivity/ui/ui_*.py
+src/pbregisteractivity/ui/resources_rc.py
+
+# Make stamp files
+.translate.stamp
+
+# i18n — generated artifacts, rebuilt on demand by make translate
+*.pot
+*.mo
+tools/_ui_strings_tmp.py
+
+# Claude Code
+.claude/settings.local.json

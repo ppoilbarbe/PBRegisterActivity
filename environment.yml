@@ -1,0 +1,15 @@
+name: pbregisteractivity
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.12
+  - pyside6
+  - matplotlib
+  - pyinstaller
+  - ruff
+  - pre-commit
+  - pip
+  - pip:
+      - -e "."

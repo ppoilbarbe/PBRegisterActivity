@@ -1,14 +1,9 @@
-# -*- coding: utf-8 -*-
 """
 Enregistre l'activité
 """
 
-# Tested with PYTHON 3.5. Not compatible with Python 2.x
-
 import html
 from datetime import datetime, timedelta
-
-from .parameters import parameters
 
 
 class ActivityError(Exception):
@@ -17,7 +12,7 @@ class ActivityError(Exception):
         super().__init__(txt)
 
 
-class Activity(object):
+class Activity:
     DATE_FORMAT = "%Y%m%dT%H%M%S"
     AUTOMATIC = "Automatic name"
 
@@ -43,7 +38,7 @@ class Activity(object):
             .split("|", maxsplit=3)
         )
         if len(fields) < 3:
-            raise ActivityError("Ligne incorrectre, champs manquants: {0}", string)
+            raise ActivityError("Ligne incorrecte, champs manquants: {0}", string)
         if len(fields) <= 3:
             fields.append("")
         return cls(
@@ -63,12 +58,9 @@ class Activity(object):
         return cls(activity.name, start, end, activity.comment)
 
     def as_string(self):
-        result = "{name}|{start}|{end}|{comment}".format(
-            name=self.name,
-            start=self.start.strftime(self.DATE_FORMAT),
-            end=self.end.strftime(self.DATE_FORMAT),
-            comment=self.comment,
-        )
+        start = self.start.strftime(self.DATE_FORMAT)
+        end = self.end.strftime(self.DATE_FORMAT)
+        result = f"{self.name}|{start}|{end}|{self.comment}"
         return result.replace("\n", "%linefeed%").replace("\r", "%carriagereturn%")
 
     def as_html(self):
@@ -176,6 +168,9 @@ class Activity(object):
     def clear_modified(self):
         self._modified = False
 
+    def overlaps_with(self, other: "Activity") -> bool:
+        return self.start < other.end and self.end > other.start
+
     def _to_datetime(self, value, msg):
         try:
             if isinstance(value, datetime):
@@ -192,12 +187,16 @@ class Activity(object):
         return self.as_string()
 
 
-class _Activities(object):
+class _Activities:
     def __init__(self):
         self._activities = []
         self._modified = False
+        self._filepath = None
+
+    def load(self, filepath: str) -> None:
+        self._filepath = filepath
         try:
-            with open(parameters.activity_file, encoding="utf-8") as f:
+            with open(filepath, encoding="utf-8") as f:
                 for line in f:
                     line = line.strip()
                     if line != "":
@@ -219,11 +218,13 @@ class _Activities(object):
                 del self._activities[self._activities.index(a)]
                 self._modified = True
             except ValueError:
-                # a not in list
                 pass
 
-    def actvitiy_names(self):
+    def activity_names(self):
         return sorted({x.name for x in self._activities})
+
+    def overlapping_with(self, activity: Activity) -> list:
+        return [a for a in self._activities if a.overlaps_with(activity)]
 
     def all_activities(self, recent_first=False):
         return sorted(
@@ -244,7 +245,7 @@ class _Activities(object):
 
         :param start: Date de début de sélection. Si None pas de limite inférieure.
         :param end: Date de fin de sélection. Si None pas de limite supérieure.
-        :return: Clef: nom de l'acivité. Valeur, liste d'activités.
+        :return: Clef: nom de l'activité. Valeur, liste d'activités.
         """
         result = {}
         for activity in self._activities:
@@ -258,15 +259,13 @@ class _Activities(object):
 
     def pack_durations(self, start: datetime = None, end: datetime = None) -> dict:
         """
-        Retourne les activités présentes dans dans la période de temps
-        demandée. Si une activité est à cheval sur une des bornes demandées,
-        l'activité est découpée à la limite de la borne.
+        Retourne les activités présentes dans la période de temps demandée,
+        agrégées par nom.
 
         Le résultat est un dictionnaire dont les clefs sont les noms d'activités
         et les valeurs un dictionnaire contenant:
             - duration: la somme des durées de l'activité sur l'intervalle de temps
-            - comments: la liste des commenaitaires non vides des activités
-              sélectionnées (les doublons sont éliminés).
+            - comments: la liste des commentaires non vides (doublons éliminés).
 
         :param start: Date de début de sélection. Si None pas de limite inférieure.
         :param end: Date de fin de sélection. Si None pas de limite supérieure.
@@ -288,9 +287,9 @@ class _Activities(object):
         return self._modified or any([x.modified for x in self._activities])
 
     def write(self):
-        if not self.modified():
+        if not self.modified() or self._filepath is None:
             return
-        with open(parameters.activity_file, "w", encoding="utf-8") as f:
+        with open(self._filepath, "w", encoding="utf-8") as f:
             for x in self._activities:
                 # noinspection PyTypeChecker
                 print(x, file=f)

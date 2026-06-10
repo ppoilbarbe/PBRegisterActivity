@@ -1,18 +1,17 @@
-# -*- coding: utf-8 -*-
 """
 Paramètres généraux
 """
 
-# Tested with PYTHON 3.5. Not compatible with Python 2.x
-
 import io
-import os
 from configparser import ConfigParser
+from pathlib import Path
 
-from PyQt5.QtCore import QByteArray
+from PySide6.QtCore import QByteArray
+
+from .platform.dirs import app_dir
 
 
-class _Parameters(object):
+class _Parameters:
     PARAM_SECTION = "windows"
     GEOMETRY = "_geometry"
     STATE = "_state"
@@ -21,18 +20,14 @@ class _Parameters(object):
         self._modified = False
         self._application_name = "PBRegisterActivity"
         self._app_section = self._application_name.lower()
-        self._config_dir = "." + self._application_name.lower()
 
         c = ConfigParser()
         self._conf = c
 
         c.read(self.config_file)
 
-    def _base_dir(self):
-        bd = os.path.join(os.environ["HOME"], self._config_dir)
-        if not os.path.isdir(bd):
-            os.mkdir(bd)
-        return bd
+    def _base_dir(self) -> Path:
+        return app_dir()
 
     def _get_conf_str(self):
         f = io.StringIO()
@@ -44,17 +39,18 @@ class _Parameters(object):
         return self._application_name
 
     @property
-    def config_file(self):
-        return os.path.join(self._base_dir(), "config.ini")
+    def config_file(self) -> str:
+        return str(self._base_dir() / "config.ini")
 
     @property
-    def activity_file(self):
-        return os.path.join(self._base_dir(), "activity.txt")
+    def activity_file(self) -> str:
+        return str(self._base_dir() / "activity.txt")
 
     @property
-    def unique_instance_lock_file(self):
-        basename = "{0}_running_once.lock".format(self.application_name.lower())
-        return os.path.join(self._base_dir(), basename)
+    def unique_instance_lock_file(self) -> str:
+        return str(
+            self._base_dir() / f"{self.application_name.lower()}_running_once.lock"
+        )
 
     @property
     def day_duration(self):
@@ -62,7 +58,7 @@ class _Parameters(object):
 
     @day_duration.setter
     def day_duration(self, value):
-        self.app_set("day_duration", "{:1.02f}".format(float(value)))
+        self.app_set("day_duration", f"{float(value):1.02f}")
 
     @property
     def minimize_to_tray(self):
@@ -134,7 +130,7 @@ class _Parameters(object):
                 with open(self.config_file, "w") as f:
                     f.write(self._get_conf_str())
                 self._modified = False
-            except IOError:
+            except OSError:
                 pass
 
     def _get_wininfo(self, name):
@@ -144,7 +140,7 @@ class _Parameters(object):
 
     def _set_wininfo(self, name, data):
         if isinstance(data, str):
-            d = str
+            d = data
         else:
             d = str(data, encoding="utf8", errors="replace")
         if not self._conf.has_section(self.PARAM_SECTION):

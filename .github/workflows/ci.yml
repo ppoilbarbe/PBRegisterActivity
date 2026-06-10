@@ -1,0 +1,136 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+    # Semver tags only (glob syntax — + quantifier not supported by GitHub)
+    tags: ["v[0-9]*.[0-9]*.[0-9]*"]
+  pull_request:
+
+# Cancel in-flight runs for the same ref when a newer push arrives.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── Pre-commit hooks ─────────────────────────────────────────────────────────
+  hooks:
+    name: Pre-commit hooks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up conda environment
+        uses: conda-incubator/setup-miniconda@v4
+        with:
+          miniforge-version: latest
+          environment-file: environment.yml
+          activate-environment: pbregisteractivity
+          conda-remove-defaults: 'true'
+
+      - name: Cache pre-commit hook environments
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
+
+      - name: Run hooks on all files
+        shell: bash -el {0}
+        run: make hooks NOCONDA=1
+
+  # ── Build executables ────────────────────────────────────────────────────────
+  build:
+    name: Build / ${{ matrix.os }}
+    needs: [hooks]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up conda environment
+        uses: conda-incubator/setup-miniconda@v4
+        with:
+          miniforge-version: latest
+          environment-file: environment.yml
+          activate-environment: pbregisteractivity
+          conda-remove-defaults: 'true'
+
+      - name: Compile Qt UI and resource files
+        # *_ui.py and *_rc.py are gitignored generated files; rebuild from source.
+        shell: bash -el {0}
+        run: |
+          for ui in src/pbregisteractivity/ui/*.ui; do
+            pyside6-uic --from-imports "$ui" -o "${ui%.ui}.py"
+          done
+          for qrc in src/pbregisteractivity/ui/*.qrc; do
+            base=$(basename "$qrc" .qrc)
+            pyside6-rcc "$qrc" -o "src/pbregisteractivity/ui/${base}_rc.py"
+          done
+
+      - name: Install package
+        shell: bash -el {0}
+        run: pip install -e "."
+
+      - name: Build with PyInstaller
+        # Call PyInstaller directly to avoid GNU Make portability issues
+        # on Windows runners.
+        shell: bash -el {0}
+        run: |
+          pyinstaller --clean --noconfirm \
+            --distpath dist --workpath build/pyinstaller \
+            pbregisteractivity.spec
+
+      - name: Zip .app bundle (macOS)
+        # A .app bundle is a directory; zip it for upload and release attachment.
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          cd dist
+          for app in *.app; do
+            zip -r "${app%.app}.zip" "$app"
+            rm -rf "$app"
+          done
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v7
+        with:
+          # One artifact per runner; merged in the release job.
+          name: build-${{ runner.os }}
+          path: dist/pbregisteractivity-*
+          if-no-files-found: error
+
+  # ── GitHub release ───────────────────────────────────────────────────────────
+  release:
+    name: Release ${{ github.ref_name }}
+    needs: [build]
+    # Only create a release on semver tags; the tag filter on push already
+    # restricts the trigger, but this guard makes the intent explicit.
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # required to create a release and upload assets
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v8
+        with:
+          # Merge all per-OS artifacts into a single flat directory.
+          path: dist
+          merge-multiple: true
+
+      - name: Extract changelog entry for ${{ github.ref_name }}
+        id: changelog
+        run: python3 tools/extract_changelog.py
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v3
+        with:
+          body: ${{ steps.changelog.outputs.body }}
+          files: dist/pbregisteractivity-*
+          fail_on_unmatched_files: true
