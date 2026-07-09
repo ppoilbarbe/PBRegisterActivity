@@ -8,7 +8,7 @@ import PySide6
 from PySide6.QtCore import qVersion
 from PySide6.QtWidgets import QDialog
 
-from .ui.ui_about import Ui_About
+from .ui_about import Ui_About
 
 
 # noinspection PyAbstractClass

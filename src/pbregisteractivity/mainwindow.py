@@ -22,9 +22,10 @@ from .activity import Activity, activities
 from .custom_widgets import QActivityListWidgetItem
 from .parameters import parameters
 from .prefs import Prefs
+from .resources import DIR as RESOURCES_DIR
 from .specifyrange import SpecifyRange
 from .timeplots import TimePlots
-from .ui.ui_mainwindow import Ui_MainWindow
+from .ui_mainwindow import Ui_MainWindow
 from .utils import format_duration, to_string
 
 version = _pkg_version("pbregisteractivity")
@@ -111,7 +112,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.tray_icon = QSystemTrayIcon(self)
             icon = QIcon()
             icon.addPixmap(
-                QPixmap(":/images/icons/128x128/obj_hal9000.png"),
+                QPixmap(str(RESOURCES_DIR / "pbregisteractivity.png")),
                 QIcon.Mode.Normal,
                 QIcon.State.Off,
             )

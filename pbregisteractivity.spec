@@ -58,8 +58,8 @@ _artifact_name = f"pbregisteractivity-{_version}-{_os}-{_arch}"
 
 _datas = [
     (
-        "src/pbregisteractivity/ui/icons",
-        "pbregisteractivity/ui/icons",
+        "src/pbregisteractivity/resources",
+        "pbregisteractivity/resources",
     ),
     *copy_metadata("pbregisteractivity"),
 ]
@@ -72,7 +72,7 @@ a = Analysis(
     ["src/pbregisteractivity/__main__.py"],
     pathex=["src"],
     datas=_datas,
-    hiddenimports=["pbregisteractivity.ui.resources_rc"],
+    hiddenimports=[],
     hookspath=[],
     runtime_hooks=[],
     excludes=["tkinter"],

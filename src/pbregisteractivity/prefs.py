@@ -6,7 +6,7 @@ from PySide6.QtCore import Slot
 from PySide6.QtWidgets import QDialog
 
 from .parameters import parameters
-from .ui.ui_prefs import Ui_Prefs
+from .ui_prefs import Ui_Prefs
 
 
 # noinspection PyAbstractClass

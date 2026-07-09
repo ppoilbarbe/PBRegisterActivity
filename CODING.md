@@ -31,18 +31,10 @@ make run
 
 ## Interface graphique
 
-Après toute modification d'un fichier `.ui` ou `.qrc` dans
-`src/pbregisteractivity/ui/`, recompiler les fichiers Python générés :
-
-```bash
-make ui
-```
-
-Pour ouvrir Qt Designer :
-
-```bash
-make designer
-```
+L'interface est écrite directement en Python (`src/pbregisteractivity/ui_*.py`),
+sans passer par Qt Designer ni par les compilateurs `pyside6-uic`/`pyside6-rcc`.
+Les icônes sont des fichiers PNG dans `src/pbregisteractivity/resources/`,
+référencés directement par leur chemin sur le disque.
 
 ## Distribution
 

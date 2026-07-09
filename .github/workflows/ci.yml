@@ -59,18 +59,6 @@ jobs:
           activate-environment: pbregisteractivity
           conda-remove-defaults: 'true'
 
-      - name: Compile Qt UI and resource files
-        # *_ui.py and *_rc.py are gitignored generated files; rebuild from source.
-        shell: bash -el {0}
-        run: |
-          for ui in src/pbregisteractivity/ui/*.ui; do
-            pyside6-uic --from-imports "$ui" -o "${ui%.ui}.py"
-          done
-          for qrc in src/pbregisteractivity/ui/*.qrc; do
-            base=$(basename "$qrc" .qrc)
-            pyside6-rcc "$qrc" -o "src/pbregisteractivity/ui/${base}_rc.py"
-          done
-
       - name: Install package
         shell: bash -el {0}
         run: pip install -e "."
@@ -80,6 +68,7 @@ jobs:
         # on Windows runners.
         shell: bash -el {0}
         run: |
+          export PBREGISTERACTIVITY_VERSION=$(bash tools/git_version.sh)
           pyinstaller --clean --noconfirm \
             --distpath dist --workpath build/pyinstaller \
             pbregisteractivity.spec

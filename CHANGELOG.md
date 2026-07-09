@@ -1,198 +1,200 @@
-# Journal des modifications
+# Changelog
 
-Toutes les modifications notables de ce projet sont documentées dans ce fichier.
+All notable changes to this project are documented in this file.
 
-Le format est basé sur [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-et ce projet respecte le [Versionnage sémantique](https://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Non publié]
+## [Unreleased]
 
-### Ajouté
-- Migration PyQt5 → PySide6 (enums qualifiés, `QAction` depuis `QtGui`, backend matplotlib `backend_qtagg`)
-- Module `platform/` : abstraction multiplateforme pour le répertoire applicatif (`dirs.py`) et le verrou d'instance unique (`lock.py`) avec `fcntl` (Linux/macOS) et `msvcrt` (Windows)
-- Détection des chevauchements entre plages lors de la saisie, avec avertissement `QMessageBox`
-- CI GitHub Actions : job `hooks` + job `build` (Linux, Windows, macOS) + job `release` sur tag semver
-- `pyproject.toml` : build hatchling, dépendances, licence GPLv3, configuration ruff
-- `environment.yml` : environnement conda reproductible (Python 3.12, PySide6, matplotlib, PyInstaller)
-- `Makefile` refondu : cibles `help`, `venv`, `ui`, `install`, `hooks`, `lint`, `format`, `run`, `dist`, `srcdist`, `bump-{patch,minor,major,set}`, support `NOCONDA`
-- `pbregisteractivity.spec` : exécutable PyInstaller nommé `pbregisteractivity-<version>-<os>-<arch>`
-- `tools/git_version.sh` : version depuis le tag git ou `dev`
-- `tools/bump_version.py` : incrémentation/force de version dans `pyproject.toml`
-- `tools/extract_changelog.py` : extraction de l'entrée CHANGELOG pour la release GitHub
-- `.pre-commit-config.yaml` : hooks `pre-commit-hooks` + `ruff-pre-commit` (check + format)
-- `CODING.md` : documentation développeur (setup, build, qualité)
-- Version du programme lue depuis les métadonnées du paquet installé (`importlib.metadata`)
+### Added
+- Migration PyQt5 → PySide6 (qualified enums, `QAction` from `QtGui`, matplotlib `backend_qtagg` backend)
+- `platform/` module: cross-platform abstraction for the application directory (`dirs.py`) and the single-instance lock (`lock.py`) using `fcntl` (Linux/macOS) and `msvcrt` (Windows)
+- Overlap detection between ranges during entry, with a `QMessageBox` warning
+- GitHub Actions CI: `hooks` job + `build` job (Linux, Windows, macOS) + `release` job on semver tag
+- `pyproject.toml`: hatchling build, dependencies, GPLv3 license, ruff configuration
+- `environment.yml`: reproducible conda environment (Python 3.12, PySide6, matplotlib, PyInstaller)
+- `Makefile` overhauled: `help`, `venv`, `install`, `hooks`, `lint`, `format`, `run`, `dist`, `srcdist`, `bump-{patch,minor,major,set}` targets, `NOCONDA` support
+- `pbregisteractivity.spec`: PyInstaller executable named `pbregisteractivity-<version>-<os>-<arch>`
+- `tools/git_version.sh`: version from the git tag or `dev`
+- `tools/bump_version.py`: bump/force version in `pyproject.toml`
+- `tools/extract_changelog.py`: extract the CHANGELOG entry for the GitHub release
+- `.pre-commit-config.yaml`: `pre-commit-hooks` + `ruff-pre-commit` hooks (check + format)
+- `CODING.md`: developer documentation (setup, build, quality)
+- Program version read from the installed package metadata (`importlib.metadata`)
 
-### Modifié
-- `__main__.py` déplacé dans le paquet (`src/pbregisteractivity/`) pour `python -m pbregisteractivity`
-- `parameters.py` : chemins via `pathlib.Path` et `platform.dirs.app_dir()`
-- Fenêtre À propos : versions Qt (`qVersion()`), PySide6 (`PySide6.__version__`) et Python (`platform.python_version()`) correctement affichées ; label renommé `lblPySide6Version`
-- `_Activities` : `load(filepath)` séparé de `__init__`, `write()` utilise le chemin mémorisé
-- `handle_text_output` (timeplots) : suppression du double parcours en mode complet
-- `README.md` recentré sur l'utilisateur final (installation, utilisation, données)
+### Changed
+- `__main__.py` moved into the package (`src/pbregisteractivity/`) to support `python -m pbregisteractivity`
+- `parameters.py`: paths via `pathlib.Path` and `platform.dirs.app_dir()`
+- About window: Qt (`qVersion()`), PySide6 (`PySide6.__version__`) and Python (`platform.python_version()`) versions now correctly displayed; label renamed to `lblPySide6Version`
+- `_Activities`: `load(filepath)` separated from `__init__`, `write()` uses the stored path
+- `handle_text_output` (timeplots): removed the double pass in full mode
+- `README.md` refocused on the end user (installation, usage, data)
+- Removed `.ui` and `.qrc` files and all dependency on the `pyside6-uic`/`pyside6-rcc` compilers and Qt Designer; `ui_*.py` files are now written and versioned directly in `src/pbregisteractivity/`
+- Icons moved flat into `src/pbregisteractivity/resources/` (no more `32x32`/`128x128` subfolders, which only made sense for Qt Designer), referenced by file path instead of the Qt resource system (`:/images/...`)
+- Application icon renamed `obj_hal9000.png` → `pbregisteractivity.png`
 
-### Corrigé
-- Fautes de frappe : `actvitiy_names` → `activity_names`, `"incorrectre"` → `"incorrecte"`, `"printipale"` → `"principale"`
-- Fichiers UI générés (`ui_*.py`, `resources_rc.py`) exclus du dépôt git
-- Icône absente de la barre des tâches et de la boîte « À propos » dans l'exécutable PyInstaller : `resources_rc` importé depuis `ui/__init__.py`, déclaré dans `hiddenimports` du spec, et `app.setWindowIcon()` appliqué sur le `QApplication`
+### Fixed
+- Typos: `actvitiy_names` → `activity_names`, `"incorrectre"` → `"incorrecte"`, `"printipale"` → `"principale"`
+- Missing icon in the taskbar and in the About box in the PyInstaller executable: `app.setWindowIcon()` applied on the `QApplication`
 
 ## [0.20.1] - 2023-04-19
 
-### Corrigé
-- Sortie CSV incohérente entre mode partiel et mode complet
+### Fixed
+- Inconsistent CSV output between partial and full mode
 
 ## [0.20.0] - 2023-04-19
 
-### Corrigé
-- Rafraîchissement des graphiques non effectué
+### Fixed
+- Chart refresh not performed
 
 ## [0.19.1] - 2020-11-04
 
-### Corrigé
-- Trace intempestive restante dans les graphiques
+### Fixed
+- Stray leftover trace in the charts
 
 ## [0.19.0] - 2019-10-18
 
-### Ajouté
-- Durée journalière dans les graphiques
-- Coloration des plages automatiques
+### Added
+- Daily duration in the charts
+- Coloring of automatic ranges
 
-### Corrigé
-- Sauvegarde de l'état des fenêtres
+### Fixed
+- Window state saving
 
 ## [0.18.0] - 2019-08-22
 
-### Modifié
-- Durée du jour affichée en décimal (au lieu d'entier)
+### Changed
+- Day duration displayed as decimal (instead of integer)
 
 ## [0.17.0] - 2019-07-12
 
-### Ajouté
-- Test pylint dans le pipeline GitLab CI
-- Stage de déploiement dans le pipeline GitLab CI
+### Added
+- Pylint test in the GitLab CI pipeline
+- Deployment stage in the GitLab CI pipeline
 
 ## [0.16.0] - 2019-07-11
 
-### Corrigé
-- Corrections diverses signalées par PyCharm
+### Fixed
+- Various issues reported by PyCharm
 
 ## [0.15.0] - 2019-07-11
 
-### Ajouté
-- Sauvegarde automatique pour ne plus perdre de plages
-- Formatage du code avec Black
+### Added
+- Automatic save to avoid losing ranges
+- Code formatting with Black
 
 ## [0.14.0] - 2018-10-26
 
-### Ajouté
-- Affichage des versions dans la boîte « À propos »
+### Added
+- Version display in the About box
 
-### Corrigé
-- Menu Quitter : termine correctement l'application
+### Fixed
+- Quit menu: application now terminates correctly
 
 ## [0.13.0] - 2018-10-25
 
-### Ajouté
-- Réintroduction de l'icône dans la zone de notification
+### Added
+- Reintroduced the icon in the notification area
 
-### Corrigé
-- Caractère parasite dans l'interface
-- Paquets manquants
+### Fixed
+- Stray character in the UI
+- Missing packages
 
 ## [0.12.0] - 2018-08-22
 
-### Modifié
-- Saisie de l'activité via une liste de noms existants, utilisable dans tous les cas
+### Changed
+- Activity entry via a list of existing names, usable in all cases
 
 ## [0.11.0] - 2018-04-09
 
-### Ajouté
-- Paramétrage de la durée de « Divers »
+### Added
+- Configurable "Misc" duration threshold
 
 ## [0.10.0] - 2018-03-30
 
-### Ajouté
-- Annulation en fin de programme
+### Added
+- Cancel at program end
 
-### Corrigé
-- Problèmes d'affichage
+### Fixed
+- Display issues
 
 ## [0.8.0] - 2018-01-03
 
-### Ajouté
-- Spécification de la date de fin en plus de la durée
+### Added
+- Specify an end date in addition to a duration
 
 ## [0.7.0] - 2017-11-10
 
-### Modifié
-- Navigation par semaine dans les graphiques (décalage d'une semaine entière, bouton semaine suivante)
+### Changed
+- Week navigation in the charts (shift by a full week, next-week button)
 
 ## [0.6.1] - 2017-11-03
 
-### Corrigé
-- Ligne parasite dans la fenêtre des graphiques
-- Rappel de la durée journalière dans la fenêtre des graphiques
+### Fixed
+- Stray line in the charts window
+- Daily duration reminder in the charts window
 
 ## [0.6.0] - 2017-11-03
 
-### Ajouté
-- Paramétrage de la longueur du jour de travail
+### Added
+- Configurable working day length
 
 ## [0.5.0] - 2017-10-30
 
-### Ajouté
-- Affichage de la durée journalière dans le texte de l'icône de notification
-- Filtrage des activités sur le nom et/ou le commentaire
-- Sauvegarde du type de filtre sélectionné
+### Added
+- Daily duration shown in the notification icon text
+- Filter activities by name and/or comment
+- Save the selected filter type
 
 ## [0.3.0] - 2017-10-30
 
-### Ajouté
-- Sauvegarde des paramètres de la fenêtre des graphiques
+### Added
+- Save the charts window settings
 
 ## [0.2.0] - 2017-10-27
 
-### Ajouté
-- Cumul du temps sur la journée en cours
+### Added
+- Running total of time for the current day
 
 ## [0.1.3] - 2017-10-09
 
-### Ajouté
-- Navigation dans les semaines précédentes
+### Added
+- Navigation through previous weeks
 
 ## [0.1.2] - 2017-10-04
 
-### Ajouté
-- Filtre sur les activités
+### Added
+- Filter on activities
 
 ## [0.1.1] - 2017-10-04
 
-### Ajouté
-- Affichage de la durée cumulée pour les plages multiples sélectionnées
+### Added
+- Display cumulative duration for multiple selected ranges
 
 ## [0.1.0] - 2017-10-03
 
-### Corrigé
-- Corrections d'affichage
+### Fixed
+- Display fixes
 
 ## [0.0.8] - 2017-10-02
 
-### Corrigé
-- Corrections d'affichage des graphiques
+### Fixed
+- Chart display fixes
 
 ## [0.0.7] - 2017-10-02
 
-### Ajouté
-- Premier jet de l'affichage des plages de temps
-- Extractions et graphiques
-- Sauvegarde HTML et CSV ; amélioration de la sélection et des valeurs par défaut
+### Added
+- First draft of time range display
+- Extractions and charts
+- HTML and CSV saving; improved selection and default values
 
-### Corrigé
-- Ordre des tabulations dans les dialogues
-- Correction d'affichage et choix de plage de temps par défaut (5 jours)
-- Correction du README
+### Fixed
+- Tab order in dialogs
+- Display fix and default time range choice (5 days)
+- README fix
 
-[Non publié]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.20.1...HEAD
+[Unreleased]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.20.1...HEAD
 [0.20.1]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.20.0...0.20.1
 [0.20.0]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.19.1...0.20.0
 [0.19.1]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.19.0...0.19.1

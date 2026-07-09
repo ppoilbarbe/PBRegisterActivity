@@ -6,7 +6,7 @@ from PySide6.QtCore import QTime, Slot
 from PySide6.QtWidgets import QDialog, QDialogButtonBox
 
 from .activity import Activity, activities
-from .ui.ui_specifyrange import Ui_SpecifyRange
+from .ui_specifyrange import Ui_SpecifyRange
 from .utils import to_string
 
 

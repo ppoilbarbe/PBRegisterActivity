@@ -18,7 +18,7 @@ from PySide6.QtWidgets import QDialog, QFileDialog, QMessageBox
 
 from .activity import activities
 from .parameters import parameters
-from .ui.ui_timeplots import Ui_TimePlots
+from .ui_timeplots import Ui_TimePlots
 from .utils import format_duration
 
 
@@ -76,9 +76,10 @@ class TimePlots(QDialog, Ui_TimePlots):
             f"Durée journalière: {parameters.day_duration}h; "
             f"Divers=Durée<{parameters.misc_duration}min"
         )
-        self.switch_panel(None)
         self.cbCsvFull.setChecked(parameters.app_get_bool(self.PARAM_FULL_CVS))
         parameters.restore_window_state(self)
+        self.btnPieChart.setChecked(True)
+        self.handle_piechart()
 
     def check_window(self):
         for x in self.plot_buttons:
