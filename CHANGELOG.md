@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-07-09
+
 ### Added
 - Migration PyQt5 → PySide6 (qualified enums, `QAction` from `QtGui`, matplotlib `backend_qtagg` backend)
 - `platform/` module: cross-platform abstraction for the application directory (`dirs.py`) and the single-instance lock (`lock.py`) using `fcntl` (Linux/macOS) and `msvcrt` (Windows)
@@ -200,31 +202,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tab order in dialogs
 - Display fix and default time range choice (5 days)
 - README fix
-
-[Unreleased]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.20.1...HEAD
-[0.20.1]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.20.0...0.20.1
-[0.20.0]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.19.1...0.20.0
-[0.19.1]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.19.0...0.19.1
-[0.19.0]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.18.0...0.19.0
-[0.18.0]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.17.0...0.18.0
-[0.17.0]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.16.0...0.17.0
-[0.16.0]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.15.0...0.16.0
-[0.15.0]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.14.0...0.15.0
-[0.14.0]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.13.0...0.14.0
-[0.13.0]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.12.0...0.13.0
-[0.12.0]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.11.0...0.12.0
-[0.11.0]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.10.0...0.11.0
-[0.10.0]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.8.0...0.10.0
-[0.8.0]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.7.0...0.8.0
-[0.7.0]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.6.1...0.7.0
-[0.6.1]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.6.0...0.6.1
-[0.6.0]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.5.0...0.6.0
-[0.5.0]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.3.0...0.5.0
-[0.3.0]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.2.0...0.3.0
-[0.2.0]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.1.3...0.2.0
-[0.1.3]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.1.2...0.1.3
-[0.1.2]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.1.1...0.1.2
-[0.1.1]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.1.0...0.1.1
-[0.1.0]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.0.8...0.1.0
-[0.0.8]: https://github.com/PPoilbarbe/PBRegisterActivity/compare/0.0.7...0.0.8
-[0.0.7]: https://github.com/PPoilbarbe/PBRegisterActivity/releases/tag/0.0.7

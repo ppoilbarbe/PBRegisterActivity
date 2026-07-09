@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pbregisteractivity"
-version = "0.20.1"
+version = "1.0.0"
 description = "Enregistrement d'activités pour remplissage de CRA"
 readme = "README.md"
 license = { file = "LICENSE" }
