@@ -1,11 +1,7 @@
 from PySide6.QtCore import (
     QCoreApplication,
     QMetaObject,
-    QSize,
     Qt,
-)
-from PySide6.QtGui import (
-    QIcon,
 )
 from PySide6.QtWidgets import (
     QCheckBox,
@@ -20,7 +16,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
 )
 
-from .resources import DIR as RESOURCES_DIR
+from .resources import icon
 
 
 class Ui_Prefs:
@@ -28,14 +24,7 @@ class Ui_Prefs:
         if not Prefs.objectName():
             Prefs.setObjectName("Prefs")
         Prefs.resize(388, 187)
-        icon = QIcon()
-        icon.addFile(
-            str(RESOURCES_DIR / "action_preferences.png"),
-            QSize(),
-            QIcon.Mode.Normal,
-            QIcon.State.Off,
-        )
-        Prefs.setWindowIcon(icon)
+        Prefs.setWindowIcon(icon("preferences-system.svg"))
         self.layoutPrefs = QVBoxLayout(Prefs)
         self.layoutPrefs.setObjectName("layoutPrefs")
         self.layoutData = QFormLayout()

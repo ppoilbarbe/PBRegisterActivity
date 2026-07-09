@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from importlib.metadata import version as _pkg_version
 
 from PySide6.QtCore import QDateTime, Qt, QTimer
-from PySide6.QtGui import QAction, QIcon, QPixmap
+from PySide6.QtGui import QAction
 from PySide6.QtWidgets import (
     QDialog,
     QLCDNumber,
@@ -22,7 +22,7 @@ from .activity import Activity, activities
 from .custom_widgets import QActivityListWidgetItem
 from .parameters import parameters
 from .prefs import Prefs
-from .resources import DIR as RESOURCES_DIR
+from .resources import icon
 from .specifyrange import SpecifyRange
 from .timeplots import TimePlots
 from .ui_mainwindow import Ui_MainWindow
@@ -110,13 +110,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Init QSystemTrayIcon — PySide6/Qt6 tray support est toujours disponible
         if QSystemTrayIcon.isSystemTrayAvailable() and parameters.minimize_to_tray:
             self.tray_icon = QSystemTrayIcon(self)
-            icon = QIcon()
-            icon.addPixmap(
-                QPixmap(str(RESOURCES_DIR / "pbregisteractivity.png")),
-                QIcon.Mode.Normal,
-                QIcon.State.Off,
-            )
-            self.tray_icon.setIcon(icon)
+            self.tray_icon.setIcon(icon("pbregisteractivity.png"))
 
             show_action = QAction("Restaurer", self)
             quit_action = QAction("Quitter", self)

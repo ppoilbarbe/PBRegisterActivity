@@ -1,46 +1,51 @@
 # PBRegisterActivity
 
-Programme pour enregistrer son activité afin de pouvoir remplir le CRA
-(Compte-Rendu d'Activité) ou un autre type de justificatif.
+A program for logging your activity in order to fill in a CRA
+(Compte-Rendu d'Activité, or "activity report") or any other kind of
+timesheet.
 
 ## Installation
 
-Télécharger l'exécutable correspondant à votre plateforme depuis la page
-des releases, puis le rendre exécutable (Linux/macOS) :
+Download the executable matching your platform from the releases
+page, then make it executable (Linux/macOS):
 
 ```bash
 chmod +x pbregisteractivity-*-linux-x86_64
 ./pbregisteractivity-*-linux-x86_64
 ```
 
-Aucune installation Python ni de dépendances supplémentaires n'est requise :
-l'exécutable est autonome.
+No Python installation or extra dependencies are required: the
+executable is standalone.
 
-## Utilisation
+## Usage
 
-Au lancement, la fenêtre principale permet de :
+On launch, the main window lets you:
 
-- saisir le nom de l'activité en cours (avec auto-complétion sur l'historique)
-- ajuster l'heure de début si nécessaire
-- enregistrer la plage avec **Enregistrer**
+- enter the name of the current activity (with autocompletion from history)
+- adjust the start time if needed
+- save the range with **Register**
 
-La barre de statut affiche le cumul de temps sur la journée. La fenêtre
-peut être réduite dans la zone de notification système.
+The status bar shows the running total of time for the day. The
+window can be minimized to the system notification area.
 
-Le menu **Extraire** ouvre un dialogue d'analyse avec trois vues
-(chronologie, camembert, texte) et permet d'exporter en HTML ou CSV.
+The **Extract** menu opens an analysis dialog with three views
+(timeline, pie chart, text) and lets you export to HTML or CSV.
 
-## Fichiers de données
+## Data files
 
-| Fichier | Rôle |
+| File | Purpose |
 |---|---|
-| `~/.pbregisteractivity/config.ini` | Configuration de l'application |
-| `~/.pbregisteractivity/activity.txt` | Activités enregistrées |
+| `~/.pbregisteractivity/config.ini` | Application configuration |
+| `~/.pbregisteractivity/activity.txt` | Recorded activities |
 
-## Licence
+## License
 
-GNU General Public License v3 — voir le fichier [LICENSE](LICENSE).
+GNU General Public License v3 — see the [LICENSE](LICENSE) file.
+
+All icons and images (`src/pbregisteractivity/resources/`) are licensed
+under [Creative Commons BY-NC-SA](https://creativecommons.org/licenses/by-nc-sa/4.0/),
+not GPLv3 — see [src/pbregisteractivity/resources/LICENSE](src/pbregisteractivity/resources/LICENSE).
 
 ---
 
-*Pour la compilation et le développement, voir [CODING.md](CODING.md).*
+*For building and development, see [CODING.md](CODING.md).*

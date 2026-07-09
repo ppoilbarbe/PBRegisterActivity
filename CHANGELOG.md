@@ -22,6 +22,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `.pre-commit-config.yaml`: `pre-commit-hooks` + `ruff-pre-commit` hooks (check + format)
 - `CODING.md`: developer documentation (setup, build, quality)
 - Program version read from the installed package metadata (`importlib.metadata`)
+- `resources.icon()`/`resources.pixmap()` helper functions to build a `QIcon`/`QPixmap` from a bundled icon file, replacing repeated `QIcon()`/`addFile()` boilerplate across `ui_*.py`, `mainwindow.py` and `__main__.py`
+- `help-about.svg` icon set on the "About" action
+- `src/pbregisteractivity/resources/LICENSE`: icons and images are licensed under CC BY-NC-SA, distinct from the GPLv3 covering the rest of the code
 
 ### Changed
 - `__main__.py` moved into the package (`src/pbregisteractivity/`) to support `python -m pbregisteractivity`
@@ -33,6 +36,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed `.ui` and `.qrc` files and all dependency on the `pyside6-uic`/`pyside6-rcc` compilers and Qt Designer; `ui_*.py` files are now written and versioned directly in `src/pbregisteractivity/`
 - Icons moved flat into `src/pbregisteractivity/resources/` (no more `32x32`/`128x128` subfolders, which only made sense for Qt Designer), referenced by file path instead of the Qt resource system (`:/images/...`)
 - Application icon renamed `obj_hal9000.png` → `pbregisteractivity.png`
+- Icons renamed for consistency with common icon-set naming conventions (e.g. `action_add` → `add`, `action_cal_day` → `calendar-day`, `arrow_right` → `right`, `info_warning` → `warning`, `tool_piechart` → `piechart`)
+- All icons, except the `pbregisteractivity.png` application icon, converted from PNG to SVG
+- Charts window: toolbar button icons enlarged to 32px (previously 16px, the style default)
+- Charts window: no chart selected by default when the window opens; the duration pie chart is now selected and shown
 
 ### Fixed
 - Typos: `actvitiy_names` → `activity_names`, `"incorrectre"` → `"incorrecte"`, `"printipale"` → `"principale"`

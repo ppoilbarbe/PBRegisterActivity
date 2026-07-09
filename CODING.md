@@ -1,81 +1,84 @@
 # CODING — PBRegisterActivity
 
-Guide pour compiler, développer et distribuer PBRegisterActivity.
+Guide for building, developing and distributing PBRegisterActivity.
 
-## Prérequis
+## Prerequisites
 
-- [conda](https://docs.conda.io/) (Anaconda ou Miniconda)
-- Python 3.12, PySide6, matplotlib, PyInstaller — gérés par conda via `environment.yml`
+- [conda](https://docs.conda.io/) (Anaconda or Miniconda)
+- Python 3.12, PySide6, matplotlib, PyInstaller — managed by conda via `environment.yml`
 
-## Mise en place de l'environnement
+## Setting up the environment
 
-### Créer l'environnement conda
+### Create the conda environment
 
 ```bash
 make venv
 ```
 
-### Installer le paquet en mode développement
+### Install the package in development mode
 
 ```bash
 make install
 ```
 
-Installe le paquet en mode éditable et enregistre les hooks git (pre-commit).
+Installs the package in editable mode and registers the git hooks (pre-commit).
 
-## Lancer l'application depuis les sources
+## Running the application from source
 
 ```bash
 make run
 ```
 
-## Interface graphique
+## Graphical interface
 
-L'interface est écrite directement en Python (`src/pbregisteractivity/ui_*.py`),
-sans passer par Qt Designer ni par les compilateurs `pyside6-uic`/`pyside6-rcc`.
-Les icônes sont des fichiers PNG dans `src/pbregisteractivity/resources/`,
-référencés directement par leur chemin sur le disque.
+The UI is written directly in Python (`src/pbregisteractivity/ui_*.py`),
+without going through Qt Designer or the `pyside6-uic`/`pyside6-rcc`
+compilers. Icons are SVG files in `src/pbregisteractivity/resources/`
+(except for the `pbregisteractivity.png` application icon), loaded via
+the `icon()`/`pixmap()` functions of the `resources` module. These
+icons and images are licensed under CC BY-NC-SA, not GPLv3 — see
+[src/pbregisteractivity/resources/LICENSE](src/pbregisteractivity/resources/LICENSE).
 
 ## Distribution
 
-### Exécutable autonome (PyInstaller)
+### Standalone executable (PyInstaller)
 
 ```bash
 make dist
 ```
 
-Produit `dist/pbregisteractivity-<version>-<os>-<arch>` (fichier unique
-sous Linux et Windows, bundle `.app` sous macOS).
+Produces `dist/pbregisteractivity-<version>-<os>-<arch>` (a single file
+on Linux and Windows, a `.app` bundle on macOS).
 
-La version est déduite du tag git exact sur HEAD si l'arbre de travail est
-propre ; sinon elle vaut `dev`.
+The version is derived from the exact git tag on HEAD if the working
+tree is clean; otherwise it is `dev`.
 
-### Archive source
+### Source archive
 
 ```bash
 make srcdist
 ```
 
-Produit `dist/pbregisteractivity-<version>-src.tar.gz` via `git archive`.
+Produces `dist/pbregisteractivity-<version>-src.tar.gz` via `git archive`.
 
-## Qualité du code
+## Code quality
 
-| Commande | Rôle |
+| Command | Purpose |
 |---|---|
-| `make lint` | Vérifie le style (ruff) |
-| `make format` | Formate le code (ruff) |
-| `make hooks` | Lance tous les hooks pre-commit sur l'ensemble des fichiers |
+| `make lint` | Check the style (ruff) |
+| `make format` | Auto-format the code (ruff) |
+| `make hooks` | Run all pre-commit hooks on every file |
 
-Les hooks pre-commit se déclenchent automatiquement à chaque `git commit`.
+Pre-commit hooks run automatically on every `git commit`.
 
 ## Maintenance
 
 ```bash
-make venv-update   # mettre à jour l'environnement conda
-make clean         # supprimer les artefacts de compilation
+make venv-update   # update the conda environment
+make clean         # remove build artifacts
 ```
 
-## Cibles Makefile
+## Makefile targets
 
 ```
 make help

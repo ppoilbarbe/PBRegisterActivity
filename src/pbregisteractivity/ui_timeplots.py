@@ -5,9 +5,6 @@ from PySide6.QtCore import (
     QSize,
     Qt,
 )
-from PySide6.QtGui import (
-    QIcon,
-)
 from PySide6.QtWidgets import (
     QCheckBox,
     QDateEdit,
@@ -24,7 +21,9 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from .resources import DIR as RESOURCES_DIR
+from .resources import icon
+
+_TOOLBAR_ICON_SIZE = QSize(32, 32)
 
 
 class Ui_TimePlots:
@@ -32,28 +31,15 @@ class Ui_TimePlots:
         if not TimePlots.objectName():
             TimePlots.setObjectName("TimePlots")
         TimePlots.resize(738, 436)
-        icon = QIcon()
-        icon.addFile(
-            str(RESOURCES_DIR / "action_cal_timespent.png"),
-            QSize(),
-            QIcon.Mode.Normal,
-            QIcon.State.Off,
-        )
-        TimePlots.setWindowIcon(icon)
+        TimePlots.setWindowIcon(icon("calendar-time-spent.svg"))
         self.layoutTimePlots = QVBoxLayout(TimePlots)
         self.layoutTimePlots.setObjectName("layoutTimePlots")
         self.layoutActions = QHBoxLayout()
         self.layoutActions.setObjectName("layoutActions")
         self.btnTimeLines = QToolButton(TimePlots)
         self.btnTimeLines.setObjectName("btnTimeLines")
-        icon1 = QIcon()
-        icon1.addFile(
-            str(RESOURCES_DIR / "action_cal_timeline.png"),
-            QSize(),
-            QIcon.Mode.Normal,
-            QIcon.State.Off,
-        )
-        self.btnTimeLines.setIcon(icon1)
+        self.btnTimeLines.setIcon(icon("calendar-timeline.svg"))
+        self.btnTimeLines.setIconSize(_TOOLBAR_ICON_SIZE)
         self.btnTimeLines.setCheckable(True)
         self.btnTimeLines.setAutoExclusive(True)
 
@@ -61,14 +47,8 @@ class Ui_TimePlots:
 
         self.btnPieChart = QToolButton(TimePlots)
         self.btnPieChart.setObjectName("btnPieChart")
-        icon2 = QIcon()
-        icon2.addFile(
-            str(RESOURCES_DIR / "tool_piechart.png"),
-            QSize(),
-            QIcon.Mode.Normal,
-            QIcon.State.Off,
-        )
-        self.btnPieChart.setIcon(icon2)
+        self.btnPieChart.setIcon(icon("piechart.svg"))
+        self.btnPieChart.setIconSize(_TOOLBAR_ICON_SIZE)
         self.btnPieChart.setCheckable(True)
         self.btnPieChart.setAutoExclusive(True)
 
@@ -76,14 +56,8 @@ class Ui_TimePlots:
 
         self.btnTextOutput = QToolButton(TimePlots)
         self.btnTextOutput.setObjectName("btnTextOutput")
-        icon3 = QIcon()
-        icon3.addFile(
-            str(RESOURCES_DIR / "action_cal_journal.png"),
-            QSize(),
-            QIcon.Mode.Normal,
-            QIcon.State.Off,
-        )
-        self.btnTextOutput.setIcon(icon3)
+        self.btnTextOutput.setIcon(icon("calendar-journal.svg"))
+        self.btnTextOutput.setIconSize(_TOOLBAR_ICON_SIZE)
         self.btnTextOutput.setCheckable(True)
         self.btnTextOutput.setAutoExclusive(True)
 
@@ -97,53 +71,29 @@ class Ui_TimePlots:
 
         self.btnPrevWeek = QToolButton(TimePlots)
         self.btnPrevWeek.setObjectName("btnPrevWeek")
-        icon4 = QIcon()
-        icon4.addFile(
-            str(RESOURCES_DIR / "action_revert.png"),
-            QSize(),
-            QIcon.Mode.Normal,
-            QIcon.State.Off,
-        )
-        self.btnPrevWeek.setIcon(icon4)
+        self.btnPrevWeek.setIcon(icon("previous.svg"))
+        self.btnPrevWeek.setIconSize(_TOOLBAR_ICON_SIZE)
 
         self.layoutActions.addWidget(self.btnPrevWeek)
 
         self.btnWorkWeek = QToolButton(TimePlots)
         self.btnWorkWeek.setObjectName("btnWorkWeek")
-        icon5 = QIcon()
-        icon5.addFile(
-            str(RESOURCES_DIR / "action_cal_workweek.png"),
-            QSize(),
-            QIcon.Mode.Normal,
-            QIcon.State.Off,
-        )
-        self.btnWorkWeek.setIcon(icon5)
+        self.btnWorkWeek.setIcon(icon("calendar-work-week.svg"))
+        self.btnWorkWeek.setIconSize(_TOOLBAR_ICON_SIZE)
 
         self.layoutActions.addWidget(self.btnWorkWeek)
 
         self.btnNextWeek = QToolButton(TimePlots)
         self.btnNextWeek.setObjectName("btnNextWeek")
-        icon6 = QIcon()
-        icon6.addFile(
-            str(RESOURCES_DIR / "action_progress.png"),
-            QSize(),
-            QIcon.Mode.Normal,
-            QIcon.State.Off,
-        )
-        self.btnNextWeek.setIcon(icon6)
+        self.btnNextWeek.setIcon(icon("next.svg"))
+        self.btnNextWeek.setIconSize(_TOOLBAR_ICON_SIZE)
 
         self.layoutActions.addWidget(self.btnNextWeek)
 
         self.btnToday = QToolButton(TimePlots)
         self.btnToday.setObjectName("btnToday")
-        icon7 = QIcon()
-        icon7.addFile(
-            str(RESOURCES_DIR / "action_cal_day.png"),
-            QSize(),
-            QIcon.Mode.Normal,
-            QIcon.State.Off,
-        )
-        self.btnToday.setIcon(icon7)
+        self.btnToday.setIcon(icon("calendar-day.svg"))
+        self.btnToday.setIconSize(_TOOLBAR_ICON_SIZE)
 
         self.layoutActions.addWidget(self.btnToday)
 
@@ -214,14 +164,7 @@ class Ui_TimePlots:
 
         self.btnHtmlSave = QToolButton(self.frmTextOutput)
         self.btnHtmlSave.setObjectName("btnHtmlSave")
-        icon8 = QIcon()
-        icon8.addFile(
-            str(RESOURCES_DIR / "action_save.png"),
-            QSize(),
-            QIcon.Mode.Normal,
-            QIcon.State.Off,
-        )
-        self.btnHtmlSave.setIcon(icon8)
+        self.btnHtmlSave.setIcon(icon("save.svg"))
 
         self.layoutHtml.addWidget(self.btnHtmlSave)
 
@@ -253,7 +196,7 @@ class Ui_TimePlots:
 
         self.btnCsvSave = QToolButton(self.frmTextOutput)
         self.btnCsvSave.setObjectName("btnCsvSave")
-        self.btnCsvSave.setIcon(icon8)
+        self.btnCsvSave.setIcon(icon("save.svg"))
 
         self.layoutCsv.addWidget(self.btnCsvSave)
 

@@ -72,7 +72,9 @@ a = Analysis(
     ["src/pbregisteractivity/__main__.py"],
     pathex=["src"],
     datas=_datas,
-    hiddenimports=[],
+    # QtSvg is never imported directly (icons are loaded by path as SVG
+    # files), but PyInstaller needs the hint to bundle the Qt SVG plugin.
+    hiddenimports=["PySide6.QtSvg"],
     hookspath=[],
     runtime_hooks=[],
     excludes=["tkinter"],

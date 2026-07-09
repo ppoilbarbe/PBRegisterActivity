@@ -6,15 +6,14 @@ Main program for PBRegisterActivity
 
 import sys
 
-from PySide6.QtCore import QLibraryInfo, QLocale, QSize, QTranslator
-from PySide6.QtGui import QIcon
+from PySide6.QtCore import QLibraryInfo, QLocale, QTranslator
 from PySide6.QtWidgets import QApplication
 
 from pbregisteractivity.activity import activities
 from pbregisteractivity.mainwindow import MainWindow
 from pbregisteractivity.parameters import parameters
 from pbregisteractivity.platform.lock import SingleInstance, SingleInstanceException
-from pbregisteractivity.resources import DIR as RESOURCES_DIR
+from pbregisteractivity.resources import icon
 from pbregisteractivity.utils import handle_gui_exception
 
 
@@ -37,14 +36,7 @@ def main():
     activities.load(parameters.activity_file)
 
     app = QApplication(sys.argv)
-    app_icon = QIcon()
-    app_icon.addFile(
-        str(RESOURCES_DIR / "pbregisteractivity.png"),
-        QSize(128, 128),
-        QIcon.Mode.Normal,
-        QIcon.State.Off,
-    )
-    app.setWindowIcon(app_icon)
+    app.setWindowIcon(icon("pbregisteractivity.png", size=128))
     translate_stock_widgets(app)
     mw = MainWindow()
     mw.main()

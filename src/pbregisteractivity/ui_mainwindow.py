@@ -8,7 +8,6 @@ from PySide6.QtCore import (
 from PySide6.QtGui import (
     QAction,
     QFont,
-    QIcon,
 )
 from PySide6.QtWidgets import (
     QAbstractItemView,
@@ -35,7 +34,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from .resources import DIR as RESOURCES_DIR
+from .resources import icon
 
 
 class Ui_MainWindow:
@@ -43,106 +42,37 @@ class Ui_MainWindow:
         if not MainWindow.objectName():
             MainWindow.setObjectName("MainWindow")
         MainWindow.resize(640, 456)
-        icon = QIcon()
-        icon.addFile(
-            str(RESOURCES_DIR / "pbregisteractivity.png"),
-            QSize(),
-            QIcon.Mode.Normal,
-            QIcon.State.Off,
-        )
-        MainWindow.setWindowIcon(icon)
+        MainWindow.setWindowIcon(icon("pbregisteractivity.png"))
         self.actionQuit = QAction(MainWindow)
         self.actionQuit.setObjectName("actionQuit")
-        icon1 = QIcon()
-        icon1.addFile(
-            str(RESOURCES_DIR / "action_exit.png"),
-            QSize(),
-            QIcon.Mode.Normal,
-            QIcon.State.Off,
-        )
-        self.actionQuit.setIcon(icon1)
+        self.actionQuit.setIcon(icon("quit.svg"))
         self.actionRegister = QAction(MainWindow)
         self.actionRegister.setObjectName("actionRegister")
-        icon2 = QIcon()
-        icon2.addFile(
-            str(RESOURCES_DIR / "action_ok.png"),
-            QSize(),
-            QIcon.Mode.Normal,
-            QIcon.State.Off,
-        )
-        self.actionRegister.setIcon(icon2)
+        self.actionRegister.setIcon(icon("ok.svg"))
         self.actionCancel = QAction(MainWindow)
         self.actionCancel.setObjectName("actionCancel")
-        icon3 = QIcon()
-        icon3.addFile(
-            str(RESOURCES_DIR / "action_cancel.png"),
-            QSize(),
-            QIcon.Mode.Normal,
-            QIcon.State.Off,
-        )
-        self.actionCancel.setIcon(icon3)
+        self.actionCancel.setIcon(icon("cancel.svg"))
         self.actionRemove = QAction(MainWindow)
         self.actionRemove.setObjectName("actionRemove")
-        icon4 = QIcon()
-        icon4.addFile(
-            str(RESOURCES_DIR / "action_remove.png"),
-            QSize(),
-            QIcon.Mode.Normal,
-            QIcon.State.Off,
-        )
-        self.actionRemove.setIcon(icon4)
+        self.actionRemove.setIcon(icon("remove.svg"))
         self.actionSave = QAction(MainWindow)
         self.actionSave.setObjectName("actionSave")
-        icon5 = QIcon()
-        icon5.addFile(
-            str(RESOURCES_DIR / "action_save.png"),
-            QSize(),
-            QIcon.Mode.Normal,
-            QIcon.State.Off,
-        )
-        self.actionSave.setIcon(icon5)
+        self.actionSave.setIcon(icon("save.svg"))
         self.actionSwapActivity = QAction(MainWindow)
         self.actionSwapActivity.setObjectName("actionSwapActivity")
-        icon6 = QIcon()
-        icon6.addFile(
-            str(RESOURCES_DIR / "action_refresh.png"),
-            QSize(),
-            QIcon.Mode.Normal,
-            QIcon.State.Off,
-        )
-        self.actionSwapActivity.setIcon(icon6)
+        self.actionSwapActivity.setIcon(icon("refresh.svg"))
         self.actionEdit = QAction(MainWindow)
         self.actionEdit.setObjectName("actionEdit")
-        icon7 = QIcon()
-        icon7.addFile(
-            str(RESOURCES_DIR / "action_edit.png"),
-            QSize(),
-            QIcon.Mode.Normal,
-            QIcon.State.Off,
-        )
-        self.actionEdit.setIcon(icon7)
+        self.actionEdit.setIcon(icon("edit.svg"))
         self.actionAbout = QAction(MainWindow)
         self.actionAbout.setObjectName("actionAbout")
+        self.actionAbout.setIcon(icon("help-about.svg"))
         self.actionExtract = QAction(MainWindow)
         self.actionExtract.setObjectName("actionExtract")
-        icon8 = QIcon()
-        icon8.addFile(
-            str(RESOURCES_DIR / "action_cal_timespent.png"),
-            QSize(),
-            QIcon.Mode.Normal,
-            QIcon.State.Off,
-        )
-        self.actionExtract.setIcon(icon8)
+        self.actionExtract.setIcon(icon("calendar-time-spent.svg"))
         self.actionPrefs = QAction(MainWindow)
         self.actionPrefs.setObjectName("actionPrefs")
-        icon9 = QIcon()
-        icon9.addFile(
-            str(RESOURCES_DIR / "action_preferences.png"),
-            QSize(),
-            QIcon.Mode.Normal,
-            QIcon.State.Off,
-        )
-        self.actionPrefs.setIcon(icon9)
+        self.actionPrefs.setIcon(icon("preferences-system.svg"))
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.horizontalLayout = QHBoxLayout(self.centralwidget)
@@ -264,14 +194,7 @@ class Ui_MainWindow:
 
         self.tbForceAdd = QToolButton(self.layoutWidget1)
         self.tbForceAdd.setObjectName("tbForceAdd")
-        icon10 = QIcon()
-        icon10.addFile(
-            str(RESOURCES_DIR / "action_add.png"),
-            QSize(),
-            QIcon.Mode.Normal,
-            QIcon.State.Off,
-        )
-        self.tbForceAdd.setIcon(icon10)
+        self.tbForceAdd.setIcon(icon("add.svg"))
 
         self.layoutDuration.addWidget(self.tbForceAdd)
 

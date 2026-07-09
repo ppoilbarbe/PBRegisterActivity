@@ -6,7 +6,6 @@ from PySide6.QtCore import (
 )
 from PySide6.QtGui import (
     QFont,
-    QPixmap,
 )
 from PySide6.QtWidgets import (
     QComboBox,
@@ -25,7 +24,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from .resources import DIR as RESOURCES_DIR
+from .resources import pixmap
 
 
 class Ui_SpecifyRange:
@@ -96,7 +95,7 @@ class Ui_SpecifyRange:
         self.lblEndWarning = QLabel(SpecifyRange)
         self.lblEndWarning.setObjectName("lblEndWarning")
         self.lblEndWarning.setMaximumSize(QSize(24, 24))
-        self.lblEndWarning.setPixmap(QPixmap(str(RESOURCES_DIR / "info_warning.png")))
+        self.lblEndWarning.setPixmap(pixmap("warning.svg"))
         self.lblEndWarning.setScaledContents(True)
 
         self.layoutEnd.addWidget(self.lblEndWarning)

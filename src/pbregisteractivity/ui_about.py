@@ -6,7 +6,6 @@ from PySide6.QtCore import (
 )
 from PySide6.QtGui import (
     QFont,
-    QPixmap,
 )
 from PySide6.QtWidgets import (
     QDialogButtonBox,
@@ -19,7 +18,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
 )
 
-from .resources import DIR as RESOURCES_DIR
+from .resources import pixmap
 
 
 class Ui_About:
@@ -36,9 +35,7 @@ class Ui_About:
         self.lblProgramIcon = QLabel(About)
         self.lblProgramIcon.setObjectName("lblProgramIcon")
         self.lblProgramIcon.setMaximumSize(QSize(64, 64))
-        self.lblProgramIcon.setPixmap(
-            QPixmap(str(RESOURCES_DIR / "pbregisteractivity.png"))
-        )
+        self.lblProgramIcon.setPixmap(pixmap("pbregisteractivity.png"))
         self.lblProgramIcon.setScaledContents(True)
         self.lblProgramIcon.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
 
