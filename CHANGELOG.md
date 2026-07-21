@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-07-21
+
+### Added
+- Command-line argument parsing (`argparse`); `--version` prints the program version along with the Python, Qt and PySide6 versions (same information as the "About" dialog)
+- `--install {app,autostart,all,none}`: registers (or removes) the application in the host system, per-user, no admin/root required.
+  - Linux: `.desktop` files (XDG Base Directory / Desktop Entry specs) in the applications and autostart directories, plus an icon installed under the freedesktop hicolor icon theme
+  - Windows: Start Menu shortcut (created via PowerShell/`WScript.Shell`) and autostart via the `HKCU\...\CurrentVersion\Run` registry key
+  - macOS: `~/Applications/<name>.app` bundle (with an `.icns` generated from the bundled PNG via `sips`/`iconutil`) and autostart via a LaunchAgent plist in `~/Library/LaunchAgents`
+  - `none` removes both the menu entry and the autostart registration
+
+### Changed
+- `platform/` module split into `_linux.py`, `_macos.py` and `_windows.py` (replacing `dirs.py`, `lock.py` and `install.py`): each OS module holds its own implementation, reusing another OS's code (by import, or by subclassing for the `Installer` classes) only where the behaviour is genuinely identical — Linux as the reference POSIX implementation, then macOS, then Windows. `platform/__init__.py` selects the right module for the current OS at import time and re-exports `app_dir`, `SingleInstance`, `SingleInstanceException` and `apply`
+- `make dist` now depends on `make install`: PyInstaller reads the package version from the installed metadata (`copy_metadata("pbregisteractivity")`), so the editable install is refreshed first to guarantee it matches the current `pyproject.toml`
+
+### Fixed
+- Linux PyInstaller bundle: fonts now render identically regardless of the target machine's fontconfig setup. The `fonts.conf` embedded by PyInstaller contains absolute paths to the build machine's conda environment; on any other machine those paths are missing and fontconfig fails silently. Fix ported from PBRenamer: conda fonts (`fonts-conda-ecosystem`) are bundled via `pbregisteractivity.spec`, a runtime hook (`hooks/pyi_rth_fonts.py`) generates a portable `fonts.conf` at startup and forces fontconfig re-initialisation (`FcFini()`/`FcInit()`), and `_load_bundled_fonts()` registers the bundled `.ttf` files with `QFontDatabase` and forces **Ubuntu** as the application font, bypassing fontconfig entirely for font selection
+
 ## [1.0.0] - 2026-07-09
 
 ### Added

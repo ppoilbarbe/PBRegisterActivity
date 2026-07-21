@@ -8,7 +8,7 @@ from pathlib import Path
 
 from PySide6.QtCore import QByteArray
 
-from .platform.dirs import app_dir
+from .platform import app_dir
 
 
 class _Parameters:

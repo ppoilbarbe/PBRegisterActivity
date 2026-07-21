@@ -7,6 +7,8 @@ dependencies:
   - python=3.12
   - pyside6
   - matplotlib
+  # Fonts (bundled in the PyInstaller binary via pbregisteractivity.spec)
+  - fonts-conda-ecosystem   # meta-package: Ubuntu, DejaVu, Inconsolata, SourceCodePro
   - pyinstaller
   - ruff
   - pre-commit

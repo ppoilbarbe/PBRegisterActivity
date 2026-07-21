@@ -24,6 +24,8 @@ help: ## Cette aide
 	@printf "\n$(Y)Variables:$(R)\n"
 	@printf "  $(G)NOCONDA$(R)        Désactive conda; les outils doivent être dans le PATH\n"
 	@printf "                 ex. $(C)make test NOCONDA=1$(R)  ou  $(C)export NOCONDA=1$(R)\n"
+	@printf "  $(G)ARGS$(R)           Paramètres passés à l'application par la cible $(G)run$(R)\n"
+	@printf "                 ex. $(C)make run ARGS=--version$(R)\n"
 
 venv: ## Crée l'environnement conda 'pbregisteractivity' depuis environment.yml
 	@printf "$(C)Création de l'environnement conda '$(CONDA_ENV)'...$(R)\n"
@@ -55,7 +57,7 @@ run: ## Lance PBRegisterActivity depuis l'environnement conda
 
 # ── Distribution ─────────────────────────────────────────────────────────────
 
-dist: ## Construit un exécutable autonome PyInstaller pour la plateforme courante
+dist: install ## Construit un exécutable autonome PyInstaller pour la plateforme courante
 	@ver=$$(bash tools/git_version.sh); \
 	printf "$(C)PyInstaller — version: $$ver$(R)\n"; \
 	mkdir -p dist; \
