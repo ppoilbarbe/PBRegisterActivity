@@ -135,6 +135,7 @@ def main():
     activities.load(parameters.activity_file)
 
     app = QApplication(sys.argv)
+    app.setDesktopFileName(parameters.application_name.lower())
     _load_bundled_fonts(app)
     app.setWindowIcon(icon("pbregisteractivity.png", size=128))
     translate_stock_widgets(app)

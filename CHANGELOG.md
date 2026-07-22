@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-07-22
+
+### Fixed
+- Linux: application icon missing from GNOME's application grid and taskbar/Alt-Tab (only visible in the system tray). `QGuiApplication::desktopFileName()` was never set, so GNOME Shell (via `WM_CLASS`/`_GTK_APPLICATION_ID`) could not reliably match the running window to the installed `.desktop` entry to resolve its icon — the match happened to work only when the packaged executable was manually renamed to `pbregisteractivity`. `app.setDesktopFileName()` is now set explicitly at startup, independent of the executable's actual file name
+
 ## [1.1.0] - 2026-07-21
 
 ### Added
